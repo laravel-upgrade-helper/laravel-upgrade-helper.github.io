@@ -1,0 +1,30 @@
+name: Push to main
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+    - name: "Build and push"
+      run: |
+        which php
+        git config --global user.name 'Version Bot'
+        git config --global user.email 'version-bot@users.noreply.github.com'
+        git fetch
+        git switch -c gh-pages
+        git merge --allow-unrelated-histories -X theirs origin/main
+        php generate-diffs.php
+        chmod +x ./cleanup-for-website.sh
+        ./cleanup-for-website.sh
+        git add .
+        git commit -m "[Version-Bot] Add Laravel Version"
+        git push -f origin gh-pages
