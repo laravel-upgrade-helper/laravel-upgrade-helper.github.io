@@ -33,7 +33,7 @@
         <div>
           <p class="mt-5">
             <select v-model="baseVersion"
-                    @change="() => {upgradeVersion = upgradableVersions[0]; clearResult;}"
+                    @change="baseVersionChange"
                     class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
               <option value="null">Current Version</option>
               <template v-for="tag in tags">
@@ -65,12 +65,17 @@
   <section v-show="showResult && diffString !==''" class="container mx-auto mt-3">
     <div class="text-center">
       For release notes see:
-      <a :href="releaseLink" target="_blank">link</a>
+      <a :href="releaseLink" target="_blank" class="underline italic">link</a>
     </div>
 
     <div class="text-center">
       Click <a :href="diffFileLink" download><b class="underline text-red">here</b></a>
       to download patch file.
+    </div>
+
+    <div class="text-center">
+      <small>You may apply file like: </small>
+      <small><code v-text="'git apply <file.diff>'"></code></small>
     </div>
 
     <div v-show="diffString !==''" v-html="diffHtml"></div>
@@ -101,6 +106,11 @@
       clearResult() {
         this.diffString = "";
         this.showResult = false;
+      },
+
+      baseVersionChange() {
+        this.upgradeVersion = this.upgradableVersions[0] || null;
+        this.clearResult();
       },
 
       showDiff() {
