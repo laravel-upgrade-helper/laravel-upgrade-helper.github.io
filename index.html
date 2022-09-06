@@ -28,8 +28,7 @@
         <div class="max-w-2xl px-6 text-center mx-auto">
           <img src="https://laravel.com/img/logomark.min.svg" alt="Laravel Upgrade Helper" width="50" class="mx-auto" />
           <h1 class="mt-5 text-5xl font-semibold text-gray-800">Laravel Upgrade Helper</h1>
-          <p class="text-gray-600 mt-4">It shows what's new in the files you're using and between the new version. We
-            know, there are release notes. This is just a quick overview.</p>
+          <p class="text-gray-600 mt-4">Quickly view differences between versions for Laravel.</p>
           <div>
             <p class="mt-5">
               <select v-model="baseVersion" @change="upgradeVersion = upgradableVersions[0]"
@@ -49,7 +48,7 @@
                 </template>
               </select>
             </p>
-            <button @click="showDiff" id="showBtn"
+            <button @click="showDiff" id="showBtn" 
               class="mt-10 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
               <span
                 class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
@@ -61,8 +60,17 @@
       </section>
     </div>
 
-    <section class="container mx-auto">
-      <h3 v-text="diffText" class="text-center mt-5 font-bold"></h3>
+    <section v-show="showResult && diffString !==''" class="container mx-auto mt-3">
+      <div class="text-center">
+        For release notes see: 
+        <a :href="releaseLink" target="_blank">link</a>
+      </div>
+
+      <div class="text-center">
+        Click <a :href="diffFileLink" download><b class="underline text-red">here</b></a> 
+        to download patch file.
+      </div>
+
       <div v-show="diffString !==''" v-html="diffHtml"></div>
     </section>
   </main>
@@ -76,8 +84,8 @@
           tags: [],
           baseVersion: null,
           upgradeVersion: null,
-          diffText: "",
           diffString: "",
+          showResult: false,
         };
       },
 
@@ -88,6 +96,11 @@
       },
 
       methods: {
+        clearResult() {
+          this.diffString = "";
+          this.showResult = false;
+        },
+
         showDiff() {
           if (!this.tags.includes(this.baseVersion) || 
             !this.tags.includes(this.upgradeVersion)
@@ -96,12 +109,10 @@
             return;
           }
 
-          this.diffText = '';
+          this.showResult = true;
           this.diffString = '';
 
-          this.diffText = `${this.baseVersion} -> ${this.upgradeVersion}`
-
-          fetch(`diffs/${this.baseVersion}...${this.upgradeVersion}.diff`)
+          fetch(this.diffFileLink)
             .then(response => {
               if (!response.ok) {
                 alert('Cannot find diff');
@@ -120,6 +131,14 @@
       },
 
       computed: {
+        releaseLink() {
+          return 'https://github.com/laravel/laravel/releases/tag/' + this.upgradeVersion;
+        },
+
+        diffFileLink() {
+          return `diffs/${this.baseVersion}...${this.upgradeVersion}.diff`;
+        },
+
         diffHtml() {
           return Diff2Html.html(this.diffString, {
             drawFileList: true,
