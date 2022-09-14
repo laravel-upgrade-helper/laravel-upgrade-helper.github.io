@@ -15,7 +15,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Credits
 
-- [All contributors](https://github.com/laravel-upgrade-helper/laravel-upgrade-helper.github.io/graphs/contributors)
+[All contributors](https://github.com/laravel-upgrade-helper/laravel-upgrade-helper.github.io/graphs/contributors)
 
 ## License
 
