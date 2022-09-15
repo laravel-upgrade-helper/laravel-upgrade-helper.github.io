@@ -2,6 +2,10 @@
 
 This repository contains scripts that generates diff files for Laravel upgrade helper.
 
+## Why This Project ?
+
+We know that Laravel has **release notes**, we have Laravel **docs** also we have **Laravel Shift.** We know all these but we wanted to quick look what we should update when we are upgrading our project. We build this tool for internal purposes and now decided to open source it. Hope that it will be useful for you too.
+
 ## Goals
 
 * Support Laravel 5.5 (LTS) and above.
