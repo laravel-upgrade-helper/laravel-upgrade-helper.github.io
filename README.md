@@ -1,4 +1,4 @@
-# Laravel Upgrade Helper
+# [Laravel Upgrade Helper](https://laravel-upgrade-helper.github.io/)
 
 ![image](https://user-images.githubusercontent.com/3058102/190493912-95aa862f-0428-4431-8143-cc80f593dace.png)
 
