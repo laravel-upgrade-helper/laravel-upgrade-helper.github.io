@@ -1,9 +1,12 @@
-# [Laravel Upgrade Helper](https://laravel-upgrade-helper.github.io/)
+# Laravel Upgrade Helper
 
 ![image](https://user-images.githubusercontent.com/3058102/190493912-95aa862f-0428-4431-8143-cc80f593dace.png)
 
-
 This repository contains scripts that generates diff files for Laravel upgrade helper.
+
+## Start Using Now
+
+[:globe_with_meridians: Laravel Upgrade Helper](https://laravel-upgrade-helper.github.io/)
 
 ## Why This Project ?
 
