@@ -31,7 +31,7 @@ jobs:
         tail -n 1 tags.txt
 
     - name: "Push to gh-pages"
-      if: ${{ env.LATEST_VERSION}} != ${{ (tail -n 1 tags.txt) }}
+      if: ${{ env.LATEST_VERSION}} != "$(tail -n 1 tags.txt)"
       run: |
         chmod +x ./cleanup-for-website.sh
         ./cleanup-for-website.sh
