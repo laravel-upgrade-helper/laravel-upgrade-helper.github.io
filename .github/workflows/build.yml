@@ -16,15 +16,23 @@ jobs:
     - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.1'
-    - name: "Build and push"
+
+    - name: "Merge changes"
       run: |
-        which php
         git config --global user.name 'Version Bot'
         git config --global user.email 'version-bot@users.noreply.github.com'
         git fetch
         git switch -c gh-pages
+        LATEST_VERSION=$(tail -n 1 tags.txt)
+        echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
         git merge --allow-unrelated-histories -X theirs origin/main
         php generate-diffs.php
+        echo $LATEST_VERSION
+        tail -n 1 tags.txt
+
+    - name: "Push to gh-pages"
+      if: ${{ env.LATEST_VERSION != $(tail -n 1 tags.txt) }}
+      run: |
         chmod +x ./cleanup-for-website.sh
         ./cleanup-for-website.sh
         git add .
