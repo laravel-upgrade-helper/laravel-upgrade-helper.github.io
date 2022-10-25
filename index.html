@@ -237,7 +237,9 @@
             ) === -1
         });
 
-        const lastIndex = this.tags.indexOf(sameVersionTags[sameVersionTags.length - 1])
+        const lastIndex = sameVersionTags.length > 0 ?
+          this.tags.indexOf(sameVersionTags[sameVersionTags.length - 1]) :
+          this.tags.indexOf(this.baseVersion)
 
         if (lastIndex < this.tags.length - 1) {
           sameVersionTags.push(this.tags[lastIndex + 1])
