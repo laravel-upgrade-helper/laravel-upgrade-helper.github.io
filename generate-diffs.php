@@ -76,7 +76,7 @@ foreach ($versionList as $index => $baseVersion) {
         $vIndex++;
 
         if (isset($versionList[$vIndex])) {
-            generateDiffFile($baseVersion, $versionList[$vIndex]);
+            generateDiffFile($latestVersion, $versionList[$vIndex]);
         };
     }
 }
