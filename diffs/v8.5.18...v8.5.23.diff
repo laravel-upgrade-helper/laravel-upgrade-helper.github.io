@@ -1,0 +1,158 @@
+diff --git a/.editorconfig b/.editorconfig
+index 6537ca46..1671c9b9 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -13,3 +13,6 @@ trim_trailing_whitespace = false
+ 
+ [*.{yml,yaml}]
+ indent_size = 2
++
++[docker-compose.yml]
++indent_size = 4
+diff --git a/.env.example b/.env.example
+index c3ed2a91..44853cd5 100644
+--- a/.env.example
++++ b/.env.example
+@@ -16,6 +16,7 @@ DB_PASSWORD=
+ 
+ BROADCAST_DRIVER=log
+ CACHE_DRIVER=file
++FILESYSTEM_DRIVER=local
+ QUEUE_CONNECTION=sync
+ SESSION_DRIVER=file
+ SESSION_LIFETIME=120
+@@ -39,6 +40,7 @@ AWS_ACCESS_KEY_ID=
+ AWS_SECRET_ACCESS_KEY=
+ AWS_DEFAULT_REGION=us-east-1
+ AWS_BUCKET=
++AWS_USE_PATH_STYLE_ENDPOINT=false
+ 
+ PUSHER_APP_ID=
+ PUSHER_APP_KEY=
+diff --git a/.gitignore b/.gitignore
+index 0ae59f0b..eb003b01 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -11,3 +11,5 @@ Homestead.json
+ Homestead.yaml
+ npm-debug.log
+ yarn-error.log
++/.idea
++/.vscode
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a7349fa0..0d52d22f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,36 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.18...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.23...8.x)
++
++
++## [v8.5.23 (2021-08-03)](https://github.com/laravel/laravel/compare/v8.5.22...v8.5.23)
++
++### Changed
++- Unified asset publishing ([#5654](https://github.com/laravel/laravel/pull/5654))
++
++
++## [v8.5.22 (2021-07-13)](https://github.com/laravel/laravel/compare/v8.5.21...v8.5.22)
++
++### Changed
++- Add RateLimiter facade alias ([#5642](https://github.com/laravel/laravel/pull/5642))
++
++
++## [v8.5.21 (2021-07-06)](https://github.com/laravel/laravel/compare/v8.5.20...v8.5.21)
++
++### Changed
++- Update validation language files ([#5637](https://github.com/laravel/laravel/pull/5637), [#5636](https://github.com/laravel/laravel/pull/5636))
++
++
++## [v8.5.20 (2021-06-15)](https://github.com/laravel/laravel/compare/v8.5.19...v8.5.20)
++
++### Changed
++- Add translation for current_password rule ([#5628](https://github.com/laravel/laravel/pull/5628))
++
++
++## [v8.5.19 (2021-06-01)](https://github.com/laravel/laravel/compare/v8.5.18...v8.5.19)
++
++### Changed
++- Update skeleton for filesystem tweaks to make sail usage easier ([c5d38d4](https://github.com/laravel/laravel/commit/c5d38d469a447d6831c3cf56d193be7941d6586f))
+ 
+ 
+ ## [v8.5.18 (2021-05-18)](https://github.com/laravel/laravel/compare/v8.5.17...v8.5.18)
+diff --git a/README.md b/README.md
+index ceb6ac0a..58140b1e 100644
+--- a/README.md
++++ b/README.md
+@@ -44,6 +44,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[DevSquad](https://devsquad.com)**
+ - **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+ - **[OP.GG](https://op.gg)**
++- **[CMS Max](https://www.cmsmax.com/)**
+ 
+ ## Contributing
+ 
+diff --git a/composer.json b/composer.json
+index d0635f15..703acae9 100644
+--- a/composer.json
++++ b/composer.json
+@@ -37,6 +37,9 @@
+             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+             "@php artisan package:discover --ansi"
+         ],
++        "post-update-cmd": [
++            "@php artisan vendor:publish --tag=laravel-assets --ansi"
++        ],
+         "post-root-package-install": [
+             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+         ],
+diff --git a/config/app.php b/config/app.php
+index f572b646..c9b8f5ae 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -215,6 +215,7 @@ return [
+         'Notification' => Illuminate\Support\Facades\Notification::class,
+         'Password' => Illuminate\Support\Facades\Password::class,
+         'Queue' => Illuminate\Support\Facades\Queue::class,
++        'RateLimiter' => Illuminate\Support\Facades\RateLimiter::class,
+         'Redirect' => Illuminate\Support\Facades\Redirect::class,
+         // 'Redis' => Illuminate\Support\Facades\Redis::class,
+         'Request' => Illuminate\Support\Facades\Request::class,
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 10c9d9be..760ef972 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -50,6 +50,7 @@ return [
+             'bucket' => env('AWS_BUCKET'),
+             'url' => env('AWS_URL'),
+             'endpoint' => env('AWS_ENDPOINT'),
++            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+         ],
+ 
+     ],
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 49e3388b..6100f808 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -31,6 +31,7 @@ return [
+     ],
+     'boolean' => 'The :attribute field must be true or false.',
+     'confirmed' => 'The :attribute confirmation does not match.',
++    'current_password' => 'The password is incorrect.',
+     'date' => 'The :attribute is not a valid date.',
+     'date_equals' => 'The :attribute must be a date equal to :date.',
+     'date_format' => 'The :attribute does not match the format :format.',
+@@ -116,10 +117,10 @@ return [
+     ],
+     'starts_with' => 'The :attribute must start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',
+-    'timezone' => 'The :attribute must be a valid zone.',
++    'timezone' => 'The :attribute must be a valid timezone.',
+     'unique' => 'The :attribute has already been taken.',
+     'uploaded' => 'The :attribute failed to upload.',
+-    'url' => 'The :attribute format is invalid.',
++    'url' => 'The :attribute must be a valid URL.',
+     'uuid' => 'The :attribute must be a valid UUID.',
+ 
+     /*

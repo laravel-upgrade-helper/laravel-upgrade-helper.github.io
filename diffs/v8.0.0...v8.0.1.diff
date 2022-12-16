@@ -1,0 +1,33 @@
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+index 96beea34..fead421a 100644
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ b/app/Http/Middleware/RedirectIfAuthenticated.php
+@@ -13,7 +13,7 @@ class RedirectIfAuthenticated
+      *
+      * @param  \Illuminate\Http\Request  $request
+      * @param  \Closure  $next
+-     * @param  string[]|null  ...$guards
++     * @param  string|null  ...$guards
+      * @return mixed
+      */
+     public function handle($request, Closure $next, ...$guards)
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 43c3c9fb..d31f4e25 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -19,6 +19,15 @@ class RouteServiceProvider extends ServiceProvider
+      */
+     public const HOME = '/home';
+ 
++    /**
++     * If specified, this namespace is automatically applied to your controller routes.
++     *
++     * In addition, it is set as the URL generator's root namespace.
++     *
++     * @var string
++     */
++    protected $namespace = null;
++
+     /**
+      * Define your route model bindings, pattern filters, etc.
+      *

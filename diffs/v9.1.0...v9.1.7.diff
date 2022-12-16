@@ -1,0 +1,442 @@
+diff --git a/.github/workflows/pull-requests.yml b/.github/workflows/pull-requests.yml
+new file mode 100644
+index 00000000..156b46eb
+--- /dev/null
++++ b/.github/workflows/pull-requests.yml
+@@ -0,0 +1,13 @@
++name: Pull Requests
++
++on:
++  pull_request_target:
++    types:
++      - opened
++
++permissions:
++  pull-requests: write
++
++jobs:
++  uneditable:
++    uses: laravel/.github/.github/workflows/pull-requests.yml@main
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+new file mode 100644
+index 00000000..9870c819
+--- /dev/null
++++ b/.github/workflows/tests.yml
+@@ -0,0 +1,30 @@
++name: Tests
++
++on: [push, pull_request]
++
++jobs:
++  tests:
++    runs-on: ubuntu-latest
++
++    steps:
++      - name: Checkout code
++        uses: actions/checkout@v2
++
++      - name: Setup PHP
++        uses: shivammathur/setup-php@v2
++        with:
++          php-version: 8.1
++          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
++          coverage: none
++
++      - name: Install Composer dependencies
++        run: composer install --prefer-dist --no-interaction
++
++      - name: Copy environment file
++        run: cp .env.example .env
++
++      - name: Generate app key
++        run: php artisan key:generate
++
++      - name: Execute tests
++        run: vendor/bin/phpunit
+diff --git a/.github/workflows/update-changelog.yml b/.github/workflows/update-changelog.yml
+index 0200e2b9..eaeaf1f8 100644
+--- a/.github/workflows/update-changelog.yml
++++ b/.github/workflows/update-changelog.yml
+@@ -6,24 +6,4 @@ on:
+ 
+ jobs:
+   update:
+-    runs-on: ubuntu-latest
+-
+-    steps:
+-      - name: Checkout code
+-        uses: actions/checkout@v2
+-        with:
+-          ref: ${{ github.ref_name }}
+-
+-      - name: Update Changelog
+-        uses: stefanzweifel/changelog-updater-action@v1
+-        with:
+-          latest-version: ${{ github.event.release.tag_name }}
+-          release-notes: ${{ github.event.release.body }}
+-          compare-url-target-revision: ${{ github.event.release.target_commitish }}
+-
+-      - name: Commit updated CHANGELOG
+-        uses: stefanzweifel/git-auto-commit-action@v4
+-        with:
+-          branch: ${{ github.event.release.target_commitish }}
+-          commit_message: Update CHANGELOG.md
+-          file_pattern: CHANGELOG.md
++    uses: laravel/.github/.github/workflows/update-changelog.yml@main
+diff --git a/.gitignore b/.gitignore
+index eb003b01..bc67a663 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,7 +6,6 @@
+ .env
+ .env.backup
+ .phpunit.result.cache
+-docker-compose.override.yml
+ Homestead.json
+ Homestead.yaml
+ npm-debug.log
+diff --git a/.styleci.yml b/.styleci.yml
+index 679a631e..79f63b44 100644
+--- a/.styleci.yml
++++ b/.styleci.yml
+@@ -1,6 +1,5 @@
+ php:
+   preset: laravel
+-  version: 8
+   disabled:
+     - no_unused_imports
+   finder:
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 74df6381..4ebc0713 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,61 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.0.1...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.6...9.x)
++
++## [v9.1.6](https://github.com/laravel/laravel/compare/v9.1.5...v9.1.6) - 2022-04-20
++
++### Changed
++
++- Move password lines into main translation file by @taylorotwell in https://github.com/laravel/laravel/commit/db0d052ece1c17c506633f4c9f5604b65e1cc3a4
++- Add missing maintenance to config by @ibrunotome in https://github.com/laravel/laravel/pull/5868
++
++## [v9.1.5](https://github.com/laravel/laravel/compare/v9.1.4...v9.1.5) - 2022-04-12
++
++### Changed
++
++- Rearrange route methods by @osbre in https://github.com/laravel/laravel/pull/5862
++- Add levels to handler by @taylorotwell in https://github.com/laravel/laravel/commit/a507e1424339633ce423729ec0ac49b99f0e57d7
++
++## [v9.1.4](https://github.com/laravel/laravel/compare/v9.1.3...v9.1.4) - 2022-03-29
++
++### Changed
++
++- Add encryption configuration by @taylorotwell in https://github.com/laravel/laravel/commit/f7b982ebdf7bd31eda9f05f901bd92ed32446156
++
++## [v9.1.3](https://github.com/laravel/laravel/compare/v9.1.2...v9.1.3) - 2022-03-29
++
++### Changed
++
++- Add an example to the class aliases by @nshiro in https://github.com/laravel/laravel/pull/5846
++- Add username in config to use with phpredis + ACL by @neoteknic in https://github.com/laravel/laravel/pull/5851
++- Remove "password" from validation lang by @mnastalski in https://github.com/laravel/laravel/pull/5856
++- Make authenticate session a route middleware by @taylorotwell in https://github.com/laravel/laravel/pull/5842
++
++## [v9.1.2](https://github.com/laravel/laravel/compare/v9.1.1...v9.1.2) - 2022-03-15
++
++### Changed
++
++- The docker-compose.override.yml should not be ignored by default by @dakira in https://github.com/laravel/laravel/pull/5838
++
++## [v9.1.1](https://github.com/laravel/laravel/compare/v9.1.0...v9.1.1) - 2022-03-08
++
++### Changed
++
++- Add option to configure Mailgun transporter scheme by @jnoordsij in https://github.com/laravel/laravel/pull/5831
++- Add `throw` to filesystems config by @ankurk91 in https://github.com/laravel/laravel/pull/5835
++
++### Fixed
++
++- Small typo fix in filesystems.php by @tooshay in https://github.com/laravel/laravel/pull/5827
++- Update sendmail default params by @driesvints in https://github.com/laravel/laravel/pull/5836
++
++## [v9.1.0](https://github.com/laravel/laravel/compare/v9.0.1...v9.1.0) - 2022-02-22
++
++### Changed
++
++- Remove namespace from Routes by @emargareten in https://github.com/laravel/laravel/pull/5818
++- Update sanctum config file by @suyar in https://github.com/laravel/laravel/pull/5820
++- Replace Laravel CORS package by @driesvints in https://github.com/laravel/laravel/pull/5825
+ 
+ ## [v9.0.1](https://github.com/laravel/laravel/compare/v9.0.0...v9.0.1) - 2022-02-15
+ 
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 8e7fbd1b..008b40fa 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -7,10 +7,19 @@ use Throwable;
+ 
+ class Handler extends ExceptionHandler
+ {
++    /**
++     * A list of exception types with their corresponding custom log levels.
++     *
++     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
++     */
++    protected $levels = [
++        //
++    ];
++
+     /**
+      * A list of the exception types that are not reported.
+      *
+-     * @var array<int, class-string<Throwable>>
++     * @var array<int, class-string<\Throwable>>
+      */
+     protected $dontReport = [
+         //
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 4f18062a..c3be2544 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -33,7 +33,6 @@ class Kernel extends HttpKernel
+             \App\Http\Middleware\EncryptCookies::class,
+             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+             \Illuminate\Session\Middleware\StartSession::class,
+-            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+             \App\Http\Middleware\VerifyCsrfToken::class,
+             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+@@ -56,6 +55,7 @@ class Kernel extends HttpKernel
+     protected $routeMiddleware = [
+         'auth' => \App\Http\Middleware\Authenticate::class,
+         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
++        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 0ba5291f..f34af12a 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -29,8 +29,8 @@ class RouteServiceProvider extends ServiceProvider
+         $this->configureRateLimiting();
+ 
+         $this->routes(function () {
+-            Route::prefix('api')
+-                ->middleware('api')
++            Route::middleware('api')
++                ->prefix('api')
+                 ->group(base_path('routes/api.php'));
+ 
+             Route::middleware('web')
+diff --git a/composer.json b/composer.json
+index 438f4487..164c94bd 100644
+--- a/composer.json
++++ b/composer.json
+@@ -7,7 +7,7 @@
+     "require": {
+         "php": "^8.0.2",
+         "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^9.2",
++        "laravel/framework": "^9.11",
+         "laravel/sanctum": "^2.14.1",
+         "laravel/tinker": "^2.7"
+     },
+diff --git a/config/app.php b/config/app.php
+index 7c60cd9d..ef76a7ed 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -125,6 +125,24 @@ return [
+ 
+     'cipher' => 'AES-256-CBC',
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Maintenance Mode Driver
++    |--------------------------------------------------------------------------
++    |
++    | These configuration options determine the driver used to determine and
++    | manage Laravel's "maintenance mode" status. The "cache" driver will
++    | allow maintenance mode to be controlled across multiple machines.
++    |
++    | Supported drivers: "file", "cache"
++    |
++    */
++
++    'maintenance' => [
++        'driver' => 'file',
++        // 'store'  => 'redis',
++    ],
++
+     /*
+     |--------------------------------------------------------------------------
+     | Autoloaded Service Providers
+@@ -191,7 +209,7 @@ return [
+     */
+ 
+     'aliases' => Facade::defaultAliases()->merge([
+-        // ...
++        // 'ExampleClass' => App\Example\ExampleClass::class,
+     ])->toArray(),
+ 
+ ];
+diff --git a/config/cache.php b/config/cache.php
+index 0ad5c740..33bb2954 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -99,9 +99,9 @@ return [
+     | Cache Key Prefix
+     |--------------------------------------------------------------------------
+     |
+-    | When utilizing a RAM based store such as APC or Memcached, there might
+-    | be other applications utilizing the same cache. So, we'll specify a
+-    | value to get prefixed to all our keys so we can avoid collisions.
++    | When utilizing the APC, database, memcached, Redis, or DynamoDB cache
++    | stores there might be other applications using the same cache. For
++    | that reason, you may prefix every cache key to avoid collisions.
+     |
+     */
+ 
+diff --git a/config/database.php b/config/database.php
+index 0faebaee..137ad18c 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -89,6 +89,8 @@ return [
+             'charset' => 'utf8',
+             'prefix' => '',
+             'prefix_indexes' => true,
++            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
++            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+         ],
+ 
+     ],
+@@ -129,6 +131,7 @@ return [
+         'default' => [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
++            'username' => env('REDIS_USERNAME'),
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_DB', '0'),
+@@ -137,6 +140,7 @@ return [
+         'cache' => [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
++            'username' => env('REDIS_USERNAME'),
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_CACHE_DB', '1'),
+diff --git a/config/filesystems.php b/config/filesystems.php
+index cf5abce7..e9d9dbdb 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -22,7 +22,7 @@ return [
+     |
+     | Here you may configure as many filesystem "disks" as you wish, and you
+     | may even configure multiple disks of the same driver. Defaults have
+-    | been setup for each driver as an example of the required options.
++    | been set up for each driver as an example of the required values.
+     |
+     | Supported Drivers: "local", "ftp", "sftp", "s3"
+     |
+@@ -33,6 +33,7 @@ return [
+         'local' => [
+             'driver' => 'local',
+             'root' => storage_path('app'),
++            'throw' => false,
+         ],
+ 
+         'public' => [
+@@ -40,6 +41,7 @@ return [
+             'root' => storage_path('app/public'),
+             'url' => env('APP_URL').'/storage',
+             'visibility' => 'public',
++            'throw' => false,
+         ],
+ 
+         's3' => [
+@@ -51,6 +53,7 @@ return [
+             'url' => env('AWS_URL'),
+             'endpoint' => env('AWS_ENDPOINT'),
+             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
++            'throw' => false,
+         ],
+ 
+     ],
+diff --git a/config/logging.php b/config/logging.php
+index fefe0885..5aa1dbb7 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -30,7 +30,10 @@ return [
+     |
+     */
+ 
+-    'deprecations' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
++    'deprecations' => [
++        'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
++        'trace' => false,
++    ],
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/config/mail.php b/config/mail.php
+index 87b6fe3c..11bfe7e1 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -58,7 +58,7 @@ return [
+ 
+         'sendmail' => [
+             'transport' => 'sendmail',
+-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -t -i'),
++            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+         ],
+ 
+         'log' => [
+diff --git a/config/services.php b/config/services.php
+index 2a1d616c..0ace530e 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -18,6 +18,7 @@ return [
+         'domain' => env('MAILGUN_DOMAIN'),
+         'secret' => env('MAILGUN_SECRET'),
+         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
++        'scheme' => 'https',
+     ],
+ 
+     'postmark' => [
+diff --git a/lang/en.json b/lang/en.json
+deleted file mode 100644
+index 577680dd..00000000
+--- a/lang/en.json
++++ /dev/null
+@@ -1,7 +0,0 @@
+-{
+-    "The :attribute must contain at least one letter.": "The :attribute must contain at least one letter.",
+-    "The :attribute must contain at least one number.": "The :attribute must contain at least one number.",
+-    "The :attribute must contain at least one symbol.": "The :attribute must contain at least one symbol.",
+-    "The :attribute must contain at least one uppercase and one lowercase letter.": "The :attribute must contain at least one uppercase and one lowercase letter.",
+-    "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "The given :attribute has appeared in a data leak. Please choose a different :attribute."
+-}
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index 4707f1a6..724b5ace 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -100,7 +100,13 @@ return [
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
+-    'password' => 'The password is incorrect.',
++    'password' => [
++        'letters' => 'The :attribute must contain at least one letter.',
++        'mixed' => 'The :attribute must contain at least one uppercase and one lowercase letter.',
++        'numbers' => 'The :attribute must contain at least one number.',
++        'symbols' => 'The :attribute must contain at least one symbol.',
++        'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
++    ],
+     'present' => 'The :attribute field must be present.',
+     'prohibited' => 'The :attribute field is prohibited.',
+     'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',

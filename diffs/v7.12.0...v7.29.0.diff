@@ -1,0 +1,255 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b44e48f6..2aea9cf3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,42 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v7.6.0...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v7.29.0...7.x)
++
++
++## [v7.29.0 (2020-10-29)](https://github.com/laravel/laravel/compare/v7.28.0...v7.29.0)
++
++### Added
++- PHP 8 Support ([4c25cb9](https://github.com/laravel/laravel/commit/4c25cb953a0bbd4812bf92af71a13920998def1e))
++
++### Changed
++- Bump minimum PHP version ([#5452](https://github.com/laravel/laravel/pull/5452))
++- Update Faker ([#5461](https://github.com/laravel/laravel/pull/5461))
++- Update minimum Laravel version ([02ca853](https://github.com/laravel/laravel/commit/02ca853809a97f372a3c6dc535c566efff9f6571))
++
++### Fixed
++- Delete removed webpack flag ([#5460](https://github.com/laravel/laravel/pull/5460))
++
++
++## [v7.28.0 (2020-09-08)](https://github.com/laravel/laravel/compare/v7.25.0...v7.28.0)
++
++Nothing specific.
++
++
++## [v7.25.0 (2020-08-11)](https://github.com/laravel/laravel/compare/v7.12.0...v7.25.0)
++
++### Added
++- Add password reset migration ([9e5ba57](https://github.com/laravel/laravel/commit/9e5ba571a60a57ca2c3938bc5bd81d222cb6e618))
++
++### Changed
++- Bump `fruitcake/laravel-cors` ([#5320](https://github.com/laravel/laravel/pull/5320))
++- Set framework version `^7.24` ([#5370](https://github.com/laravel/laravel/pull/5370))
++
++
++## [v7.12.0 (2020-05-18)](https://github.com/laravel/laravel/compare/v7.6.0...v7.12.0)
++
++### Added
++- Allow configuring the auth_mode for SMTP mail driver ([#5293](https://github.com/laravel/laravel/pull/5293))
++- Add basic trust host middleware ([5639581](https://github.com/laravel/laravel/commit/5639581ea56ecd556cdf6e6edc37ce5795740fd7))
+ 
+ 
+ ## [v7.6.0 (2020-04-15)](https://github.com/laravel/laravel/compare/v7.3.0...v7.6.0)
+@@ -56,6 +92,28 @@
+ - Use `MAIL_MAILER` in test environment ([#5239](https://github.com/laravel/laravel/pull/5239))
+ 
+ 
++## [v6.19.0 (2020-10-29)](https://github.com/laravel/laravel/compare/v6.18.8...v6.19.0)
++
++### Added
++- PHP 8 Support ([4c25cb9](https://github.com/laravel/laravel/commit/4c25cb953a0bbd4812bf92af71a13920998def1e))
++
++### Changed
++- Bump minimum PHP version ([#5452](https://github.com/laravel/laravel/pull/5452))
++- Update Faker ([#5461](https://github.com/laravel/laravel/pull/5461))
++- Update minimum Laravel version ([b8d5825](https://github.com/laravel/laravel/commit/b8d582581a1067e3b1715cce477b22455acc3d36))
++
++### Fixed
++- Delete removed webpack flag ([#5460](https://github.com/laravel/laravel/pull/5460))
++
++
++## [v6.18.35 (2020-08-11)](https://github.com/laravel/laravel/compare/v6.18.8...v6.18.35)
++
++### Changed
++- Set framework version to `^6.18.35` ([#5369](https://github.com/laravel/laravel/pull/5369))
++- Bump lodash from 4.17.15 to 4.17.19 ([f465c51](https://github.com/laravel/laravel/commit/f465c511c009235fc7bfa06bfcb41294e60e9b42))
++- Disable webpack-dev-server host check ([#5288](https://github.com/laravel/laravel/pull/5288))
++
++
+ ## [v6.18.8 (2020-04-16)](https://github.com/laravel/laravel/compare/v6.18.3...v6.18.8)
+ 
+ ### Fixed
+diff --git a/README.md b/README.md
+index 3cae01ea..f3decb12 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
++<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+@@ -31,6 +31,8 @@ If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Lar
+ 
+ We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+ 
++### Premium Partners
++
+ - **[Vehikl](https://vehikl.com/)**
+ - **[Tighten Co.](https://tighten.co)**
+ - **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+@@ -40,27 +42,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[Many](https://www.many.co.uk)**
+ - **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+ - **[DevSquad](https://devsquad.com)**
+-- [UserInsights](https://userinsights.com)
+-- [Fragrantica](https://www.fragrantica.com)
+-- [SOFTonSOFA](https://softonsofa.com/)
+-- [User10](https://user10.com)
+-- [Soumettre.fr](https://soumettre.fr/)
+-- [CodeBrisk](https://codebrisk.com)
+-- [1Forge](https://1forge.com)
+-- [TECPRESSO](https://tecpresso.co.jp/)
+-- [Runtime Converter](http://runtimeconverter.com/)
+-- [WebL'Agence](https://weblagence.com/)
+-- [Invoice Ninja](https://www.invoiceninja.com)
+-- [iMi digital](https://www.imi-digital.de/)
+-- [Earthlink](https://www.earthlink.ro/)
+-- [Steadfast Collective](https://steadfastcollective.com/)
+-- [We Are The Robots Inc.](https://watr.mx/)
+-- [Understand.io](https://www.understand.io/)
+-- [Abdel Elrafa](https://abdelelrafa.com)
+-- [Hyper Host](https://hyper.host)
+-- [Appoly](https://www.appoly.co.uk)
+-- [OP.GG](https://op.gg)
+-- [云软科技](http://www.yunruan.ltd/)
++- **[OP.GG](https://op.gg)**
+ 
+ ## Contributing
+ 
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 59c585dc..5a53cd3b 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -32,7 +32,7 @@ class Handler extends ExceptionHandler
+      * @param  \Throwable  $exception
+      * @return void
+      *
+-     * @throws \Exception
++     * @throws \Throwable
+      */
+     public function report(Throwable $exception)
+     {
+diff --git a/composer.json b/composer.json
+index 4e81d21a..52fe80d6 100644
+--- a/composer.json
++++ b/composer.json
+@@ -8,16 +8,16 @@
+     ],
+     "license": "MIT",
+     "require": {
+-        "php": "^7.2.5",
++        "php": "^7.2.5|^8.0",
+         "fideloper/proxy": "^4.2",
+-        "fruitcake/laravel-cors": "^1.0",
++        "fruitcake/laravel-cors": "^2.0",
+         "guzzlehttp/guzzle": "^6.3",
+-        "laravel/framework": "^7.0",
++        "laravel/framework": "^7.29",
+         "laravel/tinker": "^2.0"
+     },
+     "require-dev": {
+         "facade/ignition": "^2.0",
+-        "fzaninotto/faker": "^1.9.1",
++        "fakerphp/faker": "^1.9.1",
+         "mockery/mockery": "^1.3.1",
+         "nunomaduro/collision": "^4.1",
+         "phpunit/phpunit": "^8.5"
+diff --git a/database/migrations/2014_10_12_100000_create_password_resets_table.php b/database/migrations/2014_10_12_100000_create_password_resets_table.php
+new file mode 100644
+index 00000000..0ee0a36a
+--- /dev/null
++++ b/database/migrations/2014_10_12_100000_create_password_resets_table.php
+@@ -0,0 +1,32 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++class CreatePasswordResetsTable extends Migration
++{
++    /**
++     * Run the migrations.
++     *
++     * @return void
++     */
++    public function up()
++    {
++        Schema::create('password_resets', function (Blueprint $table) {
++            $table->string('email')->index();
++            $table->string('token');
++            $table->timestamp('created_at')->nullable();
++        });
++    }
++
++    /**
++     * Reverse the migrations.
++     *
++     * @return void
++     */
++    public function down()
++    {
++        Schema::dropIfExists('password_resets');
++    }
++}
+diff --git a/package.json b/package.json
+index 2c35181c..557bd215 100644
+--- a/package.json
++++ b/package.json
+@@ -2,18 +2,18 @@
+     "private": true,
+     "scripts": {
+         "dev": "npm run development",
+-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "watch": "npm run development -- --watch",
+         "watch-poll": "npm run watch -- --watch-poll",
+         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "prod": "npm run production",
+-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
++        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },
+     "devDependencies": {
+         "axios": "^0.19",
+         "cross-env": "^7.0",
+         "laravel-mix": "^5.0.1",
+-        "lodash": "^4.17.13",
++        "lodash": "^4.17.19",
+         "resolve-url-loader": "^3.1.0",
+         "sass": "^1.15.2",
+         "sass-loader": "^8.0.0"
+diff --git a/phpunit.xml b/phpunit.xml
+index 964ff0c5..76f22462 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -21,8 +21,8 @@
+         <server name="APP_ENV" value="testing"/>
+         <server name="BCRYPT_ROUNDS" value="4"/>
+         <server name="CACHE_DRIVER" value="array"/>
+-        <server name="DB_CONNECTION" value="sqlite"/>
+-        <server name="DB_DATABASE" value=":memory:"/>
++        <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
++        <!-- <server name="DB_DATABASE" value=":memory:"/> -->
+         <server name="MAIL_MAILER" value="array"/>
+         <server name="QUEUE_CONNECTION" value="sync"/>
+         <server name="SESSION_DRIVER" value="array"/>
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 3fb48cc0..7bc33725 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -7,7 +7,7 @@
+         <title>Laravel</title>
+ 
+         <!-- Fonts -->
+-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
++        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
+ 
+         <!-- Styles -->
+         <style>

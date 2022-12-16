@@ -1,0 +1,163 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e39f93ab..75827b48 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,28 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.0.0...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.0...9.x)
++
++## [v9.1.0](https://github.com/laravel/laravel/compare/v9.0.1...v9.1.0) - 2022-02-22
++
++### Changed
++
++- Remove namespace from Routes by @emargareten in https://github.com/laravel/laravel/pull/5818
++- Update sanctum config file by @suyar in https://github.com/laravel/laravel/pull/5820
++- Replace Laravel CORS package by @driesvints in https://github.com/laravel/laravel/pull/5825
++
++## [v9.0.1](https://github.com/laravel/laravel/compare/v9.0.0...v9.0.1) - 2022-02-15
++
++### Changed
++
++- Improve typing on user factory by @axlon in https://github.com/laravel/laravel/pull/5806
++- Align min PHP version with docs by @u01jmg3 in https://github.com/laravel/laravel/pull/5807
++- Remove redundant `null`s by @felixdorn in https://github.com/laravel/laravel/pull/5811
++- Remove default commented namespace by @driesvints in https://github.com/laravel/laravel/pull/5816
++- Add underscore to prefix in database cache key by @m4tlch in https://github.com/laravel/laravel/pull/5817
++
++### Fixed
++
++- Fix lang alphabetical order by @shuvroroy in https://github.com/laravel/laravel/pull/5812
+ 
+ ## [v9.0.0 (2022-02-08)](https://github.com/laravel/laravel/compare/v8.6.11...v9.0.0)
+ 
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index d3722c2d..4f18062a 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -16,7 +16,7 @@ class Kernel extends HttpKernel
+     protected $middleware = [
+         // \App\Http\Middleware\TrustHosts::class,
+         \App\Http\Middleware\TrustProxies::class,
+-        \Fruitcake\Cors\HandleCors::class,
++        \Illuminate\Http\Middleware\HandleCors::class,
+         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+         \App\Http\Middleware\TrimStrings::class,
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 457cb225..0ba5291f 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -31,11 +31,9 @@ class RouteServiceProvider extends ServiceProvider
+         $this->routes(function () {
+             Route::prefix('api')
+                 ->middleware('api')
+-                ->namespace($this->namespace)
+                 ->group(base_path('routes/api.php'));
+ 
+             Route::middleware('web')
+-                ->namespace($this->namespace)
+                 ->group(base_path('routes/web.php'));
+         });
+     }
+diff --git a/composer.json b/composer.json
+index 0aa742ea..438f4487 100644
+--- a/composer.json
++++ b/composer.json
+@@ -6,10 +6,9 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.0.2",
+-        "fruitcake/laravel-cors": "^2.0.5",
+         "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^9.0",
+-        "laravel/sanctum": "^2.14",
++        "laravel/framework": "^9.2",
++        "laravel/sanctum": "^2.14.1",
+         "laravel/tinker": "^2.7"
+     },
+     "require-dev": {
+diff --git a/config/filesystems.php b/config/filesystems.php
+index cf5abce7..e9d9dbdb 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -22,7 +22,7 @@ return [
+     |
+     | Here you may configure as many filesystem "disks" as you wish, and you
+     | may even configure multiple disks of the same driver. Defaults have
+-    | been setup for each driver as an example of the required options.
++    | been set up for each driver as an example of the required values.
+     |
+     | Supported Drivers: "local", "ftp", "sftp", "s3"
+     |
+@@ -33,6 +33,7 @@ return [
+         'local' => [
+             'driver' => 'local',
+             'root' => storage_path('app'),
++            'throw' => false,
+         ],
+ 
+         'public' => [
+@@ -40,6 +41,7 @@ return [
+             'root' => storage_path('app/public'),
+             'url' => env('APP_URL').'/storage',
+             'visibility' => 'public',
++            'throw' => false,
+         ],
+ 
+         's3' => [
+@@ -51,6 +53,7 @@ return [
+             'url' => env('AWS_URL'),
+             'endpoint' => env('AWS_ENDPOINT'),
+             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
++            'throw' => false,
+         ],
+ 
+     ],
+diff --git a/config/mail.php b/config/mail.php
+index 87b6fe3c..11bfe7e1 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -58,7 +58,7 @@ return [
+ 
+         'sendmail' => [
+             'transport' => 'sendmail',
+-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -t -i'),
++            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+         ],
+ 
+         'log' => [
+diff --git a/config/sanctum.php b/config/sanctum.php
+index 9281c92d..529cfdc9 100644
+--- a/config/sanctum.php
++++ b/config/sanctum.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use Laravel\Sanctum\Sanctum;
++
+ return [
+ 
+     /*
+@@ -16,7 +18,7 @@ return [
+     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
+         '%s%s',
+         'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+-        env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
++        Sanctum::currentApplicationUrlWithPort()
+     ))),
+ 
+     /*
+diff --git a/config/services.php b/config/services.php
+index 2a1d616c..0ace530e 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -18,6 +18,7 @@ return [
+         'domain' => env('MAILGUN_DOMAIN'),
+         'secret' => env('MAILGUN_SECRET'),
+         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
++        'scheme' => 'https',
+     ],
+ 
+     'postmark' => [

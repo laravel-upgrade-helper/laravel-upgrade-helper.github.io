@@ -1,0 +1,106 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index eabd7a59..0c859aa2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,18 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.9...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.10...8.x)
++
++
++## [v8.6.10 (2021-12-22)](https://github.com/laravel/laravel/compare/v8.6.9...v8.6.10)
++
++### Changed
++- Bump Laravel to v8.75 ([#5750](https://github.com/laravel/laravel/pull/5750))
++- Simplify the maintenance file call ([#5752](https://github.com/laravel/laravel/pull/5752))
++- Add enum translation ([#5753](https://github.com/laravel/laravel/pull/5753))
++- Add mac_address validation message ([#5754](https://github.com/laravel/laravel/pull/5754))
++
++### Removed
++- Delete web.config ([#5744](https://github.com/laravel/laravel/pull/5744))
+ 
+ 
+ ## [v8.6.9 (2021-12-07)](https://github.com/laravel/laravel/compare/v8.6.8...v8.6.9)
+diff --git a/composer.json b/composer.json
+index 8fc7406e..2b0c1155 100644
+--- a/composer.json
++++ b/composer.json
+@@ -8,7 +8,7 @@
+         "php": "^7.3|^8.0",
+         "fruitcake/laravel-cors": "^2.0",
+         "guzzlehttp/guzzle": "^7.0.1",
+-        "laravel/framework": "^8.65",
++        "laravel/framework": "^8.75",
+         "laravel/sanctum": "^2.11",
+         "laravel/tinker": "^2.5"
+     },
+diff --git a/public/index.php b/public/index.php
+index 002ee24d..1d69f3a2 100644
+--- a/public/index.php
++++ b/public/index.php
+@@ -16,8 +16,8 @@ define('LARAVEL_START', microtime(true));
+ |
+ */
+ 
+-if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
+-    require __DIR__.'/../storage/framework/maintenance.php';
++if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
++    require $maintenance;
+ }
+ 
+ /*
+diff --git a/public/web.config b/public/web.config
+deleted file mode 100644
+index 323482f1..00000000
+--- a/public/web.config
++++ /dev/null
+@@ -1,28 +0,0 @@
+-<!--
+-    Rewrites requires Microsoft URL Rewrite Module for IIS
+-    Download: https://www.iis.net/downloads/microsoft/url-rewrite
+-    Debug Help: https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/using-failed-request-tracing-to-trace-rewrite-rules
+--->
+-<configuration>
+-  <system.webServer>
+-    <rewrite>
+-      <rules>
+-        <rule name="Imported Rule 1" stopProcessing="true">
+-          <match url="^(.*)/$" ignoreCase="false" />
+-          <conditions>
+-            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
+-          </conditions>
+-          <action type="Redirect" redirectType="Permanent" url="/{R:1}" />
+-        </rule>
+-        <rule name="Imported Rule 2" stopProcessing="true">
+-          <match url="^" ignoreCase="false" />
+-          <conditions>
+-            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
+-            <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" negate="true" />
+-          </conditions>
+-          <action type="Rewrite" url="index.php" />
+-        </rule>
+-      </rules>
+-    </rewrite>
+-  </system.webServer>
+-</configuration>
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index ba42c8d9..87fb437c 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -45,6 +45,7 @@ return [
+     'distinct' => 'The :attribute field has a duplicate value.',
+     'email' => 'The :attribute must be a valid email address.',
+     'ends_with' => 'The :attribute must end with one of the following: :values.',
++    'enum' => 'The selected :attribute is invalid.',
+     'exists' => 'The selected :attribute is invalid.',
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',
+@@ -67,6 +68,7 @@ return [
+     'ip' => 'The :attribute must be a valid IP address.',
+     'ipv4' => 'The :attribute must be a valid IPv4 address.',
+     'ipv6' => 'The :attribute must be a valid IPv6 address.',
++    'mac_address' => 'The :attribute must be a valid MAC address.',
+     'json' => 'The :attribute must be a valid JSON string.',
+     'lt' => [
+         'numeric' => 'The :attribute must be less than :value.',

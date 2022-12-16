@@ -1,0 +1,251 @@
+diff --git a/.styleci.yml b/.styleci.yml
+index 1db61d96..9231873a 100644
+--- a/.styleci.yml
++++ b/.styleci.yml
+@@ -1,7 +1,7 @@
+ php:
+   preset: laravel
+   disabled:
+-    - unused_use
++    - no_unused_imports
+   finder:
+     not-name:
+       - index.php
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4a9d768b..658af6c0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,52 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v7.25.0...develop)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.1.0...master)
++
++
++## [v8.1.0 (2020-10-06)](https://github.com/laravel/laravel/compare/v8.0.3...v8.1.0)
++
++### Added
++- Added `LOG_LEVEL` env variable ([#5442](https://github.com/laravel/laravel/pull/5442))
++
++### Changed
++- Type hint the middleware Request ([#5438](https://github.com/laravel/laravel/pull/5438))
++
++
++## [v8.0.3 (2020-09-22)](https://github.com/laravel/laravel/compare/v8.0.2...v8.0.3)
++
++### Changed
++- Add comment ([a6ca577](https://github.com/laravel/laravel/commit/a6ca5778391b150102637459ac3b2a42d78d495b))
++
++
++## [v8.0.2 (2020-09-22)](https://github.com/laravel/laravel/compare/v8.0.1...v8.0.2)
++
++### Changed
++- Fully qualified user model in seeder ([#5406](https://github.com/laravel/laravel/pull/5406))
++- Update model path in `AuthServiceProvider`'s policies ([#5412](https://github.com/laravel/laravel/pull/5412))
++- Add commented code ([69d0c50](https://github.com/laravel/laravel/commit/69d0c504e3ff01e0fd219e02ebac9b1c22151c2a))
++
++### Fixed
++- Swap route order ([292a5b2](https://github.com/laravel/laravel/commit/292a5b26a9293d82ab5a7d0bb81bba02ea71758e))
++- Fix route when uncomment $namespace ([#5424](https://github.com/laravel/laravel/pull/5424))
++
++### Removed
++- Removed `$namespace` property ([b33852e](https://github.com/laravel/laravel/commit/b33852ecace72791f4bc28b8dd84c108166512bf))
++
++
++## [v8.0.1 (2020-09-09)](https://github.com/laravel/laravel/compare/v8.0.0...v8.0.1)
++
++### Changed
++- Re-add property to route service provider ([9cbc381](https://github.com/laravel/laravel/commit/9cbc3819f7b1c268447996d347a1733aa68e16d7))
++
++
++## [v8.0.0 (2020-09-08)](https://github.com/laravel/laravel/compare/v7.28.0...v8.0.0)
++
++Laravel 8 comes with a lot of changes to the base skeleton. Please consult the diff to see what's changed.
++
++
++## [v7.28.0 (2020-09-08)](https://github.com/laravel/laravel/compare/v7.25.0...v7.28.0)
++
++Nothing specific.
+ 
+ 
+ ## [v7.25.0 (2020-08-11)](https://github.com/laravel/laravel/compare/v7.12.0...v7.25.0)
+diff --git a/README.md b/README.md
+index f3decb12..2f7ddcc6 100644
+--- a/README.md
++++ b/README.md
+@@ -2,9 +2,9 @@
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
+-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
+-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
++<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
++<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
++<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+ </p>
+ 
+ ## About Laravel
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+index 96beea34..362b48b0 100644
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ b/app/Http/Middleware/RedirectIfAuthenticated.php
+@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
+ 
+ use App\Providers\RouteServiceProvider;
+ use Closure;
++use Illuminate\Http\Request;
+ use Illuminate\Support\Facades\Auth;
+ 
+ class RedirectIfAuthenticated
+@@ -13,10 +14,10 @@ class RedirectIfAuthenticated
+      *
+      * @param  \Illuminate\Http\Request  $request
+      * @param  \Closure  $next
+-     * @param  string[]|null  ...$guards
++     * @param  string|null  ...$guards
+      * @return mixed
+      */
+-    public function handle($request, Closure $next, ...$guards)
++    public function handle(Request $request, Closure $next, ...$guards)
+     {
+         $guards = empty($guards) ? [null] : $guards;
+ 
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 43c7ab1f..804799ba 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -17,7 +17,9 @@ class User extends Authenticatable
+      * @var array
+      */
+     protected $fillable = [
+-        'name', 'email', 'password',
++        'name',
++        'email',
++        'password',
+     ];
+ 
+     /**
+@@ -26,7 +28,8 @@ class User extends Authenticatable
+      * @var array
+      */
+     protected $hidden = [
+-        'password', 'remember_token',
++        'password',
++        'remember_token',
+     ];
+ 
+     /**
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index 30490683..ce744916 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -13,7 +13,7 @@ class AuthServiceProvider extends ServiceProvider
+      * @var array
+      */
+     protected $policies = [
+-        // 'App\Model' => 'App\Policies\ModelPolicy',
++        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+     ];
+ 
+     /**
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 43c3c9fb..19664568 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -19,6 +19,15 @@ class RouteServiceProvider extends ServiceProvider
+      */
+     public const HOME = '/home';
+ 
++    /**
++     * The controller namespace for the application.
++     *
++     * When present, controller route declarations will automatically be prefixed with this namespace.
++     *
++     * @var string|null
++     */
++    // protected $namespace = 'App\\Http\\Controllers';
++
+     /**
+      * Define your route model bindings, pattern filters, etc.
+      *
+@@ -29,12 +38,14 @@ class RouteServiceProvider extends ServiceProvider
+         $this->configureRateLimiting();
+ 
+         $this->routes(function () {
+-            Route::middleware('web')
+-                ->group(base_path('routes/web.php'));
+-
+             Route::prefix('api')
+                 ->middleware('api')
++                ->namespace($this->namespace)
+                 ->group(base_path('routes/api.php'));
++
++            Route::middleware('web')
++                ->namespace($this->namespace)
++                ->group(base_path('routes/web.php'));
+         });
+     }
+ 
+diff --git a/config/logging.php b/config/logging.php
+index 088c204e..6aa77fe2 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -44,13 +44,13 @@ return [
+         'single' => [
+             'driver' => 'single',
+             'path' => storage_path('logs/laravel.log'),
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+         ],
+ 
+         'daily' => [
+             'driver' => 'daily',
+             'path' => storage_path('logs/laravel.log'),
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+             'days' => 14,
+         ],
+ 
+@@ -59,12 +59,12 @@ return [
+             'url' => env('LOG_SLACK_WEBHOOK_URL'),
+             'username' => 'Laravel Log',
+             'emoji' => ':boom:',
+-            'level' => 'critical',
++            'level' => env('LOG_LEVEL', 'critical'),
+         ],
+ 
+         'papertrail' => [
+             'driver' => 'monolog',
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+             'handler' => SyslogUdpHandler::class,
+             'handler_with' => [
+                 'host' => env('PAPERTRAIL_URL'),
+@@ -83,12 +83,12 @@ return [
+ 
+         'syslog' => [
+             'driver' => 'syslog',
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+         ],
+ 
+         'errorlog' => [
+             'driver' => 'errorlog',
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+         ],
+ 
+         'null' => [
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index 12d803af..57b73b54 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -13,6 +13,6 @@ class DatabaseSeeder extends Seeder
+      */
+     public function run()
+     {
+-        // User::factory(10)->create();
++        // \App\Models\User::factory(10)->create();
+     }
+ }

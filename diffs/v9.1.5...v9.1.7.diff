@@ -1,0 +1,151 @@
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+new file mode 100644
+index 00000000..9870c819
+--- /dev/null
++++ b/.github/workflows/tests.yml
+@@ -0,0 +1,30 @@
++name: Tests
++
++on: [push, pull_request]
++
++jobs:
++  tests:
++    runs-on: ubuntu-latest
++
++    steps:
++      - name: Checkout code
++        uses: actions/checkout@v2
++
++      - name: Setup PHP
++        uses: shivammathur/setup-php@v2
++        with:
++          php-version: 8.1
++          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
++          coverage: none
++
++      - name: Install Composer dependencies
++        run: composer install --prefer-dist --no-interaction
++
++      - name: Copy environment file
++        run: cp .env.example .env
++
++      - name: Generate app key
++        run: php artisan key:generate
++
++      - name: Execute tests
++        run: vendor/bin/phpunit
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e39743c5..4ebc0713 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,20 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.4...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.6...9.x)
++
++## [v9.1.6](https://github.com/laravel/laravel/compare/v9.1.5...v9.1.6) - 2022-04-20
++
++### Changed
++
++- Move password lines into main translation file by @taylorotwell in https://github.com/laravel/laravel/commit/db0d052ece1c17c506633f4c9f5604b65e1cc3a4
++- Add missing maintenance to config by @ibrunotome in https://github.com/laravel/laravel/pull/5868
++
++## [v9.1.5](https://github.com/laravel/laravel/compare/v9.1.4...v9.1.5) - 2022-04-12
++
++### Changed
++
++- Rearrange route methods by @osbre in https://github.com/laravel/laravel/pull/5862
++- Add levels to handler by @taylorotwell in https://github.com/laravel/laravel/commit/a507e1424339633ce423729ec0ac49b99f0e57d7
+ 
+ ## [v9.1.4](https://github.com/laravel/laravel/compare/v9.1.3...v9.1.4) - 2022-03-29
+ 
+diff --git a/composer.json b/composer.json
+index 438f4487..164c94bd 100644
+--- a/composer.json
++++ b/composer.json
+@@ -7,7 +7,7 @@
+     "require": {
+         "php": "^8.0.2",
+         "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^9.2",
++        "laravel/framework": "^9.11",
+         "laravel/sanctum": "^2.14.1",
+         "laravel/tinker": "^2.7"
+     },
+diff --git a/config/app.php b/config/app.php
+index b02c7f4b..ef76a7ed 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -125,6 +125,24 @@ return [
+ 
+     'cipher' => 'AES-256-CBC',
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Maintenance Mode Driver
++    |--------------------------------------------------------------------------
++    |
++    | These configuration options determine the driver used to determine and
++    | manage Laravel's "maintenance mode" status. The "cache" driver will
++    | allow maintenance mode to be controlled across multiple machines.
++    |
++    | Supported drivers: "file", "cache"
++    |
++    */
++
++    'maintenance' => [
++        'driver' => 'file',
++        // 'store'  => 'redis',
++    ],
++
+     /*
+     |--------------------------------------------------------------------------
+     | Autoloaded Service Providers
+diff --git a/config/logging.php b/config/logging.php
+index fefe0885..5aa1dbb7 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -30,7 +30,10 @@ return [
+     |
+     */
+ 
+-    'deprecations' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
++    'deprecations' => [
++        'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
++        'trace' => false,
++    ],
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/lang/en.json b/lang/en.json
+deleted file mode 100644
+index 577680dd..00000000
+--- a/lang/en.json
++++ /dev/null
+@@ -1,7 +0,0 @@
+-{
+-    "The :attribute must contain at least one letter.": "The :attribute must contain at least one letter.",
+-    "The :attribute must contain at least one number.": "The :attribute must contain at least one number.",
+-    "The :attribute must contain at least one symbol.": "The :attribute must contain at least one symbol.",
+-    "The :attribute must contain at least one uppercase and one lowercase letter.": "The :attribute must contain at least one uppercase and one lowercase letter.",
+-    "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "The given :attribute has appeared in a data leak. Please choose a different :attribute."
+-}
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index 397f78e2..724b5ace 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -100,6 +100,13 @@ return [
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
++    'password' => [
++        'letters' => 'The :attribute must contain at least one letter.',
++        'mixed' => 'The :attribute must contain at least one uppercase and one lowercase letter.',
++        'numbers' => 'The :attribute must contain at least one number.',
++        'symbols' => 'The :attribute must contain at least one symbol.',
++        'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
++    ],
+     'present' => 'The :attribute field must be present.',
+     'prohibited' => 'The :attribute field is prohibited.',
+     'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',

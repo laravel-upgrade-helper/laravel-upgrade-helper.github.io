@@ -1,0 +1,316 @@
+diff --git a/.env.example b/.env.example
+index ac748637..7dc51e1f 100644
+--- a/.env.example
++++ b/.env.example
+@@ -5,6 +5,7 @@ APP_DEBUG=true
+ APP_URL=http://localhost
+ 
+ LOG_CHANNEL=stack
++LOG_LEVEL=debug
+ 
+ DB_CONNECTION=mysql
+ DB_HOST=127.0.0.1
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 401dc26d..f35fe546 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,57 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.0.1...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.3.0...master)
++
++
++## [v8.3.0 (2020-10-29)](https://github.com/laravel/laravel/compare/v8.2.0...v8.3.0)
++
++### Added
++- PHP 8 Support ([4c25cb9](https://github.com/laravel/laravel/commit/4c25cb953a0bbd4812bf92af71a13920998def1e))
++
++### Changed
++- Update Faker ([#5461](https://github.com/laravel/laravel/pull/5461))
++- Update minimum Laravel version ([86d4ec0](https://github.com/laravel/laravel/commit/86d4ec095f1681df736d53206780d79f5857907c))
++- Revert to per user API rate limit ([#5456](https://github.com/laravel/laravel/pull/5456), [bec982b](https://github.com/laravel/laravel/commit/bec982b0a3962c8a3e1f665e987360bb8c056298))
++
++### Fixed
++- Delete removed webpack flag ([#5460](https://github.com/laravel/laravel/pull/5460))
++
++
++## [v8.2.0 (2020-10-20)](https://github.com/laravel/laravel/compare/v8.1.0...v8.2.0)
++
++### Added
++- Added 'LOG_LEVEL' env variable in `.env.example` ([#5445](https://github.com/laravel/laravel/pull/5445))
++- Add 'multiple_of' translation ([#5449](https://github.com/laravel/laravel/pull/5449))
++
++
++## [v8.1.0 (2020-10-06)](https://github.com/laravel/laravel/compare/v8.0.3...v8.1.0)
++
++### Added
++- Added `LOG_LEVEL` env variable ([#5442](https://github.com/laravel/laravel/pull/5442))
++
++### Changed
++- Type hint the middleware Request ([#5438](https://github.com/laravel/laravel/pull/5438))
++
++
++## [v8.0.3 (2020-09-22)](https://github.com/laravel/laravel/compare/v8.0.2...v8.0.3)
++
++### Changed
++- Add comment ([a6ca577](https://github.com/laravel/laravel/commit/a6ca5778391b150102637459ac3b2a42d78d495b))
++
++
++## [v8.0.2 (2020-09-22)](https://github.com/laravel/laravel/compare/v8.0.1...v8.0.2)
++
++### Changed
++- Fully qualified user model in seeder ([#5406](https://github.com/laravel/laravel/pull/5406))
++- Update model path in `AuthServiceProvider`'s policies ([#5412](https://github.com/laravel/laravel/pull/5412))
++- Add commented code ([69d0c50](https://github.com/laravel/laravel/commit/69d0c504e3ff01e0fd219e02ebac9b1c22151c2a))
++
++### Fixed
++- Swap route order ([292a5b2](https://github.com/laravel/laravel/commit/292a5b26a9293d82ab5a7d0bb81bba02ea71758e))
++- Fix route when uncomment $namespace ([#5424](https://github.com/laravel/laravel/pull/5424))
++
++### Removed
++- Removed `$namespace` property ([b33852e](https://github.com/laravel/laravel/commit/b33852ecace72791f4bc28b8dd84c108166512bf))
+ 
+ 
+ ## [v8.0.1 (2020-09-09)](https://github.com/laravel/laravel/compare/v8.0.0...v8.0.1)
+@@ -14,6 +65,20 @@
+ Laravel 8 comes with a lot of changes to the base skeleton. Please consult the diff to see what's changed.
+ 
+ 
++## [v7.29.0 (2020-10-29)](https://github.com/laravel/laravel/compare/v7.28.0...v7.29.0)
++
++### Added
++- PHP 8 Support ([4c25cb9](https://github.com/laravel/laravel/commit/4c25cb953a0bbd4812bf92af71a13920998def1e))
++
++### Changed
++- Bump minimum PHP version ([#5452](https://github.com/laravel/laravel/pull/5452))
++- Update Faker ([#5461](https://github.com/laravel/laravel/pull/5461))
++- Update minimum Laravel version ([02ca853](https://github.com/laravel/laravel/commit/02ca853809a97f372a3c6dc535c566efff9f6571))
++
++### Fixed
++- Delete removed webpack flag ([#5460](https://github.com/laravel/laravel/pull/5460))
++
++
+ ## [v7.28.0 (2020-09-08)](https://github.com/laravel/laravel/compare/v7.25.0...v7.28.0)
+ 
+ Nothing specific.
+@@ -89,6 +154,41 @@ Nothing specific.
+ - Use `MAIL_MAILER` in test environment ([#5239](https://github.com/laravel/laravel/pull/5239))
+ 
+ 
++## [v6.19.0 (2020-10-29)](https://github.com/laravel/laravel/compare/v6.18.8...v6.19.0)
++
++### Added
++- PHP 8 Support ([4c25cb9](https://github.com/laravel/laravel/commit/4c25cb953a0bbd4812bf92af71a13920998def1e))
++
++### Changed
++- Bump minimum PHP version ([#5452](https://github.com/laravel/laravel/pull/5452))
++- Update Faker ([#5461](https://github.com/laravel/laravel/pull/5461))
++- Update minimum Laravel version ([b8d5825](https://github.com/laravel/laravel/commit/b8d582581a1067e3b1715cce477b22455acc3d36))
++
++### Fixed
++- Delete removed webpack flag ([#5460](https://github.com/laravel/laravel/pull/5460))
++
++
++## [v6.18.35 (2020-08-11)](https://github.com/laravel/laravel/compare/v6.18.8...v6.18.35)
++
++### Changed
++- Set framework version to `^6.18.35` ([#5369](https://github.com/laravel/laravel/pull/5369))
++- Bump lodash from 4.17.15 to 4.17.19 ([f465c51](https://github.com/laravel/laravel/commit/f465c511c009235fc7bfa06bfcb41294e60e9b42))
++- Disable webpack-dev-server host check ([#5288](https://github.com/laravel/laravel/pull/5288))
++
++
++## [v6.18.8 (2020-04-16)](https://github.com/laravel/laravel/compare/v6.18.3...v6.18.8)
++
++### Fixed
++- Add both endpoint and url env variables ([#5276](https://github.com/laravel/laravel/pull/5276))
++
++
++## [v6.18.3 (2020-03-24)](https://github.com/laravel/laravel/compare/v6.18.0...v6.18.3)
++
++### Fixed
++- Ensure that `app.debug` is a bool ([5ddbfb8](https://github.com/laravel/laravel/commit/5ddbfb845439fcd5a46c23530b8774421a931760))
++- Fix S3 endpoint url reference ([#5267](https://github.com/laravel/laravel/pull/5267))
++
++
+ ## [v6.18.0 (2020-02-24)](https://github.com/laravel/laravel/compare/v6.12.0...v6.18.0)
+ 
+ ### Changed
+diff --git a/README.md b/README.md
+index f3decb12..2f7ddcc6 100644
+--- a/README.md
++++ b/README.md
+@@ -2,9 +2,9 @@
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
+-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
+-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
++<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
++<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
++<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+ </p>
+ 
+ ## About Laravel
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+index fead421a..362b48b0 100644
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ b/app/Http/Middleware/RedirectIfAuthenticated.php
+@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
+ 
+ use App\Providers\RouteServiceProvider;
+ use Closure;
++use Illuminate\Http\Request;
+ use Illuminate\Support\Facades\Auth;
+ 
+ class RedirectIfAuthenticated
+@@ -16,7 +17,7 @@ class RedirectIfAuthenticated
+      * @param  string|null  ...$guards
+      * @return mixed
+      */
+-    public function handle($request, Closure $next, ...$guards)
++    public function handle(Request $request, Closure $next, ...$guards)
+     {
+         $guards = empty($guards) ? [null] : $guards;
+ 
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index a80fcf71..3bd3c81e 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -22,6 +22,8 @@ class RouteServiceProvider extends ServiceProvider
+     /**
+      * The controller namespace for the application.
+      *
++     * When present, controller route declarations will automatically be prefixed with this namespace.
++     *
+      * @var string|null
+      */
+     // protected $namespace = 'App\\Http\\Controllers';
+@@ -55,7 +57,7 @@ class RouteServiceProvider extends ServiceProvider
+     protected function configureRateLimiting()
+     {
+         RateLimiter::for('api', function (Request $request) {
+-            return Limit::perMinute(60);
++            return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+         });
+     }
+ }
+diff --git a/composer.json b/composer.json
+index 4dcf43f0..b74adc97 100644
+--- a/composer.json
++++ b/composer.json
+@@ -8,16 +8,16 @@
+     ],
+     "license": "MIT",
+     "require": {
+-        "php": "^7.3",
++        "php": "^7.3|^8.0",
+         "fideloper/proxy": "^4.2",
+         "fruitcake/laravel-cors": "^2.0",
+         "guzzlehttp/guzzle": "^7.0.1",
+-        "laravel/framework": "^8.0",
++        "laravel/framework": "^8.12",
+         "laravel/tinker": "^2.0"
+     },
+     "require-dev": {
+         "facade/ignition": "^2.3.6",
+-        "fzaninotto/faker": "^1.9.1",
++        "fakerphp/faker": "^1.9.1",
+         "mockery/mockery": "^1.3.1",
+         "nunomaduro/collision": "^5.0",
+         "phpunit/phpunit": "^9.3"
+diff --git a/config/logging.php b/config/logging.php
+index 088c204e..6aa77fe2 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -44,13 +44,13 @@ return [
+         'single' => [
+             'driver' => 'single',
+             'path' => storage_path('logs/laravel.log'),
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+         ],
+ 
+         'daily' => [
+             'driver' => 'daily',
+             'path' => storage_path('logs/laravel.log'),
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+             'days' => 14,
+         ],
+ 
+@@ -59,12 +59,12 @@ return [
+             'url' => env('LOG_SLACK_WEBHOOK_URL'),
+             'username' => 'Laravel Log',
+             'emoji' => ':boom:',
+-            'level' => 'critical',
++            'level' => env('LOG_LEVEL', 'critical'),
+         ],
+ 
+         'papertrail' => [
+             'driver' => 'monolog',
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+             'handler' => SyslogUdpHandler::class,
+             'handler_with' => [
+                 'host' => env('PAPERTRAIL_URL'),
+@@ -83,12 +83,12 @@ return [
+ 
+         'syslog' => [
+             'driver' => 'syslog',
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+         ],
+ 
+         'errorlog' => [
+             'driver' => 'errorlog',
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+         ],
+ 
+         'null' => [
+diff --git a/package.json b/package.json
+index 2503b3ff..2aefa8f8 100644
+--- a/package.json
++++ b/package.json
+@@ -2,12 +2,12 @@
+     "private": true,
+     "scripts": {
+         "dev": "npm run development",
+-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "watch": "npm run development -- --watch",
+         "watch-poll": "npm run watch -- --watch-poll",
+         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "prod": "npm run production",
+-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
++        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },
+     "devDependencies": {
+         "axios": "^0.19",
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index a65914f9..2e2820b0 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -90,6 +90,7 @@ return [
+         'string' => 'The :attribute must be at least :min characters.',
+         'array' => 'The :attribute must have at least :min items.',
+     ],
++    'multiple_of' => 'The :attribute must be a multiple of :value',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 58d14674..ed7110bb 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -123,7 +123,7 @@
+                     </div>
+ 
+                     <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
+-                        Build v{{ Illuminate\Foundation\Application::VERSION }}
++                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                     </div>
+                 </div>
+             </div>

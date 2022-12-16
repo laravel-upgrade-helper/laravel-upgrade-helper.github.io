@@ -1,0 +1,151 @@
+diff --git a/.env.example b/.env.example
+index 91ba58f0..cd06cc8d 100644
+--- a/.env.example
++++ b/.env.example
+@@ -32,3 +32,4 @@ MAIL_ENCRYPTION=null
+ PUSHER_APP_ID=
+ PUSHER_APP_KEY=
+ PUSHER_APP_SECRET=
++PUSHER_APP_CLUSTER=mt1
+diff --git a/composer.json b/composer.json
+index dcb4cd3b..0aa7120e 100644
+--- a/composer.json
++++ b/composer.json
+@@ -14,7 +14,8 @@
+         "filp/whoops": "~2.0",
+         "fzaninotto/faker": "~1.4",
+         "mockery/mockery": "~1.0",
+-        "phpunit/phpunit": "~6.0"
++        "phpunit/phpunit": "~6.0",
++        "symfony/thanks": "^1.0"
+     },
+     "autoload": {
+         "classmap": [
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index 5eecd2b2..3ca45eaa 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -36,7 +36,8 @@ return [
+             'secret' => env('PUSHER_APP_SECRET'),
+             'app_id' => env('PUSHER_APP_ID'),
+             'options' => [
+-                //
++                'cluster' => env('PUSHER_APP_CLUSTER'),
++                'encrypted' => true,
+             ],
+         ],
+ 
+diff --git a/config/queue.php b/config/queue.php
+index 4d83ebd0..8c06fcc5 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -50,11 +50,11 @@ return [
+ 
+         'sqs' => [
+             'driver' => 'sqs',
+-            'key' => 'your-public-key',
+-            'secret' => 'your-secret-key',
+-            'prefix' => 'https://sqs.us-east-1.amazonaws.com/your-account-id',
+-            'queue' => 'your-queue-name',
+-            'region' => 'us-east-1',
++            'key' => env('SQS_KEY', 'your-public-key'),
++            'secret' => env('SQS_SECRET', 'your-secret-key'),
++            'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
++            'queue' => env('SQS_QUEUE', 'your-queue-name'),
++            'region' => env('SQS_REGION', 'us-east-1'),
+         ],
+ 
+         'redis' => [
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 061d75a2..facf2337 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -14,12 +14,10 @@ use Faker\Generator as Faker;
+ */
+ 
+ $factory->define(App\User::class, function (Faker $faker) {
+-    static $password;
+-
+     return [
+         'name' => $faker->name,
+         'email' => $faker->unique()->safeEmail,
+-        'password' => $password ?: $password = bcrypt('secret'),
++        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+         'remember_token' => str_random(10),
+     ];
+ });
+diff --git a/public/.htaccess b/public/.htaccess
+index 4df299ca..b75525be 100644
+--- a/public/.htaccess
++++ b/public/.htaccess
+@@ -8,7 +8,7 @@
+     # Handle Authorization Header
+     RewriteCond %{HTTP:Authorization} .
+     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+-    
++
+     # Redirect Trailing Slashes If Not A Folder...
+     RewriteCond %{REQUEST_FILENAME} !-d
+     RewriteCond %{REQUEST_URI} (.+)/$
+diff --git a/readme.md b/readme.md
+index 1ae3d920..fdf46d82 100644
+--- a/readme.md
++++ b/readme.md
+@@ -29,7 +29,7 @@ If you're not in the mood to read, [Laracasts](https://laracasts.com) contains o
+ 
+ ## Laravel Sponsors
+ 
+-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
++We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+ 
+ - **[Vehikl](https://vehikl.com/)**
+ - **[Tighten Co.](https://tighten.co)**
+@@ -47,7 +47,7 @@ We would like to extend our thanks to the following sponsors for helping fund on
+ 
+ ## Contributing
+ 
+-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
++Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+ 
+ ## Security Vulnerabilities
+ 
+@@ -55,4 +55,4 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
+ 
+ ## License
+ 
+-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
++The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+diff --git a/resources/assets/js/bootstrap.js b/resources/assets/js/bootstrap.js
+index 8e0f04e5..bd954e90 100644
+--- a/resources/assets/js/bootstrap.js
++++ b/resources/assets/js/bootstrap.js
+@@ -49,5 +49,7 @@ if (token) {
+ 
+ // window.Echo = new Echo({
+ //     broadcaster: 'pusher',
+-//     key: 'your-pusher-key'
++//     key: 'your-pusher-key',
++//     cluster: 'mt1',
++//     encrypted: true
+ // });
+diff --git a/tests/CreatesApplication.php b/tests/CreatesApplication.php
+index 547152f6..df7814bb 100644
+--- a/tests/CreatesApplication.php
++++ b/tests/CreatesApplication.php
+@@ -2,6 +2,7 @@
+ 
+ namespace Tests;
+ 
++use Illuminate\Support\Facades\Hash;
+ use Illuminate\Contracts\Console\Kernel;
+ 
+ trait CreatesApplication
+@@ -17,6 +18,8 @@ trait CreatesApplication
+ 
+         $app->make(Kernel::class)->bootstrap();
+ 
++        Hash::setRounds(4);
++
+         return $app;
+     }
+ }

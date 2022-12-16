@@ -1,0 +1,559 @@
+diff --git a/.gitattributes b/.gitattributes
+index 967315dd..510d9961 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -1,5 +1,10 @@
+ * text=auto
+-*.css linguist-vendored
+-*.scss linguist-vendored
+-*.js linguist-vendored
++
++*.blade.php diff=html
++*.css diff=css
++*.html diff=html
++*.md diff=markdown
++*.php diff=php
++
++/.github export-ignore
+ CHANGELOG.md export-ignore
+diff --git a/.github/workflows/update-changelog.yml b/.github/workflows/update-changelog.yml
+new file mode 100644
+index 00000000..0200e2b9
+--- /dev/null
++++ b/.github/workflows/update-changelog.yml
+@@ -0,0 +1,29 @@
++name: "Update Changelog"
++
++on:
++  release:
++    types: [released]
++
++jobs:
++  update:
++    runs-on: ubuntu-latest
++
++    steps:
++      - name: Checkout code
++        uses: actions/checkout@v2
++        with:
++          ref: ${{ github.ref_name }}
++
++      - name: Update Changelog
++        uses: stefanzweifel/changelog-updater-action@v1
++        with:
++          latest-version: ${{ github.event.release.tag_name }}
++          release-notes: ${{ github.event.release.body }}
++          compare-url-target-revision: ${{ github.event.release.target_commitish }}
++
++      - name: Commit updated CHANGELOG
++        uses: stefanzweifel/git-auto-commit-action@v4
++        with:
++          branch: ${{ github.event.release.target_commitish }}
++          commit_message: Update CHANGELOG.md
++          file_pattern: CHANGELOG.md
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 089daeaa..0c859aa2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,49 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.5...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.10...8.x)
++
++
++## [v8.6.10 (2021-12-22)](https://github.com/laravel/laravel/compare/v8.6.9...v8.6.10)
++
++### Changed
++- Bump Laravel to v8.75 ([#5750](https://github.com/laravel/laravel/pull/5750))
++- Simplify the maintenance file call ([#5752](https://github.com/laravel/laravel/pull/5752))
++- Add enum translation ([#5753](https://github.com/laravel/laravel/pull/5753))
++- Add mac_address validation message ([#5754](https://github.com/laravel/laravel/pull/5754))
++
++### Removed
++- Delete web.config ([#5744](https://github.com/laravel/laravel/pull/5744))
++
++
++## [v8.6.9 (2021-12-07)](https://github.com/laravel/laravel/compare/v8.6.8...v8.6.9)
++
++### Changed
++- Improves generic types on the skeleton ([#5740](https://github.com/laravel/laravel/pull/5740))
++- Add option to set sendmail path ([#5741](https://github.com/laravel/laravel/pull/5741))
++
++### Fixed
++- Fix asset publishing if they were already published ([#5734](https://github.com/laravel/laravel/pull/5734))
++
++
++## [v8.6.8 (2021-11-23)](https://github.com/laravel/laravel/compare/v8.6.7...v8.6.8)
++
++### Changed
++- Order validation rules alphabetically ([#5728](https://github.com/laravel/laravel/pull/5728))
++- Removes the Console\Kernel::$commands property ([#5727](https://github.com/laravel/laravel/pull/5727))
++
++
++## [v8.6.7 (2021-11-16)](https://github.com/laravel/laravel/compare/v8.6.6...v8.6.7)
++
++### Changed
++- Added `declined` and `declined_if` validation rules ([#5723](https://github.com/laravel/laravel/pull/5723))
++- Should be identical with current sanctum config file ([#5725](https://github.com/laravel/laravel/pull/5725))
++
++
++## [v8.6.6 (2021-11-09)](https://github.com/laravel/laravel/compare/v8.6.5...v8.6.6)
++
++### Changed
++- Remove redundant `tap()` helper in `index.php` ([#5719](https://github.com/laravel/laravel/pull/5719))
++- Add `Js` facade ([399d435](https://github.com/laravel/laravel/commit/399d435c4f0b41a5b6d3e14894195f9196d36bb8))
+ 
+ 
+ ## [v8.6.5 (2021-10-26)](https://github.com/laravel/laravel/compare/v8.6.4...v8.6.5)
+diff --git a/README.md b/README.md
+index d400ec6d..1b6397ce 100644
+--- a/README.md
++++ b/README.md
+@@ -44,7 +44,6 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[DevSquad](https://devsquad.com)**
+ - **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+ - **[OP.GG](https://op.gg)**
+-- **[CMS Max](https://www.cmsmax.com/)**
+ - **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+ - **[Lendio](https://lendio.com)**
+ 
+diff --git a/app/Console/Kernel.php b/app/Console/Kernel.php
+index 69914e99..d8bc1d29 100644
+--- a/app/Console/Kernel.php
++++ b/app/Console/Kernel.php
+@@ -7,15 +7,6 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+ 
+ class Kernel extends ConsoleKernel
+ {
+-    /**
+-     * The Artisan commands provided by your application.
+-     *
+-     * @var array
+-     */
+-    protected $commands = [
+-        //
+-    ];
+-
+     /**
+      * Define the application's command schedule.
+      *
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 3ca4b345..8e7fbd1b 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -10,7 +10,7 @@ class Handler extends ExceptionHandler
+     /**
+      * A list of the exception types that are not reported.
+      *
+-     * @var string[]
++     * @var array<int, class-string<Throwable>>
+      */
+     protected $dontReport = [
+         //
+@@ -19,7 +19,7 @@ class Handler extends ExceptionHandler
+     /**
+      * A list of the inputs that are never flashed for validation exceptions.
+      *
+-     * @var string[]
++     * @var array<int, string>
+      */
+     protected $dontFlash = [
+         'current_password',
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 39910d78..d3722c2d 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -11,7 +11,7 @@ class Kernel extends HttpKernel
+      *
+      * These middleware are run during every request to your application.
+      *
+-     * @var array
++     * @var array<int, class-string|string>
+      */
+     protected $middleware = [
+         // \App\Http\Middleware\TrustHosts::class,
+@@ -26,7 +26,7 @@ class Kernel extends HttpKernel
+     /**
+      * The application's route middleware groups.
+      *
+-     * @var array
++     * @var array<string, array<int, class-string|string>>
+      */
+     protected $middlewareGroups = [
+         'web' => [
+@@ -51,7 +51,7 @@ class Kernel extends HttpKernel
+      *
+      * These middleware may be assigned to groups or used individually.
+      *
+-     * @var array
++     * @var array<string, class-string|string>
+      */
+     protected $routeMiddleware = [
+         'auth' => \App\Http\Middleware\Authenticate::class,
+diff --git a/app/Http/Middleware/EncryptCookies.php b/app/Http/Middleware/EncryptCookies.php
+index 033136ad..867695bd 100644
+--- a/app/Http/Middleware/EncryptCookies.php
++++ b/app/Http/Middleware/EncryptCookies.php
+@@ -9,7 +9,7 @@ class EncryptCookies extends Middleware
+     /**
+      * The names of the cookies that should not be encrypted.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $except = [
+         //
+diff --git a/app/Http/Middleware/PreventRequestsDuringMaintenance.php b/app/Http/Middleware/PreventRequestsDuringMaintenance.php
+index e4956d0b..74cbd9a9 100644
+--- a/app/Http/Middleware/PreventRequestsDuringMaintenance.php
++++ b/app/Http/Middleware/PreventRequestsDuringMaintenance.php
+@@ -9,7 +9,7 @@ class PreventRequestsDuringMaintenance extends Middleware
+     /**
+      * The URIs that should be reachable while maintenance mode is enabled.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $except = [
+         //
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+index 362b48b0..a2813a06 100644
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ b/app/Http/Middleware/RedirectIfAuthenticated.php
+@@ -13,9 +13,9 @@ class RedirectIfAuthenticated
+      * Handle an incoming request.
+      *
+      * @param  \Illuminate\Http\Request  $request
+-     * @param  \Closure  $next
++     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+      * @param  string|null  ...$guards
+-     * @return mixed
++     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+      */
+     public function handle(Request $request, Closure $next, ...$guards)
+     {
+diff --git a/app/Http/Middleware/TrimStrings.php b/app/Http/Middleware/TrimStrings.php
+index a8a252df..88cadcaa 100644
+--- a/app/Http/Middleware/TrimStrings.php
++++ b/app/Http/Middleware/TrimStrings.php
+@@ -9,7 +9,7 @@ class TrimStrings extends Middleware
+     /**
+      * The names of the attributes that should not be trimmed.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $except = [
+         'current_password',
+diff --git a/app/Http/Middleware/TrustHosts.php b/app/Http/Middleware/TrustHosts.php
+index b0550cfc..7186414c 100644
+--- a/app/Http/Middleware/TrustHosts.php
++++ b/app/Http/Middleware/TrustHosts.php
+@@ -9,7 +9,7 @@ class TrustHosts extends Middleware
+     /**
+      * Get the host patterns that should be trusted.
+      *
+-     * @return array
++     * @return array<int, string|null>
+      */
+     public function hosts()
+     {
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index 0c7d3b6b..3391630e 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -10,7 +10,7 @@ class TrustProxies extends Middleware
+     /**
+      * The trusted proxies for this application.
+      *
+-     * @var array|string|null
++     * @var array<int, string>|string|null
+      */
+     protected $proxies;
+ 
+diff --git a/app/Http/Middleware/VerifyCsrfToken.php b/app/Http/Middleware/VerifyCsrfToken.php
+index 0c13b854..9e865217 100644
+--- a/app/Http/Middleware/VerifyCsrfToken.php
++++ b/app/Http/Middleware/VerifyCsrfToken.php
+@@ -9,7 +9,7 @@ class VerifyCsrfToken extends Middleware
+     /**
+      * The URIs that should be excluded from CSRF verification.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $except = [
+         //
+diff --git a/app/Models/User.php b/app/Models/User.php
+index e23e0905..89963686 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -15,7 +15,7 @@ class User extends Authenticatable
+     /**
+      * The attributes that are mass assignable.
+      *
+-     * @var string[]
++     * @var array<int, string>
+      */
+     protected $fillable = [
+         'name',
+@@ -26,7 +26,7 @@ class User extends Authenticatable
+     /**
+      * The attributes that should be hidden for serialization.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $hidden = [
+         'password',
+@@ -36,7 +36,7 @@ class User extends Authenticatable
+     /**
+      * The attributes that should be cast.
+      *
+-     * @var array
++     * @var array<string, string>
+      */
+     protected $casts = [
+         'email_verified_at' => 'datetime',
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index ce744916..22b77e6e 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -10,7 +10,7 @@ class AuthServiceProvider extends ServiceProvider
+     /**
+      * The policy mappings for the application.
+      *
+-     * @var array
++     * @var array<class-string, class-string>
+      */
+     protected $policies = [
+         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+diff --git a/app/Providers/EventServiceProvider.php b/app/Providers/EventServiceProvider.php
+index a9f10a63..23499eb8 100644
+--- a/app/Providers/EventServiceProvider.php
++++ b/app/Providers/EventServiceProvider.php
+@@ -12,7 +12,7 @@ class EventServiceProvider extends ServiceProvider
+     /**
+      * The event listener mappings for the application.
+      *
+-     * @var array
++     * @var array<class-string, array<int, class-string>>
+      */
+     protected $listen = [
+         Registered::class => [
+diff --git a/composer.json b/composer.json
+index 61f49126..2b0c1155 100644
+--- a/composer.json
++++ b/composer.json
+@@ -8,7 +8,7 @@
+         "php": "^7.3|^8.0",
+         "fruitcake/laravel-cors": "^2.0",
+         "guzzlehttp/guzzle": "^7.0.1",
+-        "laravel/framework": "^8.65",
++        "laravel/framework": "^8.75",
+         "laravel/sanctum": "^2.11",
+         "laravel/tinker": "^2.5"
+     },
+@@ -38,7 +38,7 @@
+             "@php artisan package:discover --ansi"
+         ],
+         "post-update-cmd": [
+-            "@php artisan vendor:publish --tag=laravel-assets --ansi"
++            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+         ],
+         "post-root-package-install": [
+             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+diff --git a/config/app.php b/config/app.php
+index c9b8f5ae..a8d1a82e 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -209,6 +209,7 @@ return [
+         'Gate' => Illuminate\Support\Facades\Gate::class,
+         'Hash' => Illuminate\Support\Facades\Hash::class,
+         'Http' => Illuminate\Support\Facades\Http::class,
++        'Js' => Illuminate\Support\Js::class,
+         'Lang' => Illuminate\Support\Facades\Lang::class,
+         'Log' => Illuminate\Support\Facades\Log::class,
+         'Mail' => Illuminate\Support\Facades\Mail::class,
+diff --git a/config/auth.php b/config/auth.php
+index e29a3f7d..d8c6cee7 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -80,7 +80,7 @@ return [
+     | than one user table or model in the application and you want to have
+     | separate password reset settings based on the specific user types.
+     |
+-    | The expire time is the number of minutes that the reset token should be
++    | The expire time is the number of minutes that each reset token will be
+     | considered valid. This security feature keeps tokens short-lived so
+     | they have less time to be guessed. You may change this as needed.
+     |
+diff --git a/config/hashing.php b/config/hashing.php
+index 84257708..bcd3be4c 100644
+--- a/config/hashing.php
++++ b/config/hashing.php
+@@ -44,9 +44,9 @@ return [
+     */
+ 
+     'argon' => [
+-        'memory' => 1024,
+-        'threads' => 2,
+-        'time' => 2,
++        'memory' => 65536,
++        'threads' => 1,
++        'time' => 4,
+     ],
+ 
+ ];
+diff --git a/config/mail.php b/config/mail.php
+index e8607494..f96c6c7c 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -59,7 +59,7 @@ return [
+ 
+         'sendmail' => [
+             'transport' => 'sendmail',
+-            'path' => '/usr/sbin/sendmail -bs',
++            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -t -i'),
+         ],
+ 
+         'log' => [
+diff --git a/config/sanctum.php b/config/sanctum.php
+index 442726a7..9281c92d 100644
+--- a/config/sanctum.php
++++ b/config/sanctum.php
+@@ -19,6 +19,20 @@ return [
+         env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
+     ))),
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Sanctum Guards
++    |--------------------------------------------------------------------------
++    |
++    | This array contains the authentication guards that will be checked when
++    | Sanctum is trying to authenticate a request. If none of these guards
++    | are able to authenticate the request, Sanctum will use the bearer
++    | token that's present on an incoming request for authentication.
++    |
++    */
++
++    'guard' => ['web'],
++
+     /*
+     |--------------------------------------------------------------------------
+     | Expiration Minutes
+diff --git a/public/index.php b/public/index.php
+index 66ea93cd..1d69f3a2 100644
+--- a/public/index.php
++++ b/public/index.php
+@@ -16,8 +16,8 @@ define('LARAVEL_START', microtime(true));
+ |
+ */
+ 
+-if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
+-    require __DIR__.'/../storage/framework/maintenance.php';
++if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
++    require $maintenance;
+ }
+ 
+ /*
+@@ -48,8 +48,8 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
+ 
+ $kernel = $app->make(Kernel::class);
+ 
+-$response = tap($kernel->handle(
++$response = $kernel->handle(
+     $request = Request::capture()
+-))->send();
++)->send();
+ 
+ $kernel->terminate($request, $response);
+diff --git a/public/web.config b/public/web.config
+deleted file mode 100644
+index 323482f1..00000000
+--- a/public/web.config
++++ /dev/null
+@@ -1,28 +0,0 @@
+-<!--
+-    Rewrites requires Microsoft URL Rewrite Module for IIS
+-    Download: https://www.iis.net/downloads/microsoft/url-rewrite
+-    Debug Help: https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/using-failed-request-tracing-to-trace-rewrite-rules
+--->
+-<configuration>
+-  <system.webServer>
+-    <rewrite>
+-      <rules>
+-        <rule name="Imported Rule 1" stopProcessing="true">
+-          <match url="^(.*)/$" ignoreCase="false" />
+-          <conditions>
+-            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
+-          </conditions>
+-          <action type="Redirect" redirectType="Permanent" url="/{R:1}" />
+-        </rule>
+-        <rule name="Imported Rule 2" stopProcessing="true">
+-          <match url="^" ignoreCase="false" />
+-          <conditions>
+-            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
+-            <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" negate="true" />
+-          </conditions>
+-          <action type="Rewrite" url="index.php" />
+-        </rule>
+-      </rules>
+-    </rewrite>
+-  </system.webServer>
+-</configuration>
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 9fab4d92..783003cf 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -36,6 +36,8 @@ return [
+     'date' => 'The :attribute is not a valid date.',
+     'date_equals' => 'The :attribute must be a date equal to :date.',
+     'date_format' => 'The :attribute does not match the format :format.',
++    'declined' => 'The :attribute must be declined.',
++    'declined_if' => 'The :attribute must be declined when :other is :value.',
+     'different' => 'The :attribute and :other must be different.',
+     'digits' => 'The :attribute must be :digits digits.',
+     'digits_between' => 'The :attribute must be between :min and :max digits.',
+@@ -43,6 +45,7 @@ return [
+     'distinct' => 'The :attribute field has a duplicate value.',
+     'email' => 'The :attribute must be a valid email address.',
+     'ends_with' => 'The :attribute must end with one of the following: :values.',
++    'enum' => 'The selected :attribute is invalid.',
+     'exists' => 'The selected :attribute is invalid.',
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',
+@@ -78,6 +81,7 @@ return [
+         'string' => 'The :attribute must be less than or equal to :value characters.',
+         'array' => 'The :attribute must not have more than :value items.',
+     ],
++    'mac_address' => 'The :attribute must be a valid MAC address.',
+     'max' => [
+         'numeric' => 'The :attribute must not be greater than :max.',
+         'file' => 'The :attribute must not be greater than :max kilobytes.',
+@@ -98,18 +102,19 @@ return [
+     'numeric' => 'The :attribute must be a number.',
+     'password' => 'The password is incorrect.',
+     'present' => 'The :attribute field must be present.',
++    'prohibited' => 'The :attribute field is prohibited.',
++    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
++    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
++    'prohibits' => 'The :attribute field prohibits :other from being present.',
+     'regex' => 'The :attribute format is invalid.',
+     'required' => 'The :attribute field is required.',
++    'required_array_keys' => 'The :attribute field must contain entries for: :values.',
+     'required_if' => 'The :attribute field is required when :other is :value.',
+     'required_unless' => 'The :attribute field is required unless :other is in :values.',
+     'required_with' => 'The :attribute field is required when :values is present.',
+     'required_with_all' => 'The :attribute field is required when :values are present.',
+     'required_without' => 'The :attribute field is required when :values is not present.',
+     'required_without_all' => 'The :attribute field is required when none of :values are present.',
+-    'prohibited' => 'The :attribute field is prohibited.',
+-    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
+-    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
+-    'prohibits' => 'The :attribute field prohibits :other from being present.',
+     'same' => 'The :attribute and :other must match.',
+     'size' => [
+         'numeric' => 'The :attribute must be :size.',

@@ -1,0 +1,78 @@
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index b27e503d..695d2b38 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -1,6 +1,14 @@
+ name: Tests
+ 
+-on: [push, pull_request]
++on:
++  push:
++    branches:
++      - master
++      - '*.x'
++  pull_request:
++
++permissions:
++  contents: read
+ 
+ jobs:
+   tests:
+diff --git a/.github/workflows/update-changelog.yml b/.github/workflows/update-changelog.yml
+index 1625bda1..ebda6206 100644
+--- a/.github/workflows/update-changelog.yml
++++ b/.github/workflows/update-changelog.yml
+@@ -4,6 +4,10 @@ on:
+   release:
+     types: [released]
+ 
++permissions: {}
++
+ jobs:
+   update:
++    permissions:
++      contents: write
+     uses: laravel/.github/.github/workflows/update-changelog.yml@main
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 9b7c9744..18d99ed3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.6...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.7...9.x)
++
++## [v9.3.7](https://github.com/laravel/laravel/compare/v9.3.6...v9.3.7) - 2022-09-02
++
++### Changed
++
++- Make email unique by @martin-ro in https://github.com/laravel/laravel/pull/5978
+ 
+ ## [v9.3.6](https://github.com/laravel/laravel/compare/v9.3.5...v9.3.6) - 2022-08-29
+ 
+diff --git a/README.md b/README.md
+index 1378e855..bf0ddd92 100644
+--- a/README.md
++++ b/README.md
+@@ -25,6 +25,8 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
+ 
+ Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+ 
++You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
++
+ If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+ 
+ ## Laravel Sponsors
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index d5490e5c..5ea01fa7 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -120,6 +120,7 @@ return [
+     'required' => 'The :attribute field is required.',
+     'required_array_keys' => 'The :attribute field must contain entries for: :values.',
+     'required_if' => 'The :attribute field is required when :other is :value.',
++    'required_if_accepted' => 'The :attribute field is required when :other is accepted.',
+     'required_unless' => 'The :attribute field is required unless :other is in :values.',
+     'required_with' => 'The :attribute field is required when :values is present.',
+     'required_with_all' => 'The :attribute field is required when :values are present.',

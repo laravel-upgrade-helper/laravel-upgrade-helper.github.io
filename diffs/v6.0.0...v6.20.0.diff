@@ -1,0 +1,1033 @@
+diff --git a/.editorconfig b/.editorconfig
+index 6f313c6a..6537ca46 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -11,5 +11,5 @@ trim_trailing_whitespace = true
+ [*.md]
+ trim_trailing_whitespace = false
+ 
+-[*.yml]
++[*.{yml,yaml}]
+ indent_size = 2
+diff --git a/.env.example b/.env.example
+index 604b401f..53d48bf3 100644
+--- a/.env.example
++++ b/.env.example
+@@ -29,6 +29,8 @@ MAIL_PORT=2525
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+ MAIL_ENCRYPTION=null
++MAIL_FROM_ADDRESS=null
++MAIL_FROM_NAME="${APP_NAME}"
+ 
+ AWS_ACCESS_KEY_ID=
+ AWS_SECRET_ACCESS_KEY=
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ab862b15..870b7b4a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,13 +1,190 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v5.8.3...develop)
++## [Unreleased](https://github.com/laravel/laravel/compare/v6.20.0...6.x)
++
++
++## [v6.20.0 (2020-10-30)](https://github.com/laravel/laravel/compare/v6.19.0...v6.20.0)
++
++### Changed
++- Bumped several dependencies
++
++
++## [v6.19.0 (2020-10-29)](https://github.com/laravel/laravel/compare/v6.18.8...v6.19.0)
++
++### Added
++- PHP 8 Support ([4c25cb9](https://github.com/laravel/laravel/commit/4c25cb953a0bbd4812bf92af71a13920998def1e))
++
++### Changed
++- Bump minimum PHP version ([#5452](https://github.com/laravel/laravel/pull/5452))
++- Update Faker ([#5461](https://github.com/laravel/laravel/pull/5461))
++- Update minimum Laravel version ([b8d5825](https://github.com/laravel/laravel/commit/b8d582581a1067e3b1715cce477b22455acc3d36))
++
++### Fixed
++- Delete removed webpack flag ([#5460](https://github.com/laravel/laravel/pull/5460))
++
++
++## [v6.18.35 (2020-08-11)](https://github.com/laravel/laravel/compare/v6.18.8...v6.18.35)
++
++### Changed
++- Set framework version to `^6.18.35` ([#5369](https://github.com/laravel/laravel/pull/5369))
++- Bump lodash from 4.17.15 to 4.17.19 ([f465c51](https://github.com/laravel/laravel/commit/f465c511c009235fc7bfa06bfcb41294e60e9b42))
++- Disable webpack-dev-server host check ([#5288](https://github.com/laravel/laravel/pull/5288))
++
++
++## [v6.18.8 (2020-04-16)](https://github.com/laravel/laravel/compare/v6.18.3...v6.18.8)
++
++### Fixed
++- Add both endpoint and url env variables ([#5276](https://github.com/laravel/laravel/pull/5276))
++
++
++## [v6.18.3 (2020-03-24)](https://github.com/laravel/laravel/compare/v6.18.0...v6.18.3)
++
++### Fixed
++- Ensure that `app.debug` is a bool ([5ddbfb8](https://github.com/laravel/laravel/commit/5ddbfb845439fcd5a46c23530b8774421a931760))
++- Fix S3 endpoint url reference ([#5267](https://github.com/laravel/laravel/pull/5267))
++
++
++## [v6.18.0 (2020-02-24)](https://github.com/laravel/laravel/compare/v6.12.0...v6.18.0)
++
++### Changed
++- Update cross-env and resolve-url-loader to the latest ([#5210](https://github.com/laravel/laravel/pull/5210), [#5216](https://github.com/laravel/laravel/pull/5216))
++- Bump fzaninotto/faker version to support PHP 7.4 ([#5218](https://github.com/laravel/laravel/pull/5218))
++- Remove redundant default attributes from `phpunit.xml` ([#5233](https://github.com/laravel/laravel/pull/5233))
++
++
++## [v6.12.0 (2020-01-14)](https://github.com/laravel/laravel/compare/v6.8.0...v6.12.0)
++
++### Added
++- Allow configurable emergency logger ([#5179](https://github.com/laravel/laravel/pull/5179))
++- Add `MAIL_FROM_ADDRESS` & `MAIL_FROM_NAME` to `.env` file ([#5180](https://github.com/laravel/laravel/pull/5180))
++- Add missing full stop for some validation messages ([#5205](https://github.com/laravel/laravel/pull/5205))
++
++### Changed
++- Use class name to be consistent with web middleware ([140d4d9](https://github.com/laravel/laravel/commit/140d4d9b0a4581cec046875361e87c2981b3f9fe))
++- Use file session driver again ([#5201](https://github.com/laravel/laravel/pull/5201))
++
++### Fixed
++- Correct exception handler doc ([#5187](https://github.com/laravel/laravel/pull/5187))
++- Fix types consistency in Redis database config ([#5191](https://github.com/laravel/laravel/pull/5191))
++
++### Security
++- Update laravel mix and sass loader ([#5203](https://github.com/laravel/laravel/pull/5203))
++
++
++## [v6.8.0 (2019-12-16)](https://github.com/laravel/laravel/compare/v6.5.2...v6.8.0)
++
++### Added
++- Add "none" to supported same site options in session config ([#5174](https://github.com/laravel/laravel/pull/5174))
++
++### Changed
++- Rename `encrypted` to `forceTLS` for Pusher ([#5159](https://github.com/laravel/laravel/pull/5159))
++- Use laravel/tinker v2 ([#5161](https://github.com/laravel/laravel/pull/5161))
++- Use PHPUnit TestCase and in-memory DB ([#5169](https://github.com/laravel/laravel/pull/5169))
++- DRY up path to /home ([#5173](https://github.com/laravel/laravel/pull/5173))
++- Change some default settings ([f48e2d5](https://github.com/laravel/laravel/commit/f48e2d500cb53cc4a09dfcb40beb0abafd79de4f))
++
++### Fixed
++- Consistent alphabetical order ([#5167](https://github.com/laravel/laravel/pull/5167))
++- Update redirectTo return type PHPDoc ([#5175](https://github.com/laravel/laravel/pull/5175))
++
++
++## [v6.5.2 (2019-11-21)](https://github.com/laravel/laravel/compare/v6.4.0...v6.5.2)
++
++### Changed
++- Update .styleci.yml ([bfd4b1e](https://github.com/laravel/laravel/commit/bfd4b1e92f7c6b4e6b74cfdde995a5afad648d96))
++
++
++## [v6.4.0 (2019-10-21)](https://github.com/laravel/laravel/compare/v6.2.0...v6.4.0)
++
++### Changed
++- Add xml schema to phpunit ([#5139](https://github.com/laravel/laravel/pull/5139))
++
++### Fixed
++- Fixes required version of the framework within `composer.json` ([#5130](https://github.com/laravel/laravel/pull/5130))
++- Security fix: Waiting before retrying password reset ([ace38c1](https://github.com/laravel/laravel/commit/ace38c133f3d8088fc7477f56b9db6fdc0098d06), [ba2f2ab](https://github.com/laravel/laravel/commit/ba2f2abe830f5d03c52fd9c88411859cf863abd6), [953b488](https://github.com/laravel/laravel/commit/953b488b8bb681d4d6e12227645c7c1b7ac26935))
++
++
++## [v6.2.0 (2019-10-08)](https://github.com/laravel/laravel/compare/v6.0.2...v6.2.0)
++
++### Added
++- Add 'null' logging channel ([#5106](https://github.com/laravel/laravel/pull/5106))
++- Add Password confirmation ([#5129](https://github.com/laravel/laravel/pull/5129), [d1f7a5a](https://github.com/laravel/laravel/commit/d1f7a5a886039e28a434905447865ca952032284), [9bc23ee](https://github.com/laravel/laravel/commit/9bc23ee468e1fb3e5b4efccdc35f1fcee5a8b6bc))
++
++### Removed
++- Remove testing bootstrap extension ([#5107](https://github.com/laravel/laravel/pull/5107))
++
++### Fixed
++- Revert "[6.x] According to PHP Bug 78516 Argon2 requires at least 8KB" ([#5102]()https://github.com/laravel/laravel/pull/5102)
++
++
++## [v6.0.2 (2019-09-10)](https://github.com/laravel/laravel/compare/v6.0.1...v6.0.2)
++
++### Changed
++- Order imports alphabetically ([79fb6af](https://github.com/laravel/laravel/commit/79fb6af96ebf0325cef15c3132157fdf75f6fd6c), [#5100](https://github.com/laravel/laravel/pull/5100))
++
++### Fixed
++- Delete cached config file before running tests ([#5091](https://github.com/laravel/laravel/pull/5091))
++- Update Argon memory ([#5097](https://github.com/laravel/laravel/pull/5097))
++
++
++## [v6.0.1 (2019-08-27)](https://github.com/laravel/laravel/compare/v6.0.0...v6.0.1)
++
++### Added
++- Add Ignition ([41ee35d](https://github.com/laravel/laravel/commit/41ee35d01f4e57c47e924400db8a805089664141), [13ab419](https://github.com/laravel/laravel/commit/13ab419d59e2f0d2e188a5157a3cc17f72db595c))
++
++
++## [v6.0.0 (2019-08-27)](https://github.com/laravel/laravel/compare/v5.8.35...v6.0.0)
++
++### Added
++- Add ThrottleRequests to the priority array ([#5057](https://github.com/laravel/laravel/pull/5057))
++- Add PHPUnit bootstrap file to allow execution of console commands before a test run ([#5050](https://github.com/laravel/laravel/pull/5050), [8f2a278](https://github.com/laravel/laravel/commit/8f2a27868f7f9e0a0bbf69fa83d06b8a7a1b7894))
++- Add failed jobs table ([b7d2b48](https://github.com/laravel/laravel/commit/b7d2b48b75afbaa34c82688cb30be2f00a7d8c57), [#5082](https://github.com/laravel/laravel/pull/5082))
++- Add new failed driver option ([e6becd2](https://github.com/laravel/laravel/commit/e6becd2ca35a650f51ed49525935e8ca65671152))
+ 
+ ### Changed
+ - Require PHP 7.2 ([25cf4c4](https://github.com/laravel/laravel/commit/25cf4c492308b9c5148f9522d8dd8f8f18819f50))
+ - Encourage to use PHPUnit 8 ([0582a20](https://github.com/laravel/laravel/commit/0582a20adddc0e6bd16ca05eeae93e6412924ad6))
++- Use phpredis as default Redis client ([#5085](https://github.com/laravel/laravel/pull/5085))
++
++### Removed
++- Remove services deleted from core ([#5019](https://github.com/laravel/laravel/pull/5019))
++- Remove dumpserver ([f053116](https://github.com/laravel/laravel/commit/f053116c5680e77c3a6c73afd193984a17ea482d))
++- Remove UI scaffolding ([fc39b07](https://github.com/laravel/laravel/commit/fc39b073f3f61a22f1b48329e294ebb881700dbe))
++- Remove deprecated language line ([#5074](https://github.com/laravel/laravel/pull/5074))
++
++
++## [v5.8.35 (2019-09-09)](https://github.com/laravel/laravel/compare/v5.8.17...v5.8.35)
++
++### Added
++- Add DYNAMODB_ENDPOINT to the cache config ([#5034](https://github.com/laravel/laravel/pull/5034))
++- Added support for new redis URL property ([#5037](https://github.com/laravel/laravel/pull/5037))
++- Add .env.backup to gitignore ([#5046](https://github.com/laravel/laravel/pull/5046))
++- Using environment variable to set redis prefix ([#5062](https://github.com/laravel/laravel/pull/5062))
++
++### Changed
++- Update axios package ([#5038](https://github.com/laravel/laravel/pull/5038))
++- Use generic default db config ([6f3d68f](https://github.com/laravel/laravel/commit/6f3d68f67f3dab0e0d853719696ede8dfd9cc4e1))
++- Update deprecated pusher option ([#5058](https://github.com/laravel/laravel/pull/5058))
++- Move TrustProxies to highest priority ([#5055](https://github.com/laravel/laravel/pull/5055))
++
++### Fixed
++- Fixed lodash version ([#5060](https://github.com/laravel/laravel/pull/5060))
++
++### Removed
++- Remove Stripe config settings ([#5075](https://github.com/laravel/laravel/pull/5075), [bb43372](https://github.com/laravel/laravel/commit/bb433725483803a27f21d3b21317072610bc3e9c))
++- Remove unnecessary X-CSRF-TOKEN header from our Axios instance ([#5083](https://github.com/laravel/laravel/pull/5083))
++
++
++## [v5.8.17 (2019-05-14)](https://github.com/laravel/laravel/compare/v5.8.16...v5.8.17)
++
++### Added
++- Add ends_with validation message ([#5020](https://github.com/laravel/laravel/pull/5020))
++
++### Fixed
++- Fix type hint for case of trusting all proxies (string) ([#5025](https://github.com/laravel/laravel/pull/5025))
+ 
+ 
+-## [v5.8.16 (2019-05-07)](https://github.com/laravel/laravel/compare/v5.8.3...master)
++## [v5.8.16 (2019-05-07)](https://github.com/laravel/laravel/compare/v5.8.3...v5.8.16)
+ 
+ ### Added
+ - Add IDE type-hint to UserFactory ([#4990](https://github.com/laravel/laravel/pull/4990))
+diff --git a/readme.md b/README.md
+similarity index 86%
+rename from readme.md
+rename to README.md
+index f95b2ec9..4e2cadb6 100644
+--- a/readme.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
++<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+@@ -58,15 +58,21 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - [Understand.io](https://www.understand.io/)
+ - [Abdel Elrafa](https://abdelelrafa.com)
+ - [Hyper Host](https://hyper.host)
++- [Appoly](https://www.appoly.co.uk)
++- [OP.GG](https://op.gg)
+ 
+ ## Contributing
+ 
+ Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+ 
++## Code of Conduct
++
++In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
++
+ ## Security Vulnerabilities
+ 
+ If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+ 
+ ## License
+ 
+-The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
++The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 043cad6b..364621e4 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -31,6 +31,8 @@ class Handler extends ExceptionHandler
+      *
+      * @param  \Exception  $exception
+      * @return void
++     *
++     * @throws \Exception
+      */
+     public function report(Exception $exception)
+     {
+@@ -42,7 +44,9 @@ class Handler extends ExceptionHandler
+      *
+      * @param  \Illuminate\Http\Request  $request
+      * @param  \Exception  $exception
+-     * @return \Illuminate\Http\Response
++     * @return \Symfony\Component\HttpFoundation\Response
++     *
++     * @throws \Exception
+      */
+     public function render($request, Exception $exception)
+     {
+diff --git a/app/Http/Controllers/Auth/ConfirmPasswordController.php b/app/Http/Controllers/Auth/ConfirmPasswordController.php
+new file mode 100644
+index 00000000..138c1f08
+--- /dev/null
++++ b/app/Http/Controllers/Auth/ConfirmPasswordController.php
+@@ -0,0 +1,40 @@
++<?php
++
++namespace App\Http\Controllers\Auth;
++
++use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
++use Illuminate\Foundation\Auth\ConfirmsPasswords;
++
++class ConfirmPasswordController extends Controller
++{
++    /*
++    |--------------------------------------------------------------------------
++    | Confirm Password Controller
++    |--------------------------------------------------------------------------
++    |
++    | This controller is responsible for handling password confirmations and
++    | uses a simple trait to include the behavior. You're free to explore
++    | this trait and override any functions that require customization.
++    |
++    */
++
++    use ConfirmsPasswords;
++
++    /**
++     * Where to redirect users when the intended url fails.
++     *
++     * @var string
++     */
++    protected $redirectTo = RouteServiceProvider::HOME;
++
++    /**
++     * Create a new controller instance.
++     *
++     * @return void
++     */
++    public function __construct()
++    {
++        $this->middleware('auth');
++    }
++}
+diff --git a/app/Http/Controllers/Auth/ForgotPasswordController.php b/app/Http/Controllers/Auth/ForgotPasswordController.php
+index 6a247fef..465c39cc 100644
+--- a/app/Http/Controllers/Auth/ForgotPasswordController.php
++++ b/app/Http/Controllers/Auth/ForgotPasswordController.php
+@@ -19,14 +19,4 @@ class ForgotPasswordController extends Controller
+     */
+ 
+     use SendsPasswordResetEmails;
+-
+-    /**
+-     * Create a new controller instance.
+-     *
+-     * @return void
+-     */
+-    public function __construct()
+-    {
+-        $this->middleware('guest');
+-    }
+ }
+diff --git a/app/Http/Controllers/Auth/LoginController.php b/app/Http/Controllers/Auth/LoginController.php
+index b2ea669a..18a0d088 100644
+--- a/app/Http/Controllers/Auth/LoginController.php
++++ b/app/Http/Controllers/Auth/LoginController.php
+@@ -3,6 +3,7 @@
+ namespace App\Http\Controllers\Auth;
+ 
+ use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
+ use Illuminate\Foundation\Auth\AuthenticatesUsers;
+ 
+ class LoginController extends Controller
+@@ -25,7 +26,7 @@ class LoginController extends Controller
+      *
+      * @var string
+      */
+-    protected $redirectTo = '/home';
++    protected $redirectTo = RouteServiceProvider::HOME;
+ 
+     /**
+      * Create a new controller instance.
+diff --git a/app/Http/Controllers/Auth/RegisterController.php b/app/Http/Controllers/Auth/RegisterController.php
+index 85b9057a..c6a6de67 100644
+--- a/app/Http/Controllers/Auth/RegisterController.php
++++ b/app/Http/Controllers/Auth/RegisterController.php
+@@ -2,11 +2,12 @@
+ 
+ namespace App\Http\Controllers\Auth;
+ 
+-use App\User;
+ use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
++use App\User;
++use Illuminate\Foundation\Auth\RegistersUsers;
+ use Illuminate\Support\Facades\Hash;
+ use Illuminate\Support\Facades\Validator;
+-use Illuminate\Foundation\Auth\RegistersUsers;
+ 
+ class RegisterController extends Controller
+ {
+@@ -28,7 +29,7 @@ class RegisterController extends Controller
+      *
+      * @var string
+      */
+-    protected $redirectTo = '/home';
++    protected $redirectTo = RouteServiceProvider::HOME;
+ 
+     /**
+      * Create a new controller instance.
+diff --git a/app/Http/Controllers/Auth/ResetPasswordController.php b/app/Http/Controllers/Auth/ResetPasswordController.php
+index cf726eec..b1726a36 100644
+--- a/app/Http/Controllers/Auth/ResetPasswordController.php
++++ b/app/Http/Controllers/Auth/ResetPasswordController.php
+@@ -3,6 +3,7 @@
+ namespace App\Http\Controllers\Auth;
+ 
+ use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
+ use Illuminate\Foundation\Auth\ResetsPasswords;
+ 
+ class ResetPasswordController extends Controller
+@@ -25,15 +26,5 @@ class ResetPasswordController extends Controller
+      *
+      * @var string
+      */
+-    protected $redirectTo = '/home';
+-
+-    /**
+-     * Create a new controller instance.
+-     *
+-     * @return void
+-     */
+-    public function __construct()
+-    {
+-        $this->middleware('guest');
+-    }
++    protected $redirectTo = RouteServiceProvider::HOME;
+ }
+diff --git a/app/Http/Controllers/Auth/VerificationController.php b/app/Http/Controllers/Auth/VerificationController.php
+index 23a43a84..5e749af8 100644
+--- a/app/Http/Controllers/Auth/VerificationController.php
++++ b/app/Http/Controllers/Auth/VerificationController.php
+@@ -3,6 +3,7 @@
+ namespace App\Http\Controllers\Auth;
+ 
+ use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
+ use Illuminate\Foundation\Auth\VerifiesEmails;
+ 
+ class VerificationController extends Controller
+@@ -25,7 +26,7 @@ class VerificationController extends Controller
+      *
+      * @var string
+      */
+-    protected $redirectTo = '/home';
++    protected $redirectTo = RouteServiceProvider::HOME;
+ 
+     /**
+      * Create a new controller instance.
+diff --git a/app/Http/Controllers/Controller.php b/app/Http/Controllers/Controller.php
+index 03e02a23..a0a2a8a3 100644
+--- a/app/Http/Controllers/Controller.php
++++ b/app/Http/Controllers/Controller.php
+@@ -2,10 +2,10 @@
+ 
+ namespace App\Http\Controllers;
+ 
++use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+ use Illuminate\Foundation\Bus\DispatchesJobs;
+-use Illuminate\Routing\Controller as BaseController;
+ use Illuminate\Foundation\Validation\ValidatesRequests;
+-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
++use Illuminate\Routing\Controller as BaseController;
+ 
+ class Controller extends BaseController
+ {
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 0d7d8c15..deb65e86 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -39,7 +39,7 @@ class Kernel extends HttpKernel
+ 
+         'api' => [
+             'throttle:60,1',
+-            'bindings',
++            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+         ],
+     ];
+ 
+@@ -57,6 +57,7 @@ class Kernel extends HttpKernel
+         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
++        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+diff --git a/app/Http/Middleware/Authenticate.php b/app/Http/Middleware/Authenticate.php
+index a4be5c58..704089a7 100644
+--- a/app/Http/Middleware/Authenticate.php
++++ b/app/Http/Middleware/Authenticate.php
+@@ -10,7 +10,7 @@ class Authenticate extends Middleware
+      * Get the path the user should be redirected to when they are not authenticated.
+      *
+      * @param  \Illuminate\Http\Request  $request
+-     * @return string
++     * @return string|null
+      */
+     protected function redirectTo($request)
+     {
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+index e4cec9c8..2395ddcc 100644
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ b/app/Http/Middleware/RedirectIfAuthenticated.php
+@@ -2,6 +2,7 @@
+ 
+ namespace App\Http\Middleware;
+ 
++use App\Providers\RouteServiceProvider;
+ use Closure;
+ use Illuminate\Support\Facades\Auth;
+ 
+@@ -18,7 +19,7 @@ class RedirectIfAuthenticated
+     public function handle($request, Closure $next, $guard = null)
+     {
+         if (Auth::guard($guard)->check()) {
+-            return redirect('/home');
++            return redirect(RouteServiceProvider::HOME);
+         }
+ 
+         return $next($request);
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index 12fdf8b5..ee5b5958 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -2,8 +2,8 @@
+ 
+ namespace App\Http\Middleware;
+ 
+-use Illuminate\Http\Request;
+ use Fideloper\Proxy\TrustProxies as Middleware;
++use Illuminate\Http\Request;
+ 
+ class TrustProxies extends Middleware
+ {
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index 0acc984b..30490683 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -2,8 +2,8 @@
+ 
+ namespace App\Providers;
+ 
+-use Illuminate\Support\Facades\Gate;
+ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
++use Illuminate\Support\Facades\Gate;
+ 
+ class AuthServiceProvider extends ServiceProvider
+ {
+diff --git a/app/Providers/BroadcastServiceProvider.php b/app/Providers/BroadcastServiceProvider.php
+index 352cce44..395c518b 100644
+--- a/app/Providers/BroadcastServiceProvider.php
++++ b/app/Providers/BroadcastServiceProvider.php
+@@ -2,8 +2,8 @@
+ 
+ namespace App\Providers;
+ 
+-use Illuminate\Support\ServiceProvider;
+ use Illuminate\Support\Facades\Broadcast;
++use Illuminate\Support\ServiceProvider;
+ 
+ class BroadcastServiceProvider extends ServiceProvider
+ {
+diff --git a/app/Providers/EventServiceProvider.php b/app/Providers/EventServiceProvider.php
+index 6c64e52b..723a290d 100644
+--- a/app/Providers/EventServiceProvider.php
++++ b/app/Providers/EventServiceProvider.php
+@@ -2,10 +2,10 @@
+ 
+ namespace App\Providers;
+ 
+-use Illuminate\Support\Facades\Event;
+ use Illuminate\Auth\Events\Registered;
+ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
++use Illuminate\Support\Facades\Event;
+ 
+ class EventServiceProvider extends ServiceProvider
+ {
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 5ea48d39..527eee34 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -2,8 +2,8 @@
+ 
+ namespace App\Providers;
+ 
+-use Illuminate\Support\Facades\Route;
+ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
++use Illuminate\Support\Facades\Route;
+ 
+ class RouteServiceProvider extends ServiceProvider
+ {
+@@ -16,6 +16,13 @@ class RouteServiceProvider extends ServiceProvider
+      */
+     protected $namespace = 'App\Http\Controllers';
+ 
++    /**
++     * The path to the "home" route for your application.
++     *
++     * @var string
++     */
++    public const HOME = '/home';
++
+     /**
+      * Define your route model bindings, pattern filters, etc.
+      *
+diff --git a/app/User.php b/app/User.php
+index faa03c3b..e79dab7f 100644
+--- a/app/User.php
++++ b/app/User.php
+@@ -2,9 +2,9 @@
+ 
+ namespace App;
+ 
+-use Illuminate\Notifications\Notifiable;
+ use Illuminate\Contracts\Auth\MustVerifyEmail;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
++use Illuminate\Notifications\Notifiable;
+ 
+ class User extends Authenticatable
+ {
+diff --git a/composer.json b/composer.json
+index 88385dbc..bc57c5ba 100644
+--- a/composer.json
++++ b/composer.json
+@@ -8,17 +8,17 @@
+     ],
+     "license": "MIT",
+     "require": {
+-        "php": "^7.2",
+-        "fideloper/proxy": "^4.0",
+-        "laravel/framework": "^6.0",
+-        "laravel/tinker": "^1.0"
++        "php": "^7.2.5|^8.0",
++        "fideloper/proxy": "^4.4",
++        "laravel/framework": "^6.20",
++        "laravel/tinker": "^2.5"
+     },
+     "require-dev": {
+-        "filp/whoops": "^2.0",
+-        "fzaninotto/faker": "^1.4",
++        "facade/ignition": "^1.16.4",
++        "fakerphp/faker": "^1.9.1",
+         "mockery/mockery": "^1.0",
+         "nunomaduro/collision": "^3.0",
+-        "phpunit/phpunit": "^8.0"
++        "phpunit/phpunit": "^8.5.8|^9.3.3"
+     },
+     "config": {
+         "optimize-autoloader": true,
+diff --git a/config/app.php b/config/app.php
+index c9960cde..9e5b36cf 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -39,7 +39,7 @@ return [
+     |
+     */
+ 
+-    'debug' => env('APP_DEBUG', false),
++    'debug' => (bool) env('APP_DEBUG', false),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/config/auth.php b/config/auth.php
+index 897dc826..aaf982bc 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -97,7 +97,21 @@ return [
+             'provider' => 'users',
+             'table' => 'password_resets',
+             'expire' => 60,
++            'throttle' => 60,
+         ],
+     ],
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Password Confirmation Timeout
++    |--------------------------------------------------------------------------
++    |
++    | Here you may define the amount of seconds before a password confirmation
++    | times out and the user is prompted to re-enter their password via the
++    | confirmation screen. By default, the timeout lasts for three hours.
++    |
++    */
++
++    'password_timeout' => 10800,
++
+ ];
+diff --git a/config/database.php b/config/database.php
+index 199382d0..b42d9b30 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -130,16 +130,16 @@ return [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+             'password' => env('REDIS_PASSWORD', null),
+-            'port' => env('REDIS_PORT', 6379),
+-            'database' => env('REDIS_DB', 0),
++            'port' => env('REDIS_PORT', '6379'),
++            'database' => env('REDIS_DB', '0'),
+         ],
+ 
+         'cache' => [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+             'password' => env('REDIS_PASSWORD', null),
+-            'port' => env('REDIS_PORT', 6379),
+-            'database' => env('REDIS_CACHE_DB', 1),
++            'port' => env('REDIS_PORT', '6379'),
++            'database' => env('REDIS_CACHE_DB', '1'),
+         ],
+ 
+     ],
+diff --git a/config/filesystems.php b/config/filesystems.php
+index ec6a7cec..220c0104 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -62,6 +62,7 @@ return [
+             'region' => env('AWS_DEFAULT_REGION'),
+             'bucket' => env('AWS_BUCKET'),
+             'url' => env('AWS_URL'),
++            'endpoint' => env('AWS_ENDPOINT'),
+         ],
+ 
+     ],
+diff --git a/config/logging.php b/config/logging.php
+index d09cd7d2..088c204e 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -1,5 +1,6 @@
+ <?php
+ 
++use Monolog\Handler\NullHandler;
+ use Monolog\Handler\StreamHandler;
+ use Monolog\Handler\SyslogUdpHandler;
+ 
+@@ -36,7 +37,7 @@ return [
+     'channels' => [
+         'stack' => [
+             'driver' => 'stack',
+-            'channels' => ['daily'],
++            'channels' => ['single'],
+             'ignore_exceptions' => false,
+         ],
+ 
+@@ -89,6 +90,15 @@ return [
+             'driver' => 'errorlog',
+             'level' => 'debug',
+         ],
++
++        'null' => [
++            'driver' => 'monolog',
++            'handler' => NullHandler::class,
++        ],
++
++        'emergency' => [
++            'path' => storage_path('logs/laravel.log'),
++        ],
+     ],
+ 
+ ];
+diff --git a/config/session.php b/config/session.php
+index fbb9b4d7..857ebc3e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -190,7 +190,7 @@ return [
+     | take place, and can be used to mitigate CSRF attacks. By default, we
+     | do not enable this as other CSRF protection services are in place.
+     |
+-    | Supported: "lax", "strict"
++    | Supported: "lax", "strict", "none"
+     |
+     */
+ 
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 5e516cee..741edead 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -1,9 +1,10 @@
+ <?php
+ 
+ /** @var \Illuminate\Database\Eloquent\Factory $factory */
++
+ use App\User;
+-use Illuminate\Support\Str;
+ use Faker\Generator as Faker;
++use Illuminate\Support\Str;
+ 
+ /*
+ |--------------------------------------------------------------------------
+diff --git a/database/migrations/2014_10_12_000000_create_users_table.php b/database/migrations/2014_10_12_000000_create_users_table.php
+index 4a3ba472..a91e1d3c 100644
+--- a/database/migrations/2014_10_12_000000_create_users_table.php
++++ b/database/migrations/2014_10_12_000000_create_users_table.php
+@@ -1,8 +1,8 @@
+ <?php
+ 
+-use Illuminate\Support\Facades\Schema;
+-use Illuminate\Database\Schema\Blueprint;
+ use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
+ 
+ class CreateUsersTable extends Migration
+ {
+diff --git a/database/migrations/2014_10_12_100000_create_password_resets_table.php b/database/migrations/2014_10_12_100000_create_password_resets_table.php
+index 0d5cb845..0ee0a36a 100644
+--- a/database/migrations/2014_10_12_100000_create_password_resets_table.php
++++ b/database/migrations/2014_10_12_100000_create_password_resets_table.php
+@@ -1,8 +1,8 @@
+ <?php
+ 
+-use Illuminate\Support\Facades\Schema;
+-use Illuminate\Database\Schema\Blueprint;
+ use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
+ 
+ class CreatePasswordResetsTable extends Migration
+ {
+diff --git a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php b/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+index d432dff0..389bdf76 100644
+--- a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
++++ b/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+@@ -1,8 +1,8 @@
+ <?php
+ 
+-use Illuminate\Support\Facades\Schema;
+-use Illuminate\Database\Schema\Blueprint;
+ use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
+ 
+ class CreateFailedJobsTable extends Migration
+ {
+diff --git a/package.json b/package.json
+index 9fcb8ee8..557bd215 100644
+--- a/package.json
++++ b/package.json
+@@ -2,20 +2,20 @@
+     "private": true,
+     "scripts": {
+         "dev": "npm run development",
+-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "watch": "npm run development -- --watch",
+         "watch-poll": "npm run watch -- --watch-poll",
+-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "prod": "npm run production",
+-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
++        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },
+     "devDependencies": {
+         "axios": "^0.19",
+-        "cross-env": "^5.1",
+-        "laravel-mix": "^4.0.7",
+-        "lodash": "^4.17.13",
+-        "resolve-url-loader": "^2.3.1",
++        "cross-env": "^7.0",
++        "laravel-mix": "^5.0.1",
++        "lodash": "^4.17.19",
++        "resolve-url-loader": "^3.1.0",
+         "sass": "^1.15.2",
+-        "sass-loader": "^7.1.0"
++        "sass-loader": "^8.0.0"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index d562be80..0f4389f9 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -1,13 +1,8 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<phpunit backupGlobals="false"
+-         backupStaticAttributes="false"
+-         bootstrap="tests/bootstrap.php"
+-         colors="true"
+-         convertErrorsToExceptions="true"
+-         convertNoticesToExceptions="true"
+-         convertWarningsToExceptions="true"
+-         processIsolation="false"
+-         stopOnFailure="false">
++<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
++         bootstrap="vendor/autoload.php"
++         colors="true">
+     <testsuites>
+         <testsuite name="Unit">
+             <directory suffix="Test.php">./tests/Unit</directory>
+@@ -26,13 +21,10 @@
+         <server name="APP_ENV" value="testing"/>
+         <server name="BCRYPT_ROUNDS" value="4"/>
+         <server name="CACHE_DRIVER" value="array"/>
++        <server name="DB_CONNECTION" value="sqlite"/>
++        <server name="DB_DATABASE" value=":memory:"/>
+         <server name="MAIL_DRIVER" value="array"/>
+         <server name="QUEUE_CONNECTION" value="sync"/>
+         <server name="SESSION_DRIVER" value="array"/>
+-        <server name="APP_CONFIG_CACHE" value="bootstrap/cache/config.phpunit.php"/>
+-        <server name="APP_SERVICES_CACHE" value="bootstrap/cache/services.phpunit.php"/>
+-        <server name="APP_PACKAGES_CACHE" value="bootstrap/cache/packages.phpunit.php"/>
+-        <server name="APP_ROUTES_CACHE" value="bootstrap/cache/routes.phpunit.php"/>
+-        <server name="APP_EVENTS_CACHE" value="bootstrap/cache/events.phpunit.php"/>
+     </php>
+ </phpunit>
+diff --git a/resources/js/bootstrap.js b/resources/js/bootstrap.js
+index d11586d6..69225776 100644
+--- a/resources/js/bootstrap.js
++++ b/resources/js/bootstrap.js
+@@ -24,5 +24,5 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+ //     broadcaster: 'pusher',
+ //     key: process.env.MIX_PUSHER_APP_KEY,
+ //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+-//     encrypted: true
++//     forceTLS: true
+ // });
+diff --git a/resources/lang/en/passwords.php b/resources/lang/en/passwords.php
+index f3b01a46..724de4b9 100644
+--- a/resources/lang/en/passwords.php
++++ b/resources/lang/en/passwords.php
+@@ -15,6 +15,7 @@ return [
+ 
+     'reset' => 'Your password has been reset!',
+     'sent' => 'We have e-mailed your password reset link!',
++    'throttled' => 'Please wait before retrying.',
+     'token' => 'This password reset token is invalid.',
+     'user' => "We can't find a user with that e-mail address.",
+ 
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index e1d879f3..a65914f9 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -40,7 +40,7 @@ return [
+     'dimensions' => 'The :attribute has invalid image dimensions.',
+     'distinct' => 'The :attribute field has a duplicate value.',
+     'email' => 'The :attribute must be a valid email address.',
+-    'ends_with' => 'The :attribute must end with one of the following: :values',
++    'ends_with' => 'The :attribute must end with one of the following: :values.',
+     'exists' => 'The selected :attribute is invalid.',
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',
+@@ -93,6 +93,7 @@ return [
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
++    'password' => 'The password is incorrect.',
+     'present' => 'The :attribute field must be present.',
+     'regex' => 'The :attribute format is invalid.',
+     'required' => 'The :attribute field is required.',
+@@ -109,7 +110,7 @@ return [
+         'string' => 'The :attribute must be :size characters.',
+         'array' => 'The :attribute must contain :size items.',
+     ],
+-    'starts_with' => 'The :attribute must start with one of the following: :values',
++    'starts_with' => 'The :attribute must start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',
+     'timezone' => 'The :attribute must be a valid zone.',
+     'unique' => 'The :attribute has already been taken.',
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 3fb48cc0..7bc33725 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -7,7 +7,7 @@
+         <title>Laravel</title>
+ 
+         <!-- Fonts -->
+-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
++        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
+ 
+         <!-- Styles -->
+         <style>
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index f31e495c..cdb51119 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -2,8 +2,8 @@
+ 
+ namespace Tests\Feature;
+ 
+-use Tests\TestCase;
+ use Illuminate\Foundation\Testing\RefreshDatabase;
++use Tests\TestCase;
+ 
+ class ExampleTest extends TestCase
+ {
+diff --git a/tests/Unit/ExampleTest.php b/tests/Unit/ExampleTest.php
+index e9fe19c6..358cfc88 100644
+--- a/tests/Unit/ExampleTest.php
++++ b/tests/Unit/ExampleTest.php
+@@ -2,8 +2,7 @@
+ 
+ namespace Tests\Unit;
+ 
+-use Tests\TestCase;
+-use Illuminate\Foundation\Testing\RefreshDatabase;
++use PHPUnit\Framework\TestCase;
+ 
+ class ExampleTest extends TestCase
+ {
+diff --git a/tests/bootstrap.php b/tests/bootstrap.php
+deleted file mode 100644
+index 5041c5a6..00000000
+--- a/tests/bootstrap.php
++++ /dev/null
+@@ -1,29 +0,0 @@
+-<?php
+-
+-use Illuminate\Contracts\Console\Kernel;
+-
+-require_once __DIR__.'/../vendor/autoload.php';
+-
+-/*
+-|--------------------------------------------------------------------------
+-| Bootstrap The Test Environment
+-|--------------------------------------------------------------------------
+-|
+-| You may specify console commands that execute once before your test is
+-| run. You are free to add your own additional commands or logic into
+-| this file as needed in order to help your test suite run quicker.
+-|
+-*/
+-
+-$commands = [
+-    'config:cache',
+-    'event:cache',
+-];
+-
+-$app = require __DIR__.'/../bootstrap/app.php';
+-
+-$console = tap($app->make(Kernel::class))->bootstrap();
+-
+-foreach ($commands as $command) {
+-    $console->call($command);
+-}

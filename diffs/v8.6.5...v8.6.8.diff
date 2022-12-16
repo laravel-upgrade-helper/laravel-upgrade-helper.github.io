@@ -1,0 +1,152 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 089daeaa..01a0a9c5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,27 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.5...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.7...8.x)
++
++
++## [v8.6.8 (2021-11-23)](https://github.com/laravel/laravel/compare/v8.6.7...v8.6.8)
++
++### Changed
++- Order validation rules alphabetically ([#5728](https://github.com/laravel/laravel/pull/5728))
++- Removes the Console\Kernel::$commands property ([#5727](https://github.com/laravel/laravel/pull/5727))
++
++
++## [v8.6.7 (2021-11-16)](https://github.com/laravel/laravel/compare/v8.6.6...v8.6.7)
++
++### Changed
++- Added `declined` and `declined_if` validation rules ([#5723](https://github.com/laravel/laravel/pull/5723))
++- Should be identical with current sanctum config file ([#5725](https://github.com/laravel/laravel/pull/5725))
++
++
++## [v8.6.6 (2021-11-09)](https://github.com/laravel/laravel/compare/v8.6.5...v8.6.6)
++
++### Changed
++- Remove redundant `tap()` helper in `index.php` ([#5719](https://github.com/laravel/laravel/pull/5719))
++- Add `Js` facade ([399d435](https://github.com/laravel/laravel/commit/399d435c4f0b41a5b6d3e14894195f9196d36bb8))
+ 
+ 
+ ## [v8.6.5 (2021-10-26)](https://github.com/laravel/laravel/compare/v8.6.4...v8.6.5)
+diff --git a/README.md b/README.md
+index d400ec6d..8878ec11 100644
+--- a/README.md
++++ b/README.md
+@@ -47,6 +47,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[CMS Max](https://www.cmsmax.com/)**
+ - **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+ - **[Lendio](https://lendio.com)**
++- **[Romega Software](https://romegasoftware.com)**
+ 
+ ## Contributing
+ 
+diff --git a/app/Console/Kernel.php b/app/Console/Kernel.php
+index 69914e99..d8bc1d29 100644
+--- a/app/Console/Kernel.php
++++ b/app/Console/Kernel.php
+@@ -7,15 +7,6 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+ 
+ class Kernel extends ConsoleKernel
+ {
+-    /**
+-     * The Artisan commands provided by your application.
+-     *
+-     * @var array
+-     */
+-    protected $commands = [
+-        //
+-    ];
+-
+     /**
+      * Define the application's command schedule.
+      *
+diff --git a/config/app.php b/config/app.php
+index c9b8f5ae..a8d1a82e 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -209,6 +209,7 @@ return [
+         'Gate' => Illuminate\Support\Facades\Gate::class,
+         'Hash' => Illuminate\Support\Facades\Hash::class,
+         'Http' => Illuminate\Support\Facades\Http::class,
++        'Js' => Illuminate\Support\Js::class,
+         'Lang' => Illuminate\Support\Facades\Lang::class,
+         'Log' => Illuminate\Support\Facades\Log::class,
+         'Mail' => Illuminate\Support\Facades\Mail::class,
+diff --git a/config/sanctum.php b/config/sanctum.php
+index 442726a7..9281c92d 100644
+--- a/config/sanctum.php
++++ b/config/sanctum.php
+@@ -19,6 +19,20 @@ return [
+         env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
+     ))),
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Sanctum Guards
++    |--------------------------------------------------------------------------
++    |
++    | This array contains the authentication guards that will be checked when
++    | Sanctum is trying to authenticate a request. If none of these guards
++    | are able to authenticate the request, Sanctum will use the bearer
++    | token that's present on an incoming request for authentication.
++    |
++    */
++
++    'guard' => ['web'],
++
+     /*
+     |--------------------------------------------------------------------------
+     | Expiration Minutes
+diff --git a/public/index.php b/public/index.php
+index 66ea93cd..002ee24d 100644
+--- a/public/index.php
++++ b/public/index.php
+@@ -48,8 +48,8 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
+ 
+ $kernel = $app->make(Kernel::class);
+ 
+-$response = tap($kernel->handle(
++$response = $kernel->handle(
+     $request = Request::capture()
+-))->send();
++)->send();
+ 
+ $kernel->terminate($request, $response);
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 9fab4d92..ba42c8d9 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -36,6 +36,8 @@ return [
+     'date' => 'The :attribute is not a valid date.',
+     'date_equals' => 'The :attribute must be a date equal to :date.',
+     'date_format' => 'The :attribute does not match the format :format.',
++    'declined' => 'The :attribute must be declined.',
++    'declined_if' => 'The :attribute must be declined when :other is :value.',
+     'different' => 'The :attribute and :other must be different.',
+     'digits' => 'The :attribute must be :digits digits.',
+     'digits_between' => 'The :attribute must be between :min and :max digits.',
+@@ -98,6 +100,10 @@ return [
+     'numeric' => 'The :attribute must be a number.',
+     'password' => 'The password is incorrect.',
+     'present' => 'The :attribute field must be present.',
++    'prohibited' => 'The :attribute field is prohibited.',
++    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
++    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
++    'prohibits' => 'The :attribute field prohibits :other from being present.',
+     'regex' => 'The :attribute format is invalid.',
+     'required' => 'The :attribute field is required.',
+     'required_if' => 'The :attribute field is required when :other is :value.',
+@@ -106,10 +112,6 @@ return [
+     'required_with_all' => 'The :attribute field is required when :values are present.',
+     'required_without' => 'The :attribute field is required when :values is not present.',
+     'required_without_all' => 'The :attribute field is required when none of :values are present.',
+-    'prohibited' => 'The :attribute field is prohibited.',
+-    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
+-    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
+-    'prohibits' => 'The :attribute field prohibits :other from being present.',
+     'same' => 'The :attribute and :other must match.',
+     'size' => [
+         'numeric' => 'The :attribute must be :size.',

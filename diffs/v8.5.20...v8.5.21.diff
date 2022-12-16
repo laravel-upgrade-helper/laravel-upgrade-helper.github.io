@@ -1,0 +1,46 @@
+diff --git a/.editorconfig b/.editorconfig
+index 6537ca46..1671c9b9 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -13,3 +13,6 @@ trim_trailing_whitespace = false
+ 
+ [*.{yml,yaml}]
+ indent_size = 2
++
++[docker-compose.yml]
++indent_size = 4
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c3efa307..472b2a18 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.20...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.21...8.x)
++
++
++## [v8.5.21 (2021-07-06)](https://github.com/laravel/laravel/compare/v8.5.20...v8.5.21)
++
++### Changed
++- Update validation language files ([#5637](https://github.com/laravel/laravel/pull/5637), [#5636](https://github.com/laravel/laravel/pull/5636))
+ 
+ 
+ ## [v8.5.20 (2021-06-15)](https://github.com/laravel/laravel/compare/v8.5.19...v8.5.20)
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 7a15f437..6100f808 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -117,10 +117,10 @@ return [
+     ],
+     'starts_with' => 'The :attribute must start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',
+-    'timezone' => 'The :attribute must be a valid zone.',
++    'timezone' => 'The :attribute must be a valid timezone.',
+     'unique' => 'The :attribute has already been taken.',
+     'uploaded' => 'The :attribute failed to upload.',
+-    'url' => 'The :attribute format is invalid.',
++    'url' => 'The :attribute must be a valid URL.',
+     'uuid' => 'The :attribute must be a valid UUID.',
+ 
+     /*

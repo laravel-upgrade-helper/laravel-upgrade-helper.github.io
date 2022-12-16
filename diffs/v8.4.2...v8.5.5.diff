@@ -1,0 +1,235 @@
+diff --git a/.env.example b/.env.example
+index 7dc51e1f..c3ed2a91 100644
+--- a/.env.example
++++ b/.env.example
+@@ -20,13 +20,15 @@ QUEUE_CONNECTION=sync
+ SESSION_DRIVER=file
+ SESSION_LIFETIME=120
+ 
++MEMCACHED_HOST=127.0.0.1
++
+ REDIS_HOST=127.0.0.1
+ REDIS_PASSWORD=null
+ REDIS_PORT=6379
+ 
+ MAIL_MAILER=smtp
+-MAIL_HOST=smtp.mailtrap.io
+-MAIL_PORT=2525
++MAIL_HOST=mailhog
++MAIL_PORT=1025
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+ MAIL_ENCRYPTION=null
+diff --git a/.gitignore b/.gitignore
+index 0f7df0fb..0ae59f0b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,6 +6,7 @@
+ .env
+ .env.backup
+ .phpunit.result.cache
++docker-compose.override.yml
+ Homestead.json
+ Homestead.yaml
+ npm-debug.log
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index fa89039e..195610f2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,25 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.4.2...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.4.4...8.x)
++
++
++## [v8.4.4 (2020-12-01)](https://github.com/laravel/laravel/compare/v8.4.3...v8.4.4)
++
++### Changed
++- Comment out `Redis` facade by default ([612d166](https://github.com/laravel/laravel/commit/612d16600419265566d01a19c852ddb13b5e9f4b))
++- Uncomment `TrustHosts` middleware to enable it by default ([#5477](https://github.com/laravel/laravel/pull/5477))
++
++### Removed
++- Remove cloud option ([82213fb](https://github.com/laravel/laravel/commit/82213fbf40fc4ec687781d0b93ff60a7de536913))
++
++
++## [v8.4.3 (2020-11-24)](https://github.com/laravel/laravel/compare/v8.4.2...v8.4.3)
++
++### Added
++- Add ably entry ([5182e9c](https://github.com/laravel/laravel/commit/5182e9c6de805e025fb4cfad63c210c3197002ab))
++
++### Fixed
++- Add missing null cache driver in `config/cache.php` ([#5472](https://github.com/laravel/laravel/pull/5472))
+ 
+ 
+ ## [v8.4.2 (2020-11-17)](https://github.com/laravel/laravel/compare/v8.4.1...v8.4.2)
+diff --git a/README.md b/README.md
+index 2f7ddcc6..e1dcd2e1 100644
+--- a/README.md
++++ b/README.md
+@@ -42,6 +42,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[Many](https://www.many.co.uk)**
+ - **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+ - **[DevSquad](https://devsquad.com)**
++- **[Curotec](https://www.curotec.com/)**
+ - **[OP.GG](https://op.gg)**
+ 
+ ## Contributing
+diff --git a/composer.json b/composer.json
+index 9d06962b..2bc6bbe7 100644
+--- a/composer.json
++++ b/composer.json
+@@ -18,6 +18,7 @@
+     "require-dev": {
+         "facade/ignition": "^2.5",
+         "fakerphp/faker": "^1.9.1",
++        "laravel/sail": "^0.0.5",
+         "mockery/mockery": "^1.4.2",
+         "nunomaduro/collision": "^5.0",
+         "phpunit/phpunit": "^9.3.3"
+diff --git a/config/app.php b/config/app.php
+index 8409e00e..2a2f0ebe 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -215,7 +215,7 @@ return [
+         'Password' => Illuminate\Support\Facades\Password::class,
+         'Queue' => Illuminate\Support\Facades\Queue::class,
+         'Redirect' => Illuminate\Support\Facades\Redirect::class,
+-        'Redis' => Illuminate\Support\Facades\Redis::class,
++        // 'Redis' => Illuminate\Support\Facades\Redis::class,
+         'Request' => Illuminate\Support\Facades\Request::class,
+         'Response' => Illuminate\Support\Facades\Response::class,
+         'Route' => Illuminate\Support\Facades\Route::class,
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index 3bba1103..ef208598 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -41,6 +41,11 @@ return [
+             ],
+         ],
+ 
++        'ably' => [
++            'driver' => 'ably',
++            'key' => env('ABLY_KEY'),
++        ],
++
+         'redis' => [
+             'driver' => 'redis',
+             'connection' => 'default',
+diff --git a/config/cache.php b/config/cache.php
+index 7d5976ed..9473acc9 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -27,7 +27,7 @@ return [
+     | same cache driver to group types of items stored in your caches.
+     |
+     | Supported drivers: "apc", "array", "database", "file",
+-    |            "memcached", "redis", "dynamodb"
++    |            "memcached", "redis", "dynamodb", "null"
+     |
+     */
+ 
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 94c81126..10c9d9be 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -15,19 +15,6 @@ return [
+ 
+     'default' => env('FILESYSTEM_DRIVER', 'local'),
+ 
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Default Cloud Filesystem Disk
+-    |--------------------------------------------------------------------------
+-    |
+-    | Many applications store files both locally and in the cloud. For this
+-    | reason, you may specify a default "cloud" driver here. This driver
+-    | will be bound as the Cloud disk implementation in the container.
+-    |
+-    */
+-
+-    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
+-
+     /*
+     |--------------------------------------------------------------------------
+     | Filesystem Disks
+diff --git a/docker-compose.yml b/docker-compose.yml
+new file mode 100644
+index 00000000..5ba8e628
+--- /dev/null
++++ b/docker-compose.yml
+@@ -0,0 +1,74 @@
++# For more information: https://laravel.com/docs/sail
++version: '3'
++services:
++    laravel.test:
++        build:
++            context: ./vendor/laravel/sail/runtimes/8.0
++            dockerfile: Dockerfile
++            args:
++                WWWGROUP: '${WWWGROUP}'
++        image: sail-8.0/app
++        ports:
++            - '${APP_PORT:-80}:80'
++        environment:
++            WWWUSER: '${WWWUSER}'
++            LARAVEL_SAIL: 1
++        volumes:
++            - '.:/var/www/html'
++        networks:
++            - sail
++        depends_on:
++            - mysql
++            - redis
++            # - selenium
++    # selenium:
++    #     image: 'selenium/standalone-chrome'
++    #     volumes:
++    #         - '/dev/shm:/dev/shm'
++    #     networks:
++    #         - sail
++    #     depends_on:
++    #         - laravel.test
++    mysql:
++        image: 'mysql:8.0'
++        ports:
++            - '${FORWARD_DB_PORT:-3306}:3306'
++        environment:
++            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
++            MYSQL_DATABASE: '${DB_DATABASE}'
++            MYSQL_USER: '${DB_USERNAME}'
++            MYSQL_PASSWORD: '${DB_PASSWORD}'
++            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
++        volumes:
++            - 'sailmysql:/var/lib/mysql'
++        networks:
++            - sail
++    redis:
++        image: 'redis:alpine'
++        ports:
++            - '${FORWARD_REDIS_PORT:-6379}:6379'
++        volumes:
++            - 'sailredis:/data'
++        networks:
++            - sail
++    # memcached:
++    #     image: 'memcached:alpine'
++    #     ports:
++    #         - '11211:11211'
++    #     networks:
++    #         - sail
++    mailhog:
++        image: 'mailhog/mailhog:latest'
++        ports:
++            - 1025:1025
++            - 8025:8025
++        networks:
++            - sail
++networks:
++    sail:
++        driver: bridge
++volumes:
++    sailmysql:
++        driver: local
++    sailredis:
++        driver: local

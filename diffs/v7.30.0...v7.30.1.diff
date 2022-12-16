@@ -1,0 +1,31 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index aa2eeeb2..a47391e4 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v7.30.0...7.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v7.30.1...7.x)
++
++
++## [v7.30.1 (2020-10-31)](https://github.com/laravel/laravel/compare/v7.30.0...v7.30.1)
++
++### Fixed
++- Lower Ignition constraint to allow PHP 7.2 installs ([ff35597](https://github.com/laravel/laravel/commit/ff355973475624d9dc9ed5fd157a0ba0bef84710))
+ 
+ 
+ ## [v7.30.0 (2020-10-30)](https://github.com/laravel/laravel/compare/v7.29.0...v7.30.0)
+diff --git a/composer.json b/composer.json
+index 9e0a4aff..8ff636e0 100644
+--- a/composer.json
++++ b/composer.json
+@@ -16,7 +16,7 @@
+         "laravel/tinker": "^2.5"
+     },
+     "require-dev": {
+-        "facade/ignition": "^2.5",
++        "facade/ignition": "^2.0",
+         "fakerphp/faker": "^1.9.1",
+         "mockery/mockery": "^1.3.1",
+         "nunomaduro/collision": "^4.3",

@@ -1,0 +1,166 @@
+diff --git a/.github/workflows/pull-requests.yml b/.github/workflows/pull-requests.yml
+new file mode 100644
+index 00000000..156b46eb
+--- /dev/null
++++ b/.github/workflows/pull-requests.yml
+@@ -0,0 +1,13 @@
++name: Pull Requests
++
++on:
++  pull_request_target:
++    types:
++      - opened
++
++permissions:
++  pull-requests: write
++
++jobs:
++  uneditable:
++    uses: laravel/.github/.github/workflows/pull-requests.yml@main
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1b9a70cb..0e15e5de 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,28 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.2...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.5...9.x)
++
++## [v9.1.5](https://github.com/laravel/laravel/compare/v9.1.4...v9.1.5) - 2022-04-12
++
++### Changed
++
++- Rearrange route methods by @osbre in https://github.com/laravel/laravel/pull/5862
++- Add levels to handler by @taylorotwell in https://github.com/laravel/laravel/commit/a507e1424339633ce423729ec0ac49b99f0e57d7
++
++## [v9.1.4](https://github.com/laravel/laravel/compare/v9.1.3...v9.1.4) - 2022-03-29
++
++### Changed
++
++- Add encryption configuration by @taylorotwell in https://github.com/laravel/laravel/commit/f7b982ebdf7bd31eda9f05f901bd92ed32446156
++
++## [v9.1.3](https://github.com/laravel/laravel/compare/v9.1.2...v9.1.3) - 2022-03-29
++
++### Changed
++
++- Add an example to the class aliases by @nshiro in https://github.com/laravel/laravel/pull/5846
++- Add username in config to use with phpredis + ACL by @neoteknic in https://github.com/laravel/laravel/pull/5851
++- Remove "password" from validation lang by @mnastalski in https://github.com/laravel/laravel/pull/5856
++- Make authenticate session a route middleware by @taylorotwell in https://github.com/laravel/laravel/pull/5842
+ 
+ ## [v9.1.2](https://github.com/laravel/laravel/compare/v9.1.1...v9.1.2) - 2022-03-15
+ 
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 8e7fbd1b..008b40fa 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -7,10 +7,19 @@ use Throwable;
+ 
+ class Handler extends ExceptionHandler
+ {
++    /**
++     * A list of exception types with their corresponding custom log levels.
++     *
++     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
++     */
++    protected $levels = [
++        //
++    ];
++
+     /**
+      * A list of the exception types that are not reported.
+      *
+-     * @var array<int, class-string<Throwable>>
++     * @var array<int, class-string<\Throwable>>
+      */
+     protected $dontReport = [
+         //
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 0ba5291f..f34af12a 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -29,8 +29,8 @@ class RouteServiceProvider extends ServiceProvider
+         $this->configureRateLimiting();
+ 
+         $this->routes(function () {
+-            Route::prefix('api')
+-                ->middleware('api')
++            Route::middleware('api')
++                ->prefix('api')
+                 ->group(base_path('routes/api.php'));
+ 
+             Route::middleware('web')
+diff --git a/config/app.php b/config/app.php
+index b02c7f4b..ef76a7ed 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -125,6 +125,24 @@ return [
+ 
+     'cipher' => 'AES-256-CBC',
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Maintenance Mode Driver
++    |--------------------------------------------------------------------------
++    |
++    | These configuration options determine the driver used to determine and
++    | manage Laravel's "maintenance mode" status. The "cache" driver will
++    | allow maintenance mode to be controlled across multiple machines.
++    |
++    | Supported drivers: "file", "cache"
++    |
++    */
++
++    'maintenance' => [
++        'driver' => 'file',
++        // 'store'  => 'redis',
++    ],
++
+     /*
+     |--------------------------------------------------------------------------
+     | Autoloaded Service Providers
+diff --git a/config/database.php b/config/database.php
+index 2a42e193..137ad18c 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -89,6 +89,8 @@ return [
+             'charset' => 'utf8',
+             'prefix' => '',
+             'prefix_indexes' => true,
++            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
++            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+         ],
+ 
+     ],
+diff --git a/lang/en.json b/lang/en.json
+deleted file mode 100644
+index 577680dd..00000000
+--- a/lang/en.json
++++ /dev/null
+@@ -1,7 +0,0 @@
+-{
+-    "The :attribute must contain at least one letter.": "The :attribute must contain at least one letter.",
+-    "The :attribute must contain at least one number.": "The :attribute must contain at least one number.",
+-    "The :attribute must contain at least one symbol.": "The :attribute must contain at least one symbol.",
+-    "The :attribute must contain at least one uppercase and one lowercase letter.": "The :attribute must contain at least one uppercase and one lowercase letter.",
+-    "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "The given :attribute has appeared in a data leak. Please choose a different :attribute."
+-}
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index 397f78e2..8ca5a008 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -100,6 +100,13 @@ return [
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
++    'password' => [
++        'mixed' => 'The :attribute must contain at least one uppercase and one lowercase letter.',
++        'letters' => 'The :attribute must contain at least one letter.',
++        'symbols' => 'The :attribute must contain at least one symbol.',
++        'numbers' => 'The :attribute must contain at least one number.',
++        'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
++    ],
+     'present' => 'The :attribute field must be present.',
+     'prohibited' => 'The :attribute field is prohibited.',
+     'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',

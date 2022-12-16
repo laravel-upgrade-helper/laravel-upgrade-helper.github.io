@@ -1,0 +1,84 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 91450cb7..c9038778 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.0...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.1...8.x)
++
++
++## [v8.6.1 (2021-08-24)](https://github.com/laravel/laravel/compare/v8.6.0...v8.6.1)
++
++### Changed
++- Add failover driver to default mail config file ([#5672](https://github.com/laravel/laravel/pull/5672))
+ 
+ 
+ ## [v8.6.0 (2021-08-17)](https://github.com/laravel/laravel/compare/v8.5.24...v8.6.0)
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index d11dd5f0..0c7d3b6b 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -19,5 +19,10 @@ class TrustProxies extends Middleware
+      *
+      * @var int
+      */
+-    protected $headers = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_AWS_ELB;
++    protected $headers =
++        Request::HEADER_X_FORWARDED_FOR |
++        Request::HEADER_X_FORWARDED_HOST |
++        Request::HEADER_X_FORWARDED_PORT |
++        Request::HEADER_X_FORWARDED_PROTO |
++        Request::HEADER_X_FORWARDED_AWS_ELB;
+ }
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 93afd766..e23e0905 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -15,7 +15,7 @@ class User extends Authenticatable
+     /**
+      * The attributes that are mass assignable.
+      *
+-     * @var array
++     * @var string[]
+      */
+     protected $fillable = [
+         'name',
+@@ -24,7 +24,7 @@ class User extends Authenticatable
+     ];
+ 
+     /**
+-     * The attributes that should be hidden for arrays.
++     * The attributes that should be hidden for serialization.
+      *
+      * @var array
+      */
+@@ -34,7 +34,7 @@ class User extends Authenticatable
+     ];
+ 
+     /**
+-     * The attributes that should be cast to native types.
++     * The attributes that should be cast.
+      *
+      * @var array
+      */
+diff --git a/config/mail.php b/config/mail.php
+index 54299aab..db963365 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -70,6 +70,14 @@ return [
+         'array' => [
+             'transport' => 'array',
+         ],
++
++        'failover' => [
++            'transport' => 'failover',
++            'mailers' => [
++                'smtp',
++                'log',
++            ],
++        ],
+     ],
+ 
+     /*

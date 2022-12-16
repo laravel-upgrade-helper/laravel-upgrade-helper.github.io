@@ -1,0 +1,31 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5c278f3e..a6e9a6cb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,13 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.1...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.2...9.x)
++
++## [v9.3.2](https://github.com/laravel/laravel/compare/v9.3.1...v9.3.2) - 2022-08-01
++
++### Changed
++
++- Update Sanctum by @suyar in https://github.com/laravel/laravel/pull/5957
++- Allow Pest plugin in Composer by @driesvints in https://github.com/laravel/laravel/pull/5959
+ 
+ ## [v9.3.1](https://github.com/laravel/laravel/compare/v9.3.0...v9.3.1) - 2022-07-26
+ 
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index cef02f58..6d9e6d54 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -43,6 +43,7 @@ return [
+     'digits_between' => 'The :attribute must be between :min and :max digits.',
+     'dimensions' => 'The :attribute has invalid image dimensions.',
+     'distinct' => 'The :attribute field has a duplicate value.',
++    'doesnt_end_with' => 'The :attribute may not end with one of the following: :values.',
+     'doesnt_start_with' => 'The :attribute may not start with one of the following: :values.',
+     'email' => 'The :attribute must be a valid email address.',
+     'ends_with' => 'The :attribute must end with one of the following: :values.',

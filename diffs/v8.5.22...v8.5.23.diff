@@ -1,0 +1,44 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3e01e78e..0d52d22f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.22...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.23...8.x)
++
++
++## [v8.5.23 (2021-08-03)](https://github.com/laravel/laravel/compare/v8.5.22...v8.5.23)
++
++### Changed
++- Unified asset publishing ([#5654](https://github.com/laravel/laravel/pull/5654))
+ 
+ 
+ ## [v8.5.22 (2021-07-13)](https://github.com/laravel/laravel/compare/v8.5.21...v8.5.22)
+diff --git a/README.md b/README.md
+index ceb6ac0a..58140b1e 100644
+--- a/README.md
++++ b/README.md
+@@ -44,6 +44,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[DevSquad](https://devsquad.com)**
+ - **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+ - **[OP.GG](https://op.gg)**
++- **[CMS Max](https://www.cmsmax.com/)**
+ 
+ ## Contributing
+ 
+diff --git a/composer.json b/composer.json
+index d0635f15..703acae9 100644
+--- a/composer.json
++++ b/composer.json
+@@ -37,6 +37,9 @@
+             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+             "@php artisan package:discover --ansi"
+         ],
++        "post-update-cmd": [
++            "@php artisan vendor:publish --tag=laravel-assets --ansi"
++        ],
+         "post-root-package-install": [
+             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+         ],

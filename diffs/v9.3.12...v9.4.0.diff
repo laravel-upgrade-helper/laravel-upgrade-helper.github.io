@@ -1,0 +1,72 @@
+diff --git a/.github/workflows/issues.yml b/.github/workflows/issues.yml
+new file mode 100644
+index 00000000..9634a0ed
+--- /dev/null
++++ b/.github/workflows/issues.yml
+@@ -0,0 +1,12 @@
++name: issues
++
++on:
++  issues:
++    types: [labeled]
++
++permissions:
++  issues: write
++
++jobs:
++  help-wanted:
++    uses: laravel/.github/.github/workflows/issues.yml@main
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c96aa8f9..a32e0b4c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.11...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.12...9.x)
++
++## [v9.3.12](https://github.com/laravel/laravel/compare/v9.3.11...v9.3.12) - 2022-11-22
++
++### Changed
++
++- Bump vite plugin version by @timacdonald in https://github.com/laravel/laravel/pull/6038
+ 
+ ## [v9.3.11](https://github.com/laravel/laravel/compare/v9.3.10...v9.3.11) - 2022-11-14
+ 
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index f3d8cc5f..ae23a76e 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -22,6 +22,7 @@ return [
+     'alpha_dash' => 'The :attribute must only contain letters, numbers, dashes and underscores.',
+     'alpha_num' => 'The :attribute must only contain letters and numbers.',
+     'array' => 'The :attribute must be an array.',
++    'ascii' => 'The :attribute must only contain single-byte alphanumeric characters and symbols.',
+     'before' => 'The :attribute must be a date before :date.',
+     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
+     'between' => [
+@@ -141,6 +142,7 @@ return [
+     'uploaded' => 'The :attribute failed to upload.',
+     'uppercase' => 'The :attribute must be uppercase.',
+     'url' => 'The :attribute must be a valid URL.',
++    'ulid' => 'The :attribute must be a valid ULID.',
+     'uuid' => 'The :attribute must be a valid UUID.',
+ 
+     /*
+diff --git a/package.json b/package.json
+index a11c53af..0b32ba69 100644
+--- a/package.json
++++ b/package.json
+@@ -6,9 +6,9 @@
+     },
+     "devDependencies": {
+         "axios": "^1.1.2",
+-        "laravel-vite-plugin": "^0.7.0",
++        "laravel-vite-plugin": "^0.7.2",
+         "lodash": "^4.17.19",
+         "postcss": "^8.1.14",
+-        "vite": "^3.0.0"
++        "vite": "^4.0.0"
+     }
+ }

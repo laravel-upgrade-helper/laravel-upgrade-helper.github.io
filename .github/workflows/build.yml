@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - gh-pages
 
 jobs:
   build:
@@ -17,27 +17,18 @@ jobs:
       with:
         php-version: '8.1'
 
-    - name: "Merge changes"
+    - name: "Generate diffs"
       run: |
         git config --global user.name 'Version Bot'
         git config --global user.email 'version-bot@users.noreply.github.com'
-        git fetch
-        git switch -c gh-pages
-        git merge --allow-unrelated-histories -X theirs origin/main
-        php generate-diffs.php
+        curl --output generate-diffs.php https://raw.githubusercontent.com/laravel-upgrade-helper/laravel-diff-generator/main/generate-diffs.php
+        php ./generate-diffs.php
         LATEST_VERSION=$(tail -n 1 tags.txt)
-        echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
-
-    - name: "Push to gh-pages"
-      run: |
         LATEST_VERSION_ON_PROD=$(curl -s https://laravel-upgrade-helper.github.io/tags.txt | tail -n 1)
-        echo "$LATEST_VERSION_ON_PROD"
-        if [[ $LATEST_VERSION_ON_PROD != "${{ env.LATEST_VERSION }}" ]]; then
-          chmod +x ./cleanup-for-website.sh
-          ./cleanup-for-website.sh
+        if [[ git diff ./tags.txt ]]; then
           git add .
           git commit -m "[Version-Bot] Add Laravel Version"
-          git push -f origin gh-pages
+          git push origin gh-pages
         else
           echo "No new version!"
         fi

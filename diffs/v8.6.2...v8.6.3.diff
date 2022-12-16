@@ -1,0 +1,96 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 41ebfdb2..df7923e8 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,17 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.2...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.3...8.x)
++
++
++## [v8.6.3 (2021-10-05)](https://github.com/laravel/laravel/compare/v8.6.2...v8.6.3)
++
++### Changed
++- Add failover in supported mail configurations comment section ([#5692](https://github.com/laravel/laravel/pull/5692))
++- Keeping access tokens migration id consistent ([#5691](https://github.com/laravel/laravel/pull/5691))
++- Ensures downloaded version of Collision supports PHP 8.1 ([#5697](https://github.com/laravel/laravel/pull/5697))
++
++### Fixed
++- Update lte and gte validation messages to have a grammatically parallel structure ([#5699](https://github.com/laravel/laravel/pull/5699))
+ 
+ 
+ ## [v8.6.2 (2021-09-07)](https://github.com/laravel/laravel/compare/v8.6.1...v8.6.2)
+diff --git a/composer.json b/composer.json
+index 4f6a9280..3c6d778d 100644
+--- a/composer.json
++++ b/composer.json
+@@ -16,9 +16,9 @@
+         "facade/ignition": "^2.5",
+         "fakerphp/faker": "^1.9.1",
+         "laravel/sail": "^1.0.1",
+-        "mockery/mockery": "^1.4.2",
+-        "nunomaduro/collision": "^5.0",
+-        "phpunit/phpunit": "^9.3.3"
++        "mockery/mockery": "^1.4.4",
++        "nunomaduro/collision": "^5.10",
++        "phpunit/phpunit": "^9.5.8"
+     },
+     "autoload": {
+         "psr-4": {
+diff --git a/config/mail.php b/config/mail.php
+index db963365..e8607494 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -29,7 +29,7 @@ return [
+     | mailers below. You are free to add additional mailers as required.
+     |
+     | Supported: "smtp", "sendmail", "mailgun", "ses",
+-    |            "postmark", "log", "array"
++    |            "postmark", "log", "array", "failover"
+     |
+     */
+ 
+diff --git a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+index 3ce00023..4315e16a 100644
+--- a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
++++ b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+@@ -14,7 +14,7 @@ class CreatePersonalAccessTokensTable extends Migration
+     public function up()
+     {
+         Schema::create('personal_access_tokens', function (Blueprint $table) {
+-            $table->bigIncrements('id');
++            $table->id();
+             $table->morphs('tokenable');
+             $table->string('name');
+             $table->string('token', 64)->unique();
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 21791139..9fab4d92 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -53,9 +53,9 @@ return [
+         'array' => 'The :attribute must have more than :value items.',
+     ],
+     'gte' => [
+-        'numeric' => 'The :attribute must be greater than or equal :value.',
+-        'file' => 'The :attribute must be greater than or equal :value kilobytes.',
+-        'string' => 'The :attribute must be greater than or equal :value characters.',
++        'numeric' => 'The :attribute must be greater than or equal to :value.',
++        'file' => 'The :attribute must be greater than or equal to :value kilobytes.',
++        'string' => 'The :attribute must be greater than or equal to :value characters.',
+         'array' => 'The :attribute must have :value items or more.',
+     ],
+     'image' => 'The :attribute must be an image.',
+@@ -73,9 +73,9 @@ return [
+         'array' => 'The :attribute must have less than :value items.',
+     ],
+     'lte' => [
+-        'numeric' => 'The :attribute must be less than or equal :value.',
+-        'file' => 'The :attribute must be less than or equal :value kilobytes.',
+-        'string' => 'The :attribute must be less than or equal :value characters.',
++        'numeric' => 'The :attribute must be less than or equal to :value.',
++        'file' => 'The :attribute must be less than or equal to :value kilobytes.',
++        'string' => 'The :attribute must be less than or equal to :value characters.',
+         'array' => 'The :attribute must not have more than :value items.',
+     ],
+     'max' => [

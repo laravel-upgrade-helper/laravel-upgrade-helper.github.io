@@ -1,0 +1,60 @@
+diff --git a/.env.example b/.env.example
+index c3ed2a91..44853cd5 100644
+--- a/.env.example
++++ b/.env.example
+@@ -16,6 +16,7 @@ DB_PASSWORD=
+ 
+ BROADCAST_DRIVER=log
+ CACHE_DRIVER=file
++FILESYSTEM_DRIVER=local
+ QUEUE_CONNECTION=sync
+ SESSION_DRIVER=file
+ SESSION_LIFETIME=120
+@@ -39,6 +40,7 @@ AWS_ACCESS_KEY_ID=
+ AWS_SECRET_ACCESS_KEY=
+ AWS_DEFAULT_REGION=us-east-1
+ AWS_BUCKET=
++AWS_USE_PATH_STYLE_ENDPOINT=false
+ 
+ PUSHER_APP_ID=
+ PUSHER_APP_KEY=
+diff --git a/.gitignore b/.gitignore
+index 0ae59f0b..eb003b01 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -11,3 +11,5 @@ Homestead.json
+ Homestead.yaml
+ npm-debug.log
+ yarn-error.log
++/.idea
++/.vscode
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a7349fa0..d83acbe0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.18...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.19...8.x)
++
++
++## [v8.5.19 (2021-06-01)](https://github.com/laravel/laravel/compare/v8.5.18...v8.5.19)
++
++### Changed
++- Update skeleton for filesystem tweaks to make sail usage easier ([c5d38d4](https://github.com/laravel/laravel/commit/c5d38d469a447d6831c3cf56d193be7941d6586f))
+ 
+ 
+ ## [v8.5.18 (2021-05-18)](https://github.com/laravel/laravel/compare/v8.5.17...v8.5.18)
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 10c9d9be..760ef972 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -50,6 +50,7 @@ return [
+             'bucket' => env('AWS_BUCKET'),
+             'url' => env('AWS_URL'),
+             'endpoint' => env('AWS_ENDPOINT'),
++            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+         ],
+ 
+     ],

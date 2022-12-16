@@ -1,0 +1,113 @@
+diff --git a/.gitattributes b/.gitattributes
+index 510d9961..7dbbf41a 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -8,3 +8,4 @@
+ 
+ /.github export-ignore
+ CHANGELOG.md export-ignore
++.styleci.yml export-ignore
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6535994b..0f534dbd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,15 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.2.0...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.2.1...9.x)
++
++## [v9.2.1](https://github.com/laravel/laravel/compare/v9.2.0...v9.2.1) - 2022-07-13
++
++### Changed
++
++- Add auth.json to skeleton by @driesvints in https://github.com/laravel/laravel/pull/5924
++- Update `bootstrap.js` by @irsyadadl in https://github.com/laravel/laravel/pull/5929
++- Add default reloading to skeleton by @timacdonald in https://github.com/laravel/laravel/pull/5927
++- Update to the latest version of laravel-vite-plugin by @jessarcher in https://github.com/laravel/laravel/pull/5943
+ 
+ ## [v9.2.0](https://github.com/laravel/laravel/compare/v9.1.10...v9.2.0) - 2022-06-28
+ 
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 89963686..23b40634 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -2,7 +2,7 @@
+ 
+ namespace App\Models;
+ 
+-use Illuminate\Contracts\Auth\MustVerifyEmail;
++// use Illuminate\Contracts\Auth\MustVerifyEmail;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
+ use Illuminate\Notifications\Notifiable;
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index 51b351b0..33b83f56 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -2,8 +2,8 @@
+ 
+ namespace App\Providers;
+ 
++// use Illuminate\Support\Facades\Gate;
+ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+-use Illuminate\Support\Facades\Gate;
+ 
+ class AuthServiceProvider extends ServiceProvider
+ {
+diff --git a/composer.json b/composer.json
+index ebc44b15..14da264d 100644
+--- a/composer.json
++++ b/composer.json
+@@ -13,6 +13,7 @@
+     },
+     "require-dev": {
+         "fakerphp/faker": "^1.9.1",
++        "laravel/pint": "^1.0",
+         "laravel/sail": "^1.0.1",
+         "mockery/mockery": "^1.4.4",
+         "nunomaduro/collision": "^6.1",
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index c1c48a06..76d96dc7 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -2,7 +2,7 @@
+ 
+ namespace Database\Seeders;
+ 
+-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
++// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+ use Illuminate\Database\Seeder;
+ 
+ class DatabaseSeeder extends Seeder
+diff --git a/package.json b/package.json
+index 98b60ba6..6267eac1 100644
+--- a/package.json
++++ b/package.json
+@@ -5,10 +5,10 @@
+         "build": "vite build"
+     },
+     "devDependencies": {
+-        "axios": "^0.25",
+-        "laravel-vite-plugin": "^0.4.0",
++        "axios": "^0.27",
++        "laravel-vite-plugin": "^0.5.0",
+         "lodash": "^4.17.19",
+         "postcss": "^8.1.14",
+-        "vite": "^2.9.11"
++        "vite": "^3.0.0"
+     }
+ }
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index 78ccc21f..1eafba61 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -2,7 +2,7 @@
+ 
+ namespace Tests\Feature;
+ 
+-use Illuminate\Foundation\Testing\RefreshDatabase;
++// use Illuminate\Foundation\Testing\RefreshDatabase;
+ use Tests\TestCase;
+ 
+ class ExampleTest extends TestCase

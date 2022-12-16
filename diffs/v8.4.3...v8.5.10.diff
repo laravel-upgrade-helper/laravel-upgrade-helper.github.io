@@ -1,0 +1,330 @@
+diff --git a/.env.example b/.env.example
+index 7dc51e1f..c3ed2a91 100644
+--- a/.env.example
++++ b/.env.example
+@@ -20,13 +20,15 @@ QUEUE_CONNECTION=sync
+ SESSION_DRIVER=file
+ SESSION_LIFETIME=120
+ 
++MEMCACHED_HOST=127.0.0.1
++
+ REDIS_HOST=127.0.0.1
+ REDIS_PASSWORD=null
+ REDIS_PORT=6379
+ 
+ MAIL_MAILER=smtp
+-MAIL_HOST=smtp.mailtrap.io
+-MAIL_PORT=2525
++MAIL_HOST=mailhog
++MAIL_PORT=1025
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+ MAIL_ENCRYPTION=null
+diff --git a/.gitignore b/.gitignore
+index 0f7df0fb..0ae59f0b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,6 +6,7 @@
+ .env
+ .env.backup
+ .phpunit.result.cache
++docker-compose.override.yml
+ Homestead.json
+ Homestead.yaml
+ npm-debug.log
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 80d51eb7..e8365d68 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,93 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.4.3...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.10...8.x)
++
++
++## [v8.5.10 (2021-02-16)](https://github.com/laravel/laravel/compare/v8.5.9...v8.5.10)
++
++### Changed
++- Add "ably" in comment as a broadcast connection ([#5531](https://github.com/laravel/laravel/pull/5531))
++- Add unverified state to UserFactory ([#5533](https://github.com/laravel/laravel/pull/5533))
++- Update login wording ([9a56a60](https://github.com/laravel/laravel/commit/9a56a60cc9e3785683e256d511ee1fb533025a0a))
++
++### Fixed
++- Fix dead link in web.config ([#5528](https://github.com/laravel/laravel/pull/5528))
++
++
++## [v8.5.9 (2021-01-19)](https://github.com/laravel/laravel/compare/v8.5.8...v8.5.9)
++
++### Removed
++- Delete `docker-compose.yml` ([#5522](https://github.com/laravel/laravel/pull/5522))
++
++
++## [v8.5.8 (2021-01-12)](https://github.com/laravel/laravel/compare/v8.5.7...v8.5.8)
++
++### Fixed
++- Update `TrustProxies.php` ([#5514](https://github.com/laravel/laravel/pull/5514))
++
++
++## [v8.5.7 (2021-01-05)](https://github.com/laravel/laravel/compare/v8.5.6...v8.5.7)
++
++### Changed
++- Update sail to the v1.0.1 ([#5507](https://github.com/laravel/laravel/pull/5507))
++- Upgrade to Mix v6 ([#5505](https://github.com/laravel/laravel/pull/5505))
++- Updated Axios ([4de728e](https://github.com/laravel/laravel/commit/4de728e78c91b496ce5de09983a56e229aa0ade1))
++
++
++## [v8.5.6 (2020-12-22)](https://github.com/laravel/laravel/compare/v8.5.5...v8.5.6)
++
++### Added
++- Add `lock_connection` ([bc339f7](https://github.com/laravel/laravel/commit/bc339f712389cf536ad7e340453f35d1dd865777), [e8788a7](https://github.com/laravel/laravel/commit/e8788a768899ff2a2ef1fe78e24b46e6e10175dc))
++
++
++## [v8.5.5 (2020-12-12)](https://github.com/laravel/laravel/compare/v8.5.4...v8.5.5)
++
++### Changed
++- Revert changes to env file ([3b2ed46](https://github.com/laravel/laravel/commit/3b2ed46e65c603ddc682753f1a9bb5472c4e12a8))
++
++
++## [v8.5.4 (2020-12-10)](https://github.com/laravel/laravel/compare/v8.5.3...v8.5.4)
++
++### Changed
++- Gitignore `docker-compose.override.yml` ([#5487](https://github.com/laravel/laravel/pull/5487)
++- Update ENV vars to docker file ([ddb26fb](https://github.com/laravel/laravel/commit/ddb26fbc504cd64fb1b89511773aa8d03c758c6d))
++
++
++## [v8.5.3 (2020-12-10)](https://github.com/laravel/laravel/compare/v8.5.2...v8.5.3)
++
++### Changed
++- Disable `TrustHosts` middleware ([b7cde8b](https://github.com/laravel/laravel/commit/b7cde8b495e183f386da63ff7792e0dea9cfcf56))
++
++
++## [v8.5.2 (2020-12-08)](https://github.com/laravel/laravel/compare/v8.5.1...v8.5.2)
++
++### Added
++- Add Sail ([17668be](https://github.com/laravel/laravel/commit/17668beabe4cb489ad07abb8af0a9da01860601e))
++
++
++## [v8.5.1 (2020-12-08)](https://github.com/laravel/laravel/compare/v8.5.0...v8.5.1)
++
++### Changed
++- Revert change to `QUEUE_CONNECTION` ([34368a4](https://github.com/laravel/laravel/commit/34368a4fab61839c106efb1eea087cc270639619))
++
++
++## [v8.5.0 (2020-12-08)](https://github.com/laravel/laravel/compare/v8.4.4...v8.5.0)
++
++### Added
++- Add Sail file ([bcd87e8](https://github.com/laravel/laravel/commit/bcd87e80ac7fa6a5daf0e549059ad7cb0b41ce75))
++
++### Changed
++- Update env file for Sail ([a895748](https://github.com/laravel/laravel/commit/a895748980b3e055ffcb68b6bc1c2e5fad6ecb08))
++
++
++## [v8.4.4 (2020-12-01)](https://github.com/laravel/laravel/compare/v8.4.3...v8.4.4)
++
++### Changed
++- Comment out `Redis` facade by default ([612d166](https://github.com/laravel/laravel/commit/612d16600419265566d01a19c852ddb13b5e9f4b))
++- Uncomment `TrustHosts` middleware to enable it by default ([#5477](https://github.com/laravel/laravel/pull/5477))
++
++### Removed
++- Remove cloud option ([82213fb](https://github.com/laravel/laravel/commit/82213fbf40fc4ec687781d0b93ff60a7de536913))
+ 
+ 
+ ## [v8.4.3 (2020-11-24)](https://github.com/laravel/laravel/compare/v8.4.2...v8.4.3)
+diff --git a/README.md b/README.md
+index 2f7ddcc6..e1dcd2e1 100644
+--- a/README.md
++++ b/README.md
+@@ -42,6 +42,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[Many](https://www.many.co.uk)**
+ - **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+ - **[DevSquad](https://devsquad.com)**
++- **[Curotec](https://www.curotec.com/)**
+ - **[OP.GG](https://op.gg)**
+ 
+ ## Contributing
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index 14befceb..a3b6aef9 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -19,5 +19,5 @@ class TrustProxies extends Middleware
+      *
+      * @var int
+      */
+-    protected $headers = Request::HEADER_X_FORWARDED_ALL;
++    protected $headers = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_AWS_ELB;
+ }
+diff --git a/composer.json b/composer.json
+index 9d06962b..3795a6db 100644
+--- a/composer.json
++++ b/composer.json
+@@ -18,6 +18,7 @@
+     "require-dev": {
+         "facade/ignition": "^2.5",
+         "fakerphp/faker": "^1.9.1",
++        "laravel/sail": "^1.0.1",
+         "mockery/mockery": "^1.4.2",
+         "nunomaduro/collision": "^5.0",
+         "phpunit/phpunit": "^9.3.3"
+diff --git a/config/app.php b/config/app.php
+index 8409e00e..2a2f0ebe 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -215,7 +215,7 @@ return [
+         'Password' => Illuminate\Support\Facades\Password::class,
+         'Queue' => Illuminate\Support\Facades\Queue::class,
+         'Redirect' => Illuminate\Support\Facades\Redirect::class,
+-        'Redis' => Illuminate\Support\Facades\Redis::class,
++        // 'Redis' => Illuminate\Support\Facades\Redis::class,
+         'Request' => Illuminate\Support\Facades\Request::class,
+         'Response' => Illuminate\Support\Facades\Response::class,
+         'Route' => Illuminate\Support\Facades\Route::class,
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index ef208598..2d529820 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -11,7 +11,7 @@ return [
+     | framework when an event needs to be broadcast. You may set this to
+     | any of the connections defined in the "connections" array below.
+     |
+-    | Supported: "pusher", "redis", "log", "null"
++    | Supported: "pusher", "ably", "redis", "log", "null"
+     |
+     */
+ 
+diff --git a/config/cache.php b/config/cache.php
+index 9473acc9..e32a2fd3 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -46,6 +46,7 @@ return [
+             'driver' => 'database',
+             'table' => 'cache',
+             'connection' => null,
++            'lock_connection' => null,
+         ],
+ 
+         'file' => [
+@@ -75,6 +76,7 @@ return [
+         'redis' => [
+             'driver' => 'redis',
+             'connection' => 'cache',
++            'lock_connection' => 'default',
+         ],
+ 
+         'dynamodb' => [
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 94c81126..10c9d9be 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -15,19 +15,6 @@ return [
+ 
+     'default' => env('FILESYSTEM_DRIVER', 'local'),
+ 
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Default Cloud Filesystem Disk
+-    |--------------------------------------------------------------------------
+-    |
+-    | Many applications store files both locally and in the cloud. For this
+-    | reason, you may specify a default "cloud" driver here. This driver
+-    | will be bound as the Cloud disk implementation in the container.
+-    |
+-    */
+-
+-    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
+-
+     /*
+     |--------------------------------------------------------------------------
+     | Filesystem Disks
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index bdea1a32..3510ed67 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -30,4 +30,18 @@ class UserFactory extends Factory
+             'remember_token' => Str::random(10),
+         ];
+     }
++
++    /**
++     * Indicate that the model's email address should be unverified.
++     *
++     * @return \Illuminate\Database\Eloquent\Factories\Factory
++     */
++    public function unverified()
++    {
++        return $this->state(function (array $attributes) {
++            return [
++                'email_verified_at' => null,
++            ];
++        });
++    }
+ }
+diff --git a/package.json b/package.json
+index 2aefa8f8..00c65067 100644
+--- a/package.json
++++ b/package.json
+@@ -2,18 +2,17 @@
+     "private": true,
+     "scripts": {
+         "dev": "npm run development",
+-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
+-        "watch": "npm run development -- --watch",
+-        "watch-poll": "npm run watch -- --watch-poll",
+-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "development": "mix",
++        "watch": "mix watch",
++        "watch-poll": "mix watch -- --watch-options-poll=1000",
++        "hot": "mix watch --hot",
+         "prod": "npm run production",
+-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
++        "production": "mix --production"
+     },
+     "devDependencies": {
+-        "axios": "^0.19",
+-        "cross-env": "^7.0",
+-        "laravel-mix": "^5.0.1",
++        "axios": "^0.21",
++        "laravel-mix": "^6.0.6",
+         "lodash": "^4.17.19",
+-        "resolve-url-loader": "^3.1.0"
++        "postcss": "^8.1.14"
+     }
+ }
+diff --git a/public/web.config b/public/web.config
+index d3711d7c..323482f1 100644
+--- a/public/web.config
++++ b/public/web.config
+@@ -1,6 +1,6 @@
+ <!--
+     Rewrites requires Microsoft URL Rewrite Module for IIS
+-    Download: https://www.microsoft.com/en-us/download/details.aspx?id=47337
++    Download: https://www.iis.net/downloads/microsoft/url-rewrite
+     Debug Help: https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/using-failed-request-tracing-to-trace-rewrite-rules
+ -->
+ <configuration>
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 2e2820b0..c77e41ce 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -90,7 +90,7 @@ return [
+         'string' => 'The :attribute must be at least :min characters.',
+         'array' => 'The :attribute must have at least :min items.',
+     ],
+-    'multiple_of' => 'The :attribute must be a multiple of :value',
++    'multiple_of' => 'The :attribute must be a multiple of :value.',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index e305e336..917fddfa 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -27,7 +27,7 @@
+                     @auth
+                         <a href="{{ url('/home') }}" class="text-sm text-gray-700 underline">Home</a>
+                     @else
+-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
++                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
+ 
+                         @if (Route::has('register'))
+                             <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>

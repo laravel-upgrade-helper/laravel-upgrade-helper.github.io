@@ -1,0 +1,1008 @@
+diff --git a/.env.example b/.env.example
+index 53d48bf3..ac748637 100644
+--- a/.env.example
++++ b/.env.example
+@@ -23,7 +23,7 @@ REDIS_HOST=127.0.0.1
+ REDIS_PASSWORD=null
+ REDIS_PORT=6379
+ 
+-MAIL_DRIVER=smtp
++MAIL_MAILER=smtp
+ MAIL_HOST=smtp.mailtrap.io
+ MAIL_PORT=2525
+ MAIL_USERNAME=null
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ca17bc7d..a023f703 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,68 +1,6 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v6.19.0...6.x)
+-
+-
+-## [v6.19.0 (2020-10-29)](https://github.com/laravel/laravel/compare/v6.18.8...v6.19.0)
+-
+-### Added
+-- PHP 8 Support ([4c25cb9](https://github.com/laravel/laravel/commit/4c25cb953a0bbd4812bf92af71a13920998def1e))
+-
+-### Changed
+-- Bump minimum PHP version ([#5452](https://github.com/laravel/laravel/pull/5452))
+-- Update Faker ([#5461](https://github.com/laravel/laravel/pull/5461))
+-- Update minimum Laravel version ([b8d5825](https://github.com/laravel/laravel/commit/b8d582581a1067e3b1715cce477b22455acc3d36))
+-
+-### Fixed
+-- Delete removed webpack flag ([#5460](https://github.com/laravel/laravel/pull/5460))
+-
+-
+-## [v6.18.35 (2020-08-11)](https://github.com/laravel/laravel/compare/v6.18.8...v6.18.35)
+-
+-### Changed
+-- Set framework version to `^6.18.35` ([#5369](https://github.com/laravel/laravel/pull/5369))
+-- Bump lodash from 4.17.15 to 4.17.19 ([f465c51](https://github.com/laravel/laravel/commit/f465c511c009235fc7bfa06bfcb41294e60e9b42))
+-- Disable webpack-dev-server host check ([#5288](https://github.com/laravel/laravel/pull/5288))
+-
+-
+-## [v6.18.8 (2020-04-16)](https://github.com/laravel/laravel/compare/v6.18.3...v6.18.8)
+-
+-### Fixed
+-- Add both endpoint and url env variables ([#5276](https://github.com/laravel/laravel/pull/5276))
+-
+-
+-## [v6.18.3 (2020-03-24)](https://github.com/laravel/laravel/compare/v6.18.0...v6.18.3)
+-
+-### Fixed
+-- Ensure that `app.debug` is a bool ([5ddbfb8](https://github.com/laravel/laravel/commit/5ddbfb845439fcd5a46c23530b8774421a931760))
+-- Fix S3 endpoint url reference ([#5267](https://github.com/laravel/laravel/pull/5267))
+-
+-
+-## [v6.18.0 (2020-02-24)](https://github.com/laravel/laravel/compare/v6.12.0...v6.18.0)
+-
+-### Changed
+-- Update cross-env and resolve-url-loader to the latest ([#5210](https://github.com/laravel/laravel/pull/5210), [#5216](https://github.com/laravel/laravel/pull/5216))
+-- Bump fzaninotto/faker version to support PHP 7.4 ([#5218](https://github.com/laravel/laravel/pull/5218))
+-- Remove redundant default attributes from `phpunit.xml` ([#5233](https://github.com/laravel/laravel/pull/5233))
+-
+-
+-## [v6.12.0 (2020-01-14)](https://github.com/laravel/laravel/compare/v6.8.0...v6.12.0)
+-
+-### Added
+-- Allow configurable emergency logger ([#5179](https://github.com/laravel/laravel/pull/5179))
+-- Add `MAIL_FROM_ADDRESS` & `MAIL_FROM_NAME` to `.env` file ([#5180](https://github.com/laravel/laravel/pull/5180))
+-- Add missing full stop for some validation messages ([#5205](https://github.com/laravel/laravel/pull/5205))
+-
+-### Changed
+-- Use class name to be consistent with web middleware ([140d4d9](https://github.com/laravel/laravel/commit/140d4d9b0a4581cec046875361e87c2981b3f9fe))
+-- Use file session driver again ([#5201](https://github.com/laravel/laravel/pull/5201))
+-
+-### Fixed
+-- Correct exception handler doc ([#5187](https://github.com/laravel/laravel/pull/5187))
+-- Fix types consistency in Redis database config ([#5191](https://github.com/laravel/laravel/pull/5191))
+-
+-### Security
+-- Update laravel mix and sass loader ([#5203](https://github.com/laravel/laravel/pull/5203))
++## [Unreleased](https://github.com/laravel/laravel/compare/v6.8.0...develop)
+ 
+ 
+ ## [v6.8.0 (2019-12-16)](https://github.com/laravel/laravel/compare/v6.5.2...v6.8.0)
+diff --git a/README.md b/README.md
+index 4e2cadb6..81f2f62b 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
++<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+diff --git a/app/Console/Kernel.php b/app/Console/Kernel.php
+index a8c51585..69914e99 100644
+--- a/app/Console/Kernel.php
++++ b/app/Console/Kernel.php
+@@ -24,8 +24,7 @@ class Kernel extends ConsoleKernel
+      */
+     protected function schedule(Schedule $schedule)
+     {
+-        // $schedule->command('inspire')
+-        //          ->hourly();
++        // $schedule->command('inspire')->hourly();
+     }
+ 
+     /**
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 364621e4..59c585dc 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -2,8 +2,8 @@
+ 
+ namespace App\Exceptions;
+ 
+-use Exception;
+ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
++use Throwable;
+ 
+ class Handler extends ExceptionHandler
+ {
+@@ -29,12 +29,12 @@ class Handler extends ExceptionHandler
+     /**
+      * Report or log an exception.
+      *
+-     * @param  \Exception  $exception
++     * @param  \Throwable  $exception
+      * @return void
+      *
+      * @throws \Exception
+      */
+-    public function report(Exception $exception)
++    public function report(Throwable $exception)
+     {
+         parent::report($exception);
+     }
+@@ -43,12 +43,12 @@ class Handler extends ExceptionHandler
+      * Render an exception into an HTTP response.
+      *
+      * @param  \Illuminate\Http\Request  $request
+-     * @param  \Exception  $exception
++     * @param  \Throwable  $exception
+      * @return \Symfony\Component\HttpFoundation\Response
+      *
+-     * @throws \Exception
++     * @throws \Throwable
+      */
+-    public function render($request, Exception $exception)
++    public function render($request, Throwable $exception)
+     {
+         return parent::render($request, $exception);
+     }
+diff --git a/app/Http/Controllers/Auth/ConfirmPasswordController.php b/app/Http/Controllers/Auth/ConfirmPasswordController.php
+deleted file mode 100644
+index 138c1f08..00000000
+--- a/app/Http/Controllers/Auth/ConfirmPasswordController.php
++++ /dev/null
+@@ -1,40 +0,0 @@
+-<?php
+-
+-namespace App\Http\Controllers\Auth;
+-
+-use App\Http\Controllers\Controller;
+-use App\Providers\RouteServiceProvider;
+-use Illuminate\Foundation\Auth\ConfirmsPasswords;
+-
+-class ConfirmPasswordController extends Controller
+-{
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Confirm Password Controller
+-    |--------------------------------------------------------------------------
+-    |
+-    | This controller is responsible for handling password confirmations and
+-    | uses a simple trait to include the behavior. You're free to explore
+-    | this trait and override any functions that require customization.
+-    |
+-    */
+-
+-    use ConfirmsPasswords;
+-
+-    /**
+-     * Where to redirect users when the intended url fails.
+-     *
+-     * @var string
+-     */
+-    protected $redirectTo = RouteServiceProvider::HOME;
+-
+-    /**
+-     * Create a new controller instance.
+-     *
+-     * @return void
+-     */
+-    public function __construct()
+-    {
+-        $this->middleware('auth');
+-    }
+-}
+diff --git a/app/Http/Controllers/Auth/ForgotPasswordController.php b/app/Http/Controllers/Auth/ForgotPasswordController.php
+deleted file mode 100644
+index 465c39cc..00000000
+--- a/app/Http/Controllers/Auth/ForgotPasswordController.php
++++ /dev/null
+@@ -1,22 +0,0 @@
+-<?php
+-
+-namespace App\Http\Controllers\Auth;
+-
+-use App\Http\Controllers\Controller;
+-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+-
+-class ForgotPasswordController extends Controller
+-{
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Password Reset Controller
+-    |--------------------------------------------------------------------------
+-    |
+-    | This controller is responsible for handling password reset emails and
+-    | includes a trait which assists in sending these notifications from
+-    | your application to your users. Feel free to explore this trait.
+-    |
+-    */
+-
+-    use SendsPasswordResetEmails;
+-}
+diff --git a/app/Http/Controllers/Auth/LoginController.php b/app/Http/Controllers/Auth/LoginController.php
+deleted file mode 100644
+index 18a0d088..00000000
+--- a/app/Http/Controllers/Auth/LoginController.php
++++ /dev/null
+@@ -1,40 +0,0 @@
+-<?php
+-
+-namespace App\Http\Controllers\Auth;
+-
+-use App\Http\Controllers\Controller;
+-use App\Providers\RouteServiceProvider;
+-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+-
+-class LoginController extends Controller
+-{
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Login Controller
+-    |--------------------------------------------------------------------------
+-    |
+-    | This controller handles authenticating users for the application and
+-    | redirecting them to your home screen. The controller uses a trait
+-    | to conveniently provide its functionality to your applications.
+-    |
+-    */
+-
+-    use AuthenticatesUsers;
+-
+-    /**
+-     * Where to redirect users after login.
+-     *
+-     * @var string
+-     */
+-    protected $redirectTo = RouteServiceProvider::HOME;
+-
+-    /**
+-     * Create a new controller instance.
+-     *
+-     * @return void
+-     */
+-    public function __construct()
+-    {
+-        $this->middleware('guest')->except('logout');
+-    }
+-}
+diff --git a/app/Http/Controllers/Auth/RegisterController.php b/app/Http/Controllers/Auth/RegisterController.php
+deleted file mode 100644
+index c6a6de67..00000000
+--- a/app/Http/Controllers/Auth/RegisterController.php
++++ /dev/null
+@@ -1,73 +0,0 @@
+-<?php
+-
+-namespace App\Http\Controllers\Auth;
+-
+-use App\Http\Controllers\Controller;
+-use App\Providers\RouteServiceProvider;
+-use App\User;
+-use Illuminate\Foundation\Auth\RegistersUsers;
+-use Illuminate\Support\Facades\Hash;
+-use Illuminate\Support\Facades\Validator;
+-
+-class RegisterController extends Controller
+-{
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Register Controller
+-    |--------------------------------------------------------------------------
+-    |
+-    | This controller handles the registration of new users as well as their
+-    | validation and creation. By default this controller uses a trait to
+-    | provide this functionality without requiring any additional code.
+-    |
+-    */
+-
+-    use RegistersUsers;
+-
+-    /**
+-     * Where to redirect users after registration.
+-     *
+-     * @var string
+-     */
+-    protected $redirectTo = RouteServiceProvider::HOME;
+-
+-    /**
+-     * Create a new controller instance.
+-     *
+-     * @return void
+-     */
+-    public function __construct()
+-    {
+-        $this->middleware('guest');
+-    }
+-
+-    /**
+-     * Get a validator for an incoming registration request.
+-     *
+-     * @param  array  $data
+-     * @return \Illuminate\Contracts\Validation\Validator
+-     */
+-    protected function validator(array $data)
+-    {
+-        return Validator::make($data, [
+-            'name' => ['required', 'string', 'max:255'],
+-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+-        ]);
+-    }
+-
+-    /**
+-     * Create a new user instance after a valid registration.
+-     *
+-     * @param  array  $data
+-     * @return \App\User
+-     */
+-    protected function create(array $data)
+-    {
+-        return User::create([
+-            'name' => $data['name'],
+-            'email' => $data['email'],
+-            'password' => Hash::make($data['password']),
+-        ]);
+-    }
+-}
+diff --git a/app/Http/Controllers/Auth/ResetPasswordController.php b/app/Http/Controllers/Auth/ResetPasswordController.php
+deleted file mode 100644
+index b1726a36..00000000
+--- a/app/Http/Controllers/Auth/ResetPasswordController.php
++++ /dev/null
+@@ -1,30 +0,0 @@
+-<?php
+-
+-namespace App\Http\Controllers\Auth;
+-
+-use App\Http\Controllers\Controller;
+-use App\Providers\RouteServiceProvider;
+-use Illuminate\Foundation\Auth\ResetsPasswords;
+-
+-class ResetPasswordController extends Controller
+-{
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Password Reset Controller
+-    |--------------------------------------------------------------------------
+-    |
+-    | This controller is responsible for handling password reset requests
+-    | and uses a simple trait to include this behavior. You're free to
+-    | explore this trait and override any methods you wish to tweak.
+-    |
+-    */
+-
+-    use ResetsPasswords;
+-
+-    /**
+-     * Where to redirect users after resetting their password.
+-     *
+-     * @var string
+-     */
+-    protected $redirectTo = RouteServiceProvider::HOME;
+-}
+diff --git a/app/Http/Controllers/Auth/VerificationController.php b/app/Http/Controllers/Auth/VerificationController.php
+deleted file mode 100644
+index 5e749af8..00000000
+--- a/app/Http/Controllers/Auth/VerificationController.php
++++ /dev/null
+@@ -1,42 +0,0 @@
+-<?php
+-
+-namespace App\Http\Controllers\Auth;
+-
+-use App\Http\Controllers\Controller;
+-use App\Providers\RouteServiceProvider;
+-use Illuminate\Foundation\Auth\VerifiesEmails;
+-
+-class VerificationController extends Controller
+-{
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Email Verification Controller
+-    |--------------------------------------------------------------------------
+-    |
+-    | This controller is responsible for handling email verification for any
+-    | user that recently registered with the application. Emails may also
+-    | be re-sent if the user didn't receive the original email message.
+-    |
+-    */
+-
+-    use VerifiesEmails;
+-
+-    /**
+-     * Where to redirect users after verification.
+-     *
+-     * @var string
+-     */
+-    protected $redirectTo = RouteServiceProvider::HOME;
+-
+-    /**
+-     * Create a new controller instance.
+-     *
+-     * @return void
+-     */
+-    public function __construct()
+-    {
+-        $this->middleware('auth');
+-        $this->middleware('signed')->only('verify');
+-        $this->middleware('throttle:6,1')->only('verify', 'resend');
+-    }
+-}
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index deb65e86..c3640f30 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -15,6 +15,7 @@ class Kernel extends HttpKernel
+      */
+     protected $middleware = [
+         \App\Http\Middleware\TrustProxies::class,
++        \Fruitcake\Cors\HandleCors::class,
+         \App\Http\Middleware\CheckForMaintenanceMode::class,
+         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+         \App\Http\Middleware\TrimStrings::class,
+@@ -62,21 +63,4 @@ class Kernel extends HttpKernel
+         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+     ];
+-
+-    /**
+-     * The priority-sorted list of middleware.
+-     *
+-     * This forces non-global middleware to always be in the given order.
+-     *
+-     * @var array
+-     */
+-    protected $middlewarePriority = [
+-        \Illuminate\Session\Middleware\StartSession::class,
+-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+-        \App\Http\Middleware\Authenticate::class,
+-        \Illuminate\Routing\Middleware\ThrottleRequests::class,
+-        \Illuminate\Session\Middleware\AuthenticateSession::class,
+-        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+-        \Illuminate\Auth\Middleware\Authorize::class,
+-    ];
+ }
+diff --git a/app/Http/Middleware/VerifyCsrfToken.php b/app/Http/Middleware/VerifyCsrfToken.php
+index 324a166b..0c13b854 100644
+--- a/app/Http/Middleware/VerifyCsrfToken.php
++++ b/app/Http/Middleware/VerifyCsrfToken.php
+@@ -6,13 +6,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+ 
+ class VerifyCsrfToken extends Middleware
+ {
+-    /**
+-     * Indicates whether the XSRF-TOKEN cookie should be set on the response.
+-     *
+-     * @var bool
+-     */
+-    protected $addHttpCookie = true;
+-
+     /**
+      * The URIs that should be excluded from CSRF verification.
+      *
+diff --git a/composer.json b/composer.json
+index af8d40c9..4e81d21a 100644
+--- a/composer.json
++++ b/composer.json
+@@ -8,17 +8,19 @@
+     ],
+     "license": "MIT",
+     "require": {
+-        "php": "^7.2.5|^8.0",
+-        "fideloper/proxy": "^4.0",
+-        "laravel/framework": "^6.20",
++        "php": "^7.2.5",
++        "fideloper/proxy": "^4.2",
++        "fruitcake/laravel-cors": "^1.0",
++        "guzzlehttp/guzzle": "^6.3",
++        "laravel/framework": "^7.0",
+         "laravel/tinker": "^2.0"
+     },
+     "require-dev": {
+-        "facade/ignition": "^1.4",
+-        "fakerphp/faker": "^1.9.1",
+-        "mockery/mockery": "^1.0",
+-        "nunomaduro/collision": "^3.0",
+-        "phpunit/phpunit": "^8.0"
++        "facade/ignition": "^2.0",
++        "fzaninotto/faker": "^1.9.1",
++        "mockery/mockery": "^1.3.1",
++        "nunomaduro/collision": "^4.1",
++        "phpunit/phpunit": "^8.5"
+     },
+     "config": {
+         "optimize-autoloader": true,
+diff --git a/config/app.php b/config/app.php
+index 9e5b36cf..5757ea7e 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -39,7 +39,7 @@ return [
+     |
+     */
+ 
+-    'debug' => (bool) env('APP_DEBUG', false),
++    'debug' => env('APP_DEBUG', false),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -207,6 +207,7 @@ return [
+         'File' => Illuminate\Support\Facades\File::class,
+         'Gate' => Illuminate\Support\Facades\Gate::class,
+         'Hash' => Illuminate\Support\Facades\Hash::class,
++        'Http' => Illuminate\Support\Facades\Http::class,
+         'Lang' => Illuminate\Support\Facades\Lang::class,
+         'Log' => Illuminate\Support\Facades\Log::class,
+         'Mail' => Illuminate\Support\Facades\Mail::class,
+diff --git a/config/cors.php b/config/cors.php
+new file mode 100644
+index 00000000..5c9de897
+--- /dev/null
++++ b/config/cors.php
+@@ -0,0 +1,34 @@
++<?php
++
++return [
++
++    /*
++    |--------------------------------------------------------------------------
++    | Cross-Origin Resource Sharing (CORS) Configuration
++    |--------------------------------------------------------------------------
++    |
++    | Here you may configure your settings for cross-origin resource sharing
++    | or "CORS". This determines what cross-origin operations may execute
++    | in web browsers. You are free to adjust these settings as needed.
++    |
++    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
++    |
++    */
++
++    'paths' => ['api/*'],
++
++    'allowed_methods' => ['*'],
++
++    'allowed_origins' => ['*'],
++
++    'allowed_origins_patterns' => [],
++
++    'allowed_headers' => ['*'],
++
++    'exposed_headers' => false,
++
++    'max_age' => false,
++
++    'supports_credentials' => false,
++
++];
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 220c0104..cd9f0962 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -62,9 +62,23 @@ return [
+             'region' => env('AWS_DEFAULT_REGION'),
+             'bucket' => env('AWS_BUCKET'),
+             'url' => env('AWS_URL'),
+-            'endpoint' => env('AWS_ENDPOINT'),
+         ],
+ 
+     ],
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Symbolic Links
++    |--------------------------------------------------------------------------
++    |
++    | Here you may configure the symbolic links that will be created when the
++    | `storage:link` Artisan command is executed. The array keys should be
++    | the locations of the links and the values should be their targets.
++    |
++    */
++
++    'links' => [
++        public_path('storage') => storage_path('app/public'),
++    ],
++
+ ];
+diff --git a/config/mail.php b/config/mail.php
+index 3c65eb3f..67fb3409 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -4,45 +4,63 @@ return [
+ 
+     /*
+     |--------------------------------------------------------------------------
+-    | Mail Driver
++    | Default Mailer
+     |--------------------------------------------------------------------------
+     |
+-    | Laravel supports both SMTP and PHP's "mail" function as drivers for the
+-    | sending of e-mail. You may specify which one you're using throughout
+-    | your application here. By default, Laravel is setup for SMTP mail.
+-    |
+-    | Supported: "smtp", "sendmail", "mailgun", "ses",
+-    |            "postmark", "log", "array"
++    | This option controls the default mailer that is used to send any email
++    | messages sent by your application. Alternative mailers may be setup
++    | and used as needed; however, this mailer will be used by default.
+     |
+     */
+ 
+-    'driver' => env('MAIL_DRIVER', 'smtp'),
++    'default' => env('MAIL_MAILER', 'smtp'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+-    | SMTP Host Address
++    | Mailer Configurations
+     |--------------------------------------------------------------------------
+     |
+-    | Here you may provide the host address of the SMTP server used by your
+-    | applications. A default option is provided that is compatible with
+-    | the Mailgun mail service which will provide reliable deliveries.
++    | Here you may configure all of the mailers used by your application plus
++    | their respective settings. Several examples have been configured for
++    | you and you are free to add your own as your application requires.
+     |
+-    */
+-
+-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | SMTP Host Port
+-    |--------------------------------------------------------------------------
++    | Laravel supports a variety of mail "transport" drivers to be used while
++    | sending an e-mail. You will specify which one you are using for your
++    | mailers below. You are free to add additional mailers as required.
+     |
+-    | This is the SMTP port used by your application to deliver e-mails to
+-    | users of the application. Like the host we have set this value to
+-    | stay compatible with the Mailgun e-mail application by default.
++    | Supported: "smtp", "sendmail", "mailgun", "ses",
++    |            "postmark", "log", "array"
+     |
+     */
+ 
+-    'port' => env('MAIL_PORT', 587),
++    'mailers' => [
++        'smtp' => [
++            'transport' => 'smtp',
++            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
++            'port' => env('MAIL_PORT', 587),
++            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
++            'username' => env('MAIL_USERNAME'),
++            'password' => env('MAIL_PASSWORD'),
++        ],
++
++        'ses' => [
++            'transport' => 'ses',
++        ],
++
++        'sendmail' => [
++            'transport' => 'sendmail',
++            'path' => '/usr/sbin/sendmail -bs',
++        ],
++
++        'log' => [
++            'transport' => 'log',
++            'channel' => env('MAIL_LOG_CHANNEL'),
++        ],
++
++        'array' => [
++            'transport' => 'array',
++        ],
++    ],
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -60,47 +78,6 @@ return [
+         'name' => env('MAIL_FROM_NAME', 'Example'),
+     ],
+ 
+-    /*
+-    |--------------------------------------------------------------------------
+-    | E-Mail Encryption Protocol
+-    |--------------------------------------------------------------------------
+-    |
+-    | Here you may specify the encryption protocol that should be used when
+-    | the application send e-mail messages. A sensible default using the
+-    | transport layer security protocol should provide great security.
+-    |
+-    */
+-
+-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | SMTP Server Username
+-    |--------------------------------------------------------------------------
+-    |
+-    | If your SMTP server requires a username for authentication, you should
+-    | set it here. This will get used to authenticate with your server on
+-    | connection. You may also set the "password" value below this one.
+-    |
+-    */
+-
+-    'username' => env('MAIL_USERNAME'),
+-
+-    'password' => env('MAIL_PASSWORD'),
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Sendmail System Path
+-    |--------------------------------------------------------------------------
+-    |
+-    | When using the "sendmail" driver to send e-mails, we will need to know
+-    | the path to where Sendmail lives on this server. A default path has
+-    | been provided here, which will work well on most of your systems.
+-    |
+-    */
+-
+-    'sendmail' => '/usr/sbin/sendmail -bs',
+-
+     /*
+     |--------------------------------------------------------------------------
+     | Markdown Mail Settings
+@@ -120,17 +97,4 @@ return [
+         ],
+     ],
+ 
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Log Channel
+-    |--------------------------------------------------------------------------
+-    |
+-    | If you are using the "log" driver, you may specify the logging channel
+-    | if you prefer to keep mail messages separate from other log entries
+-    | for simpler reading. Otherwise, the default channel will be used.
+-    |
+-    */
+-
+-    'log_channel' => env('MAIL_LOG_CHANNEL'),
+-
+ ];
+diff --git a/config/session.php b/config/session.php
+index 857ebc3e..bc9174f4 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -166,7 +166,7 @@ return [
+     |
+     */
+ 
+-    'secure' => env('SESSION_SECURE_COOKIE', false),
++    'secure' => env('SESSION_SECURE_COOKIE', null),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -194,6 +194,6 @@ return [
+     |
+     */
+ 
+-    'same_site' => null,
++    'same_site' => 'lax',
+ 
+ ];
+diff --git a/config/view.php b/config/view.php
+index 22b8a18d..bc73d32b 100644
+--- a/config/view.php
++++ b/config/view.php
+@@ -33,4 +33,17 @@ return [
+         realpath(storage_path('framework/views'))
+     ),
+ 
++    /*
++     |--------------------------------------------------------------------------
++     | Blade View Modification Checking
++     |--------------------------------------------------------------------------
++     |
++     | On every request the framework will check to see if a view has expired
++     | to determine if it needs to be recompiled. If you are in production
++     | and precompiling views this feature may be disabled to save time.
++     |
++     */
++
++    'expires' => env('VIEW_CHECK_EXPIRATION', true),
++
+ ];
+diff --git a/database/migrations/2014_10_12_000000_create_users_table.php b/database/migrations/2014_10_12_000000_create_users_table.php
+index a91e1d3c..621a24eb 100644
+--- a/database/migrations/2014_10_12_000000_create_users_table.php
++++ b/database/migrations/2014_10_12_000000_create_users_table.php
+@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
+     public function up()
+     {
+         Schema::create('users', function (Blueprint $table) {
+-            $table->bigIncrements('id');
++            $table->id();
+             $table->string('name');
+             $table->string('email')->unique();
+             $table->timestamp('email_verified_at')->nullable();
+diff --git a/database/migrations/2014_10_12_100000_create_password_resets_table.php b/database/migrations/2014_10_12_100000_create_password_resets_table.php
+deleted file mode 100644
+index 0ee0a36a..00000000
+--- a/database/migrations/2014_10_12_100000_create_password_resets_table.php
++++ /dev/null
+@@ -1,32 +0,0 @@
+-<?php
+-
+-use Illuminate\Database\Migrations\Migration;
+-use Illuminate\Database\Schema\Blueprint;
+-use Illuminate\Support\Facades\Schema;
+-
+-class CreatePasswordResetsTable extends Migration
+-{
+-    /**
+-     * Run the migrations.
+-     *
+-     * @return void
+-     */
+-    public function up()
+-    {
+-        Schema::create('password_resets', function (Blueprint $table) {
+-            $table->string('email')->index();
+-            $table->string('token');
+-            $table->timestamp('created_at')->nullable();
+-        });
+-    }
+-
+-    /**
+-     * Reverse the migrations.
+-     *
+-     * @return void
+-     */
+-    public function down()
+-    {
+-        Schema::dropIfExists('password_resets');
+-    }
+-}
+diff --git a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php b/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+index 389bdf76..9bddee36 100644
+--- a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
++++ b/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+@@ -14,7 +14,7 @@ class CreateFailedJobsTable extends Migration
+     public function up()
+     {
+         Schema::create('failed_jobs', function (Blueprint $table) {
+-            $table->bigIncrements('id');
++            $table->id();
+             $table->text('connection');
+             $table->text('queue');
+             $table->longText('payload');
+diff --git a/package.json b/package.json
+index 557bd215..3729fb78 100644
+--- a/package.json
++++ b/package.json
+@@ -2,18 +2,18 @@
+     "private": true,
+     "scripts": {
+         "dev": "npm run development",
+-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "watch": "npm run development -- --watch",
+         "watch-poll": "npm run watch -- --watch-poll",
+-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "prod": "npm run production",
+-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
++        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },
+     "devDependencies": {
+         "axios": "^0.19",
+         "cross-env": "^7.0",
+         "laravel-mix": "^5.0.1",
+-        "lodash": "^4.17.19",
++        "lodash": "^4.17.13",
+         "resolve-url-loader": "^3.1.0",
+         "sass": "^1.15.2",
+         "sass-loader": "^8.0.0"
+diff --git a/phpunit.xml b/phpunit.xml
+index 0f4389f9..383f71ef 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -23,7 +23,7 @@
+         <server name="CACHE_DRIVER" value="array"/>
+         <server name="DB_CONNECTION" value="sqlite"/>
+         <server name="DB_DATABASE" value=":memory:"/>
+-        <server name="MAIL_DRIVER" value="array"/>
++        <server name="MAIL_MAILER" value="array"/>
+         <server name="QUEUE_CONNECTION" value="sync"/>
+         <server name="SESSION_DRIVER" value="array"/>
+     </php>
+diff --git a/public/.htaccess b/public/.htaccess
+index b75525be..3aec5e27 100644
+--- a/public/.htaccess
++++ b/public/.htaccess
+@@ -14,7 +14,7 @@
+     RewriteCond %{REQUEST_URI} (.+)/$
+     RewriteRule ^ %1 [L,R=301]
+ 
+-    # Handle Front Controller...
++    # Send Requests To Front Controller...
+     RewriteCond %{REQUEST_FILENAME} !-d
+     RewriteCond %{REQUEST_FILENAME} !-f
+     RewriteRule ^ index.php [L]
+diff --git a/resources/lang/en/passwords.php b/resources/lang/en/passwords.php
+index 724de4b9..2345a56b 100644
+--- a/resources/lang/en/passwords.php
++++ b/resources/lang/en/passwords.php
+@@ -14,9 +14,9 @@ return [
+     */
+ 
+     'reset' => 'Your password has been reset!',
+-    'sent' => 'We have e-mailed your password reset link!',
++    'sent' => 'We have emailed your password reset link!',
+     'throttled' => 'Please wait before retrying.',
+     'token' => 'This password reset token is invalid.',
+-    'user' => "We can't find a user with that e-mail address.",
++    'user' => "We can't find a user with that email address.",
+ 
+ ];
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 7bc33725..3fb48cc0 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -7,7 +7,7 @@
+         <title>Laravel</title>
+ 
+         <!-- Fonts -->
+-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
++        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+ 
+         <!-- Styles -->
+         <style>
+diff --git a/routes/api.php b/routes/api.php
+index c641ca5e..bcb8b189 100644
+--- a/routes/api.php
++++ b/routes/api.php
+@@ -1,6 +1,7 @@
+ <?php
+ 
+ use Illuminate\Http\Request;
++use Illuminate\Support\Facades\Route;
+ 
+ /*
+ |--------------------------------------------------------------------------
+diff --git a/routes/channels.php b/routes/channels.php
+index f16a20b9..963b0d21 100644
+--- a/routes/channels.php
++++ b/routes/channels.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use Illuminate\Support\Facades\Broadcast;
++
+ /*
+ |--------------------------------------------------------------------------
+ | Broadcast Channels
+diff --git a/routes/console.php b/routes/console.php
+index 75dd0cde..da55196d 100644
+--- a/routes/console.php
++++ b/routes/console.php
+@@ -1,6 +1,7 @@
+ <?php
+ 
+ use Illuminate\Foundation\Inspiring;
++use Illuminate\Support\Facades\Artisan;
+ 
+ /*
+ |--------------------------------------------------------------------------
+diff --git a/routes/web.php b/routes/web.php
+index 810aa349..b1303973 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use Illuminate\Support\Facades\Route;
++
+ /*
+ |--------------------------------------------------------------------------
+ | Web Routes

@@ -1,0 +1,848 @@
+diff --git a/.editorconfig b/.editorconfig
+index 6537ca46..1671c9b9 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -13,3 +13,6 @@ trim_trailing_whitespace = false
+ 
+ [*.{yml,yaml}]
+ indent_size = 2
++
++[docker-compose.yml]
++indent_size = 4
+diff --git a/.env.example b/.env.example
+index 7dc51e1f..44853cd5 100644
+--- a/.env.example
++++ b/.env.example
+@@ -16,17 +16,20 @@ DB_PASSWORD=
+ 
+ BROADCAST_DRIVER=log
+ CACHE_DRIVER=file
++FILESYSTEM_DRIVER=local
+ QUEUE_CONNECTION=sync
+ SESSION_DRIVER=file
+ SESSION_LIFETIME=120
+ 
++MEMCACHED_HOST=127.0.0.1
++
+ REDIS_HOST=127.0.0.1
+ REDIS_PASSWORD=null
+ REDIS_PORT=6379
+ 
+ MAIL_MAILER=smtp
+-MAIL_HOST=smtp.mailtrap.io
+-MAIL_PORT=2525
++MAIL_HOST=mailhog
++MAIL_PORT=1025
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+ MAIL_ENCRYPTION=null
+@@ -37,6 +40,7 @@ AWS_ACCESS_KEY_ID=
+ AWS_SECRET_ACCESS_KEY=
+ AWS_DEFAULT_REGION=us-east-1
+ AWS_BUCKET=
++AWS_USE_PATH_STYLE_ENDPOINT=false
+ 
+ PUSHER_APP_ID=
+ PUSHER_APP_KEY=
+diff --git a/.gitignore b/.gitignore
+index 0f7df0fb..eb003b01 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,7 +6,10 @@
+ .env
+ .env.backup
+ .phpunit.result.cache
++docker-compose.override.yml
+ Homestead.json
+ Homestead.yaml
+ npm-debug.log
+ yarn-error.log
++/.idea
++/.vscode
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 9543d618..472b2a18 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,192 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.4.1...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.21...8.x)
++
++
++## [v8.5.21 (2021-07-06)](https://github.com/laravel/laravel/compare/v8.5.20...v8.5.21)
++
++### Changed
++- Update validation language files ([#5637](https://github.com/laravel/laravel/pull/5637), [#5636](https://github.com/laravel/laravel/pull/5636))
++
++
++## [v8.5.20 (2021-06-15)](https://github.com/laravel/laravel/compare/v8.5.19...v8.5.20)
++
++### Changed
++- Add translation for current_password rule ([#5628](https://github.com/laravel/laravel/pull/5628))
++
++
++## [v8.5.19 (2021-06-01)](https://github.com/laravel/laravel/compare/v8.5.18...v8.5.19)
++
++### Changed
++- Update skeleton for filesystem tweaks to make sail usage easier ([c5d38d4](https://github.com/laravel/laravel/commit/c5d38d469a447d6831c3cf56d193be7941d6586f))
++
++
++## [v8.5.18 (2021-05-18)](https://github.com/laravel/laravel/compare/v8.5.17...v8.5.18)
++
++### Changed
++- Add Octane cache store ([#5610](https://github.com/laravel/laravel/pull/5610), [637c85d](https://github.com/laravel/laravel/commit/637c85d624bf19355025b68aaa90e6cadf8a2881))
++
++
++## [v8.5.17 (2021-05-11)](https://github.com/laravel/laravel/compare/v8.5.16...v8.5.17)
++
++### Security
++- Bump framework version to include SQL server security fix ([#5601](https://github.com/laravel/laravel/pull/5601))
++
++
++## [v8.5.16 (2021-04-20)](https://github.com/laravel/laravel/compare/v8.5.15...v8.5.16)
++
++### Changed
++- Rename test methods ([#5574](https://github.com/laravel/laravel/pull/5574))
++- Using faker method instead of properties ([#5583](https://github.com/laravel/laravel/pull/5583))
++
++### Fixed
++- Ignore SQLite files generated on parallel testing ([#5593](https://github.com/laravel/laravel/pull/5593))
++
++
++## [v8.5.15 (2021-03-23)](https://github.com/laravel/laravel/compare/v8.5.14...v8.5.15)
++
++### Changed
++- Add prohibited validation rule ([#5569](https://github.com/laravel/laravel/pull/5569))
++- Re-order composer.json ([#5570](https://github.com/laravel/laravel/pull/5570))
++
++
++## [v8.5.14 (2021-03-16)](https://github.com/laravel/laravel/compare/v8.5.13...v8.5.14)
++
++### Changed
++- Add language for prohibited_if and prohibited_unless validation rules ([#5557](https://github.com/laravel/laravel/pull/5557))
++- Add date facade alias ([#5556](https://github.com/laravel/laravel/pull/5556))
++
++### Fixed
++- Add log level config value to stderr channel ([#5558](https://github.com/laravel/laravel/pull/5558))
++- Fix footer on mobile ([#5561](https://github.com/laravel/laravel/pull/5561))
++
++
++## [v8.5.13 (2021-03-09)](https://github.com/laravel/laravel/compare/v8.5.12...v8.5.13)
++
++### Changed
++- Use same default queue name for all drivers ([#5549](https://github.com/laravel/laravel/pull/5549))
++- Standardise "must" and "may" language in validation ([#5552](https://github.com/laravel/laravel/pull/5552))
++- Add missing 'after_commit' key to queue config ([#5554](https://github.com/laravel/laravel/pull/5554))
++
++
++## [v8.5.12 (2021-03-02)](https://github.com/laravel/laravel/compare/v8.5.11...v8.5.12)
++
++### Fixed
++- Added sans-serif as Fallback Font ([#5543](https://github.com/laravel/laravel/pull/5543))
++- Don't trim `current_password` ([#5546](https://github.com/laravel/laravel/pull/5546))
++
++
++## [v8.5.11 (2021-02-23)](https://github.com/laravel/laravel/compare/v8.5.10...v8.5.11)
++
++### Fixed
++- Don't flash 'current_password' input ([#5541](https://github.com/laravel/laravel/pull/5541))
++
++
++## [v8.5.10 (2021-02-16)](https://github.com/laravel/laravel/compare/v8.5.9...v8.5.10)
++
++### Changed
++- Add "ably" in comment as a broadcast connection ([#5531](https://github.com/laravel/laravel/pull/5531))
++- Add unverified state to UserFactory ([#5533](https://github.com/laravel/laravel/pull/5533))
++- Update login wording ([9a56a60](https://github.com/laravel/laravel/commit/9a56a60cc9e3785683e256d511ee1fb533025a0a))
++
++### Fixed
++- Fix dead link in web.config ([#5528](https://github.com/laravel/laravel/pull/5528))
++
++
++## [v8.5.9 (2021-01-19)](https://github.com/laravel/laravel/compare/v8.5.8...v8.5.9)
++
++### Removed
++- Delete `docker-compose.yml` ([#5522](https://github.com/laravel/laravel/pull/5522))
++
++
++## [v8.5.8 (2021-01-12)](https://github.com/laravel/laravel/compare/v8.5.7...v8.5.8)
++
++### Fixed
++- Update `TrustProxies.php` ([#5514](https://github.com/laravel/laravel/pull/5514))
++
++
++## [v8.5.7 (2021-01-05)](https://github.com/laravel/laravel/compare/v8.5.6...v8.5.7)
++
++### Changed
++- Update sail to the v1.0.1 ([#5507](https://github.com/laravel/laravel/pull/5507))
++- Upgrade to Mix v6 ([#5505](https://github.com/laravel/laravel/pull/5505))
++- Updated Axios ([4de728e](https://github.com/laravel/laravel/commit/4de728e78c91b496ce5de09983a56e229aa0ade1))
++
++
++## [v8.5.6 (2020-12-22)](https://github.com/laravel/laravel/compare/v8.5.5...v8.5.6)
++
++### Added
++- Add `lock_connection` ([bc339f7](https://github.com/laravel/laravel/commit/bc339f712389cf536ad7e340453f35d1dd865777), [e8788a7](https://github.com/laravel/laravel/commit/e8788a768899ff2a2ef1fe78e24b46e6e10175dc))
++
++
++## [v8.5.5 (2020-12-12)](https://github.com/laravel/laravel/compare/v8.5.4...v8.5.5)
++
++### Changed
++- Revert changes to env file ([3b2ed46](https://github.com/laravel/laravel/commit/3b2ed46e65c603ddc682753f1a9bb5472c4e12a8))
++
++
++## [v8.5.4 (2020-12-10)](https://github.com/laravel/laravel/compare/v8.5.3...v8.5.4)
++
++### Changed
++- Gitignore `docker-compose.override.yml` ([#5487](https://github.com/laravel/laravel/pull/5487)
++- Update ENV vars to docker file ([ddb26fb](https://github.com/laravel/laravel/commit/ddb26fbc504cd64fb1b89511773aa8d03c758c6d))
++
++
++## [v8.5.3 (2020-12-10)](https://github.com/laravel/laravel/compare/v8.5.2...v8.5.3)
++
++### Changed
++- Disable `TrustHosts` middleware ([b7cde8b](https://github.com/laravel/laravel/commit/b7cde8b495e183f386da63ff7792e0dea9cfcf56))
++
++
++## [v8.5.2 (2020-12-08)](https://github.com/laravel/laravel/compare/v8.5.1...v8.5.2)
++
++### Added
++- Add Sail ([17668be](https://github.com/laravel/laravel/commit/17668beabe4cb489ad07abb8af0a9da01860601e))
++
++
++## [v8.5.1 (2020-12-08)](https://github.com/laravel/laravel/compare/v8.5.0...v8.5.1)
++
++### Changed
++- Revert change to `QUEUE_CONNECTION` ([34368a4](https://github.com/laravel/laravel/commit/34368a4fab61839c106efb1eea087cc270639619))
++
++
++## [v8.5.0 (2020-12-08)](https://github.com/laravel/laravel/compare/v8.4.4...v8.5.0)
++
++### Added
++- Add Sail file ([bcd87e8](https://github.com/laravel/laravel/commit/bcd87e80ac7fa6a5daf0e549059ad7cb0b41ce75))
++
++### Changed
++- Update env file for Sail ([a895748](https://github.com/laravel/laravel/commit/a895748980b3e055ffcb68b6bc1c2e5fad6ecb08))
++
++
++## [v8.4.4 (2020-12-01)](https://github.com/laravel/laravel/compare/v8.4.3...v8.4.4)
++
++### Changed
++- Comment out `Redis` facade by default ([612d166](https://github.com/laravel/laravel/commit/612d16600419265566d01a19c852ddb13b5e9f4b))
++- Uncomment `TrustHosts` middleware to enable it by default ([#5477](https://github.com/laravel/laravel/pull/5477))
++
++### Removed
++- Remove cloud option ([82213fb](https://github.com/laravel/laravel/commit/82213fbf40fc4ec687781d0b93ff60a7de536913))
++
++
++## [v8.4.3 (2020-11-24)](https://github.com/laravel/laravel/compare/v8.4.2...v8.4.3)
++
++### Added
++- Add ably entry ([5182e9c](https://github.com/laravel/laravel/commit/5182e9c6de805e025fb4cfad63c210c3197002ab))
++
++### Fixed
++- Add missing null cache driver in `config/cache.php` ([#5472](https://github.com/laravel/laravel/pull/5472))
++
++
++## [v8.4.2 (2020-11-17)](https://github.com/laravel/laravel/compare/v8.4.1...v8.4.2)
++
++### Changed
++- Add sanctum cookie endpoint to default cors paths ([aa6d3660](https://github.com/laravel/laravel/commit/aa6d3660114c93e537a52e0ba3c03071a7f3e67f))
++- Modify the `cache.php` docblocks ([#5468](https://github.com/laravel/laravel/pull/5468))
++- Add stub handler ([4931af1](https://github.com/laravel/laravel/commit/4931af14006610bf8fd1f860cea1117c68133e94))
++
++### Fixed
++- Closed @auth correctly ([#5471](https://github.com/laravel/laravel/pull/5471))
+ 
+ 
+ ## [v8.4.1 (2020-11-10)](https://github.com/laravel/laravel/compare/v8.4.0...v8.4.1)
+diff --git a/README.md b/README.md
+index 2f7ddcc6..ceb6ac0a 100644
+--- a/README.md
++++ b/README.md
+@@ -42,6 +42,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[Many](https://www.many.co.uk)**
+ - **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+ - **[DevSquad](https://devsquad.com)**
++- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+ - **[OP.GG](https://op.gg)**
+ 
+ ## Contributing
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 7e40d735..c18c43cc 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -3,6 +3,7 @@
+ namespace App\Exceptions;
+ 
+ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
++use Throwable;
+ 
+ class Handler extends ExceptionHandler
+ {
+@@ -21,6 +22,7 @@ class Handler extends ExceptionHandler
+      * @var array
+      */
+     protected $dontFlash = [
++        'current_password',
+         'password',
+         'password_confirmation',
+     ];
+@@ -32,6 +34,8 @@ class Handler extends ExceptionHandler
+      */
+     public function register()
+     {
+-        //
++        $this->reportable(function (Throwable $e) {
++            //
++        });
+     }
+ }
+diff --git a/app/Http/Middleware/TrimStrings.php b/app/Http/Middleware/TrimStrings.php
+index 5a50e7b5..a8a252df 100644
+--- a/app/Http/Middleware/TrimStrings.php
++++ b/app/Http/Middleware/TrimStrings.php
+@@ -12,6 +12,7 @@ class TrimStrings extends Middleware
+      * @var array
+      */
+     protected $except = [
++        'current_password',
+         'password',
+         'password_confirmation',
+     ];
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index 14befceb..a3b6aef9 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -19,5 +19,5 @@ class TrustProxies extends Middleware
+      *
+      * @var int
+      */
+-    protected $headers = Request::HEADER_X_FORWARDED_ALL;
++    protected $headers = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_AWS_ELB;
+ }
+diff --git a/artisan b/artisan
+index 5c23e2e2..67a3329b 100755
+--- a/artisan
++++ b/artisan
+@@ -11,7 +11,7 @@ define('LARAVEL_START', microtime(true));
+ | Composer provides a convenient, automatically generated class loader
+ | for our application. We just need to utilize it! We'll require it
+ | into the script here so that we do not have to worry about the
+-| loading of any our classes "manually". Feels great to relax.
++| loading of any of our classes manually. It's great to relax.
+ |
+ */
+ 
+diff --git a/composer.json b/composer.json
+index 9d06962b..d0635f15 100644
+--- a/composer.json
++++ b/composer.json
+@@ -2,36 +2,24 @@
+     "name": "laravel/laravel",
+     "type": "project",
+     "description": "The Laravel Framework.",
+-    "keywords": [
+-        "framework",
+-        "laravel"
+-    ],
++    "keywords": ["framework", "laravel"],
+     "license": "MIT",
+     "require": {
+         "php": "^7.3|^8.0",
+         "fideloper/proxy": "^4.4",
+         "fruitcake/laravel-cors": "^2.0",
+         "guzzlehttp/guzzle": "^7.0.1",
+-        "laravel/framework": "^8.12",
++        "laravel/framework": "^8.40",
+         "laravel/tinker": "^2.5"
+     },
+     "require-dev": {
+         "facade/ignition": "^2.5",
+         "fakerphp/faker": "^1.9.1",
++        "laravel/sail": "^1.0.1",
+         "mockery/mockery": "^1.4.2",
+         "nunomaduro/collision": "^5.0",
+         "phpunit/phpunit": "^9.3.3"
+     },
+-    "config": {
+-        "optimize-autoloader": true,
+-        "preferred-install": "dist",
+-        "sort-packages": true
+-    },
+-    "extra": {
+-        "laravel": {
+-            "dont-discover": []
+-        }
+-    },
+     "autoload": {
+         "psr-4": {
+             "App\\": "app/",
+@@ -44,8 +32,6 @@
+             "Tests\\": "tests/"
+         }
+     },
+-    "minimum-stability": "dev",
+-    "prefer-stable": true,
+     "scripts": {
+         "post-autoload-dump": [
+             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+@@ -57,5 +43,17 @@
+         "post-create-project-cmd": [
+             "@php artisan key:generate --ansi"
+         ]
+-    }
++    },
++    "extra": {
++        "laravel": {
++            "dont-discover": []
++        }
++    },
++    "config": {
++        "optimize-autoloader": true,
++        "preferred-install": "dist",
++        "sort-packages": true
++    },
++    "minimum-stability": "dev",
++    "prefer-stable": true
+ }
+diff --git a/config/app.php b/config/app.php
+index 8409e00e..f572b646 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -201,6 +201,7 @@ return [
+         'Config' => Illuminate\Support\Facades\Config::class,
+         'Cookie' => Illuminate\Support\Facades\Cookie::class,
+         'Crypt' => Illuminate\Support\Facades\Crypt::class,
++        'Date' => Illuminate\Support\Facades\Date::class,
+         'DB' => Illuminate\Support\Facades\DB::class,
+         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+         'Event' => Illuminate\Support\Facades\Event::class,
+@@ -215,7 +216,7 @@ return [
+         'Password' => Illuminate\Support\Facades\Password::class,
+         'Queue' => Illuminate\Support\Facades\Queue::class,
+         'Redirect' => Illuminate\Support\Facades\Redirect::class,
+-        'Redis' => Illuminate\Support\Facades\Redis::class,
++        // 'Redis' => Illuminate\Support\Facades\Redis::class,
+         'Request' => Illuminate\Support\Facades\Request::class,
+         'Response' => Illuminate\Support\Facades\Response::class,
+         'Route' => Illuminate\Support\Facades\Route::class,
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index 3bba1103..2d529820 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -11,7 +11,7 @@ return [
+     | framework when an event needs to be broadcast. You may set this to
+     | any of the connections defined in the "connections" array below.
+     |
+-    | Supported: "pusher", "redis", "log", "null"
++    | Supported: "pusher", "ably", "redis", "log", "null"
+     |
+     */
+ 
+@@ -41,6 +41,11 @@ return [
+             ],
+         ],
+ 
++        'ably' => [
++            'driver' => 'ably',
++            'key' => env('ABLY_KEY'),
++        ],
++
+         'redis' => [
+             'driver' => 'redis',
+             'connection' => 'default',
+diff --git a/config/cache.php b/config/cache.php
+index 4f41fdf9..8736c7a7 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -13,9 +13,6 @@ return [
+     | using this caching library. This connection is used when another is
+     | not explicitly specified when executing a given caching function.
+     |
+-    | Supported: "apc", "array", "database", "file",
+-    |            "memcached", "redis", "dynamodb"
+-    |
+     */
+ 
+     'default' => env('CACHE_DRIVER', 'file'),
+@@ -29,6 +26,9 @@ return [
+     | well as their drivers. You may even define multiple stores for the
+     | same cache driver to group types of items stored in your caches.
+     |
++    | Supported drivers: "apc", "array", "database", "file",
++    |         "memcached", "redis", "dynamodb", "octane", "null"
++    |
+     */
+ 
+     'stores' => [
+@@ -46,6 +46,7 @@ return [
+             'driver' => 'database',
+             'table' => 'cache',
+             'connection' => null,
++            'lock_connection' => null,
+         ],
+ 
+         'file' => [
+@@ -75,6 +76,7 @@ return [
+         'redis' => [
+             'driver' => 'redis',
+             'connection' => 'cache',
++            'lock_connection' => 'default',
+         ],
+ 
+         'dynamodb' => [
+@@ -86,6 +88,10 @@ return [
+             'endpoint' => env('DYNAMODB_ENDPOINT'),
+         ],
+ 
++        'octane' => [
++            'driver' => 'octane',
++        ],
++
+     ],
+ 
+     /*
+diff --git a/config/cors.php b/config/cors.php
+index 558369dc..8a39e6da 100644
+--- a/config/cors.php
++++ b/config/cors.php
+@@ -15,7 +15,7 @@ return [
+     |
+     */
+ 
+-    'paths' => ['api/*'],
++    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+ 
+     'allowed_methods' => ['*'],
+ 
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 94c81126..760ef972 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -15,19 +15,6 @@ return [
+ 
+     'default' => env('FILESYSTEM_DRIVER', 'local'),
+ 
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Default Cloud Filesystem Disk
+-    |--------------------------------------------------------------------------
+-    |
+-    | Many applications store files both locally and in the cloud. For this
+-    | reason, you may specify a default "cloud" driver here. This driver
+-    | will be bound as the Cloud disk implementation in the container.
+-    |
+-    */
+-
+-    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
+-
+     /*
+     |--------------------------------------------------------------------------
+     | Filesystem Disks
+@@ -63,6 +50,7 @@ return [
+             'bucket' => env('AWS_BUCKET'),
+             'url' => env('AWS_URL'),
+             'endpoint' => env('AWS_ENDPOINT'),
++            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+         ],
+ 
+     ],
+diff --git a/config/logging.php b/config/logging.php
+index 6aa77fe2..1aa06aa3 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -74,6 +74,7 @@ return [
+ 
+         'stderr' => [
+             'driver' => 'monolog',
++            'level' => env('LOG_LEVEL', 'debug'),
+             'handler' => StreamHandler::class,
+             'formatter' => env('LOG_STDERR_FORMATTER'),
+             'with' => [
+diff --git a/config/queue.php b/config/queue.php
+index 12222966..25ea5a81 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -39,6 +39,7 @@ return [
+             'table' => 'jobs',
+             'queue' => 'default',
+             'retry_after' => 90,
++            'after_commit' => false,
+         ],
+ 
+         'beanstalkd' => [
+@@ -47,6 +48,7 @@ return [
+             'queue' => 'default',
+             'retry_after' => 90,
+             'block_for' => 0,
++            'after_commit' => false,
+         ],
+ 
+         'sqs' => [
+@@ -54,9 +56,10 @@ return [
+             'key' => env('AWS_ACCESS_KEY_ID'),
+             'secret' => env('AWS_SECRET_ACCESS_KEY'),
+             'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+-            'queue' => env('SQS_QUEUE', 'your-queue-name'),
++            'queue' => env('SQS_QUEUE', 'default'),
+             'suffix' => env('SQS_SUFFIX'),
+             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
++            'after_commit' => false,
+         ],
+ 
+         'redis' => [
+@@ -65,6 +68,7 @@ return [
+             'queue' => env('REDIS_QUEUE', 'default'),
+             'retry_after' => 90,
+             'block_for' => null,
++            'after_commit' => false,
+         ],
+ 
+     ],
+diff --git a/config/session.php b/config/session.php
+index 4e0f66cd..ac0802b1 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -164,7 +164,7 @@ return [
+     |
+     | By setting this option to true, session cookies will only be sent back
+     | to the server if the browser has a HTTPS connection. This will keep
+-    | the cookie from being sent to you if it can not be done securely.
++    | the cookie from being sent to you when it can't be done securely.
+     |
+     */
+ 
+diff --git a/database/.gitignore b/database/.gitignore
+index 97fc9767..9b19b93c 100644
+--- a/database/.gitignore
++++ b/database/.gitignore
+@@ -1,2 +1 @@
+-*.sqlite
+-*.sqlite-journal
++*.sqlite*
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index bdea1a32..a24ce53f 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -23,11 +23,25 @@ class UserFactory extends Factory
+     public function definition()
+     {
+         return [
+-            'name' => $this->faker->name,
+-            'email' => $this->faker->unique()->safeEmail,
++            'name' => $this->faker->name(),
++            'email' => $this->faker->unique()->safeEmail(),
+             'email_verified_at' => now(),
+             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+             'remember_token' => Str::random(10),
+         ];
+     }
++
++    /**
++     * Indicate that the model's email address should be unverified.
++     *
++     * @return \Illuminate\Database\Eloquent\Factories\Factory
++     */
++    public function unverified()
++    {
++        return $this->state(function (array $attributes) {
++            return [
++                'email_verified_at' => null,
++            ];
++        });
++    }
+ }
+diff --git a/package.json b/package.json
+index 2aefa8f8..00c65067 100644
+--- a/package.json
++++ b/package.json
+@@ -2,18 +2,17 @@
+     "private": true,
+     "scripts": {
+         "dev": "npm run development",
+-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
+-        "watch": "npm run development -- --watch",
+-        "watch-poll": "npm run watch -- --watch-poll",
+-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "development": "mix",
++        "watch": "mix watch",
++        "watch-poll": "mix watch -- --watch-options-poll=1000",
++        "hot": "mix watch --hot",
+         "prod": "npm run production",
+-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
++        "production": "mix --production"
+     },
+     "devDependencies": {
+-        "axios": "^0.19",
+-        "cross-env": "^7.0",
+-        "laravel-mix": "^5.0.1",
++        "axios": "^0.21",
++        "laravel-mix": "^6.0.6",
+         "lodash": "^4.17.19",
+-        "resolve-url-loader": "^3.1.0"
++        "postcss": "^8.1.14"
+     }
+ }
+diff --git a/public/index.php b/public/index.php
+index a8137b13..66ea93cd 100644
+--- a/public/index.php
++++ b/public/index.php
+@@ -7,11 +7,11 @@ define('LARAVEL_START', microtime(true));
+ 
+ /*
+ |--------------------------------------------------------------------------
+-| Check If Application Is Under Maintenance
++| Check If The Application Is Under Maintenance
+ |--------------------------------------------------------------------------
+ |
+-| If the application is maintenance / demo mode via the "down" command we
+-| will require this file so that any prerendered template can be shown
++| If the application is in maintenance / demo mode via the "down" command
++| we will load this file so that any pre-rendered content can be shown
+ | instead of starting the framework, which could cause an exception.
+ |
+ */
+diff --git a/public/web.config b/public/web.config
+index d3711d7c..323482f1 100644
+--- a/public/web.config
++++ b/public/web.config
+@@ -1,6 +1,6 @@
+ <!--
+     Rewrites requires Microsoft URL Rewrite Module for IIS
+-    Download: https://www.microsoft.com/en-us/download/details.aspx?id=47337
++    Download: https://www.iis.net/downloads/microsoft/url-rewrite
+     Debug Help: https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/using-failed-request-tracing-to-trace-rewrite-rules
+ -->
+ <configuration>
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 2e2820b0..6100f808 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -17,9 +17,9 @@ return [
+     'active_url' => 'The :attribute is not a valid URL.',
+     'after' => 'The :attribute must be a date after :date.',
+     'after_or_equal' => 'The :attribute must be a date after or equal to :date.',
+-    'alpha' => 'The :attribute may only contain letters.',
+-    'alpha_dash' => 'The :attribute may only contain letters, numbers, dashes and underscores.',
+-    'alpha_num' => 'The :attribute may only contain letters and numbers.',
++    'alpha' => 'The :attribute must only contain letters.',
++    'alpha_dash' => 'The :attribute must only contain letters, numbers, dashes and underscores.',
++    'alpha_num' => 'The :attribute must only contain letters and numbers.',
+     'array' => 'The :attribute must be an array.',
+     'before' => 'The :attribute must be a date before :date.',
+     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
+@@ -31,6 +31,7 @@ return [
+     ],
+     'boolean' => 'The :attribute field must be true or false.',
+     'confirmed' => 'The :attribute confirmation does not match.',
++    'current_password' => 'The password is incorrect.',
+     'date' => 'The :attribute is not a valid date.',
+     'date_equals' => 'The :attribute must be a date equal to :date.',
+     'date_format' => 'The :attribute does not match the format :format.',
+@@ -77,10 +78,10 @@ return [
+         'array' => 'The :attribute must not have more than :value items.',
+     ],
+     'max' => [
+-        'numeric' => 'The :attribute may not be greater than :max.',
+-        'file' => 'The :attribute may not be greater than :max kilobytes.',
+-        'string' => 'The :attribute may not be greater than :max characters.',
+-        'array' => 'The :attribute may not have more than :max items.',
++        'numeric' => 'The :attribute must not be greater than :max.',
++        'file' => 'The :attribute must not be greater than :max kilobytes.',
++        'string' => 'The :attribute must not be greater than :max characters.',
++        'array' => 'The :attribute must not have more than :max items.',
+     ],
+     'mimes' => 'The :attribute must be a file of type: :values.',
+     'mimetypes' => 'The :attribute must be a file of type: :values.',
+@@ -90,7 +91,7 @@ return [
+         'string' => 'The :attribute must be at least :min characters.',
+         'array' => 'The :attribute must have at least :min items.',
+     ],
+-    'multiple_of' => 'The :attribute must be a multiple of :value',
++    'multiple_of' => 'The :attribute must be a multiple of :value.',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
+@@ -104,6 +105,9 @@ return [
+     'required_with_all' => 'The :attribute field is required when :values are present.',
+     'required_without' => 'The :attribute field is required when :values is not present.',
+     'required_without_all' => 'The :attribute field is required when none of :values are present.',
++    'prohibited' => 'The :attribute field is prohibited.',
++    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
++    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
+     'same' => 'The :attribute and :other must match.',
+     'size' => [
+         'numeric' => 'The :attribute must be :size.',
+@@ -113,10 +117,10 @@ return [
+     ],
+     'starts_with' => 'The :attribute must start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',
+-    'timezone' => 'The :attribute must be a valid zone.',
++    'timezone' => 'The :attribute must be a valid timezone.',
+     'unique' => 'The :attribute has already been taken.',
+     'uploaded' => 'The :attribute failed to upload.',
+-    'url' => 'The :attribute format is invalid.',
++    'url' => 'The :attribute must be a valid URL.',
+     'uuid' => 'The :attribute must be a valid UUID.',
+ 
+     /*
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index ed7110bb..b1905c92 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -16,23 +16,23 @@
+ 
+         <style>
+             body {
+-                font-family: 'Nunito';
++                font-family: 'Nunito', sans-serif;
+             }
+         </style>
+     </head>
+     <body class="antialiased">
+-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
++        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
+             @if (Route::has('login'))
+                 <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+                     @auth
+                         <a href="{{ url('/home') }}" class="text-sm text-gray-700 underline">Home</a>
+                     @else
+-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
++                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
+ 
+                         @if (Route::has('register'))
+                             <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>
+                         @endif
+-                    @endif
++                    @endauth
+                 </div>
+             @endif
+ 
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index cdb51119..4ae02bc5 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -12,7 +12,7 @@ class ExampleTest extends TestCase
+      *
+      * @return void
+      */
+-    public function testBasicTest()
++    public function test_example()
+     {
+         $response = $this->get('/');
+ 
+diff --git a/tests/Unit/ExampleTest.php b/tests/Unit/ExampleTest.php
+index 358cfc88..62e8c3cd 100644
+--- a/tests/Unit/ExampleTest.php
++++ b/tests/Unit/ExampleTest.php
+@@ -11,7 +11,7 @@ class ExampleTest extends TestCase
+      *
+      * @return void
+      */
+-    public function testBasicTest()
++    public function test_example()
+     {
+         $this->assertTrue(true);
+     }

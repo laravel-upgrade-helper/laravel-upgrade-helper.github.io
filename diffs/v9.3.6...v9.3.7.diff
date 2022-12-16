@@ -1,0 +1,31 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6398cdaa..9b7c9744 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.5...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.6...9.x)
++
++## [v9.3.6](https://github.com/laravel/laravel/compare/v9.3.5...v9.3.6) - 2022-08-29
++
++### Changed
++
++- Bump Vite plugin version by @timacdonald in https://github.com/laravel/laravel/pull/5977
+ 
+ ## [v9.3.5](https://github.com/laravel/laravel/compare/v9.3.4...v9.3.5) - 2022-08-22
+ 
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index da6feabb..41f8ae89 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -19,7 +19,7 @@ class UserFactory extends Factory
+     {
+         return [
+             'name' => fake()->name(),
+-            'email' => fake()->safeEmail(),
++            'email' => fake()->unique()->safeEmail(),
+             'email_verified_at' => now(),
+             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+             'remember_token' => Str::random(10),

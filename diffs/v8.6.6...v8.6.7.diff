@@ -1,0 +1,57 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 64bb32c6..b4e03953 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,13 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.6...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.7...8.x)
++
++
++## [v8.6.7 (2021-11-16)](https://github.com/laravel/laravel/compare/v8.6.6...v8.6.7)
++
++### Changed
++- Added `declined` and `declined_if` validation rules ([#5723](https://github.com/laravel/laravel/pull/5723))
++- Should be identical with current sanctum config file ([#5725](https://github.com/laravel/laravel/pull/5725))
+ 
+ 
+ ## [v8.6.6 (2021-11-09)](https://github.com/laravel/laravel/compare/v8.6.5...v8.6.6)
+diff --git a/config/sanctum.php b/config/sanctum.php
+index 442726a7..9281c92d 100644
+--- a/config/sanctum.php
++++ b/config/sanctum.php
+@@ -19,6 +19,20 @@ return [
+         env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
+     ))),
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Sanctum Guards
++    |--------------------------------------------------------------------------
++    |
++    | This array contains the authentication guards that will be checked when
++    | Sanctum is trying to authenticate a request. If none of these guards
++    | are able to authenticate the request, Sanctum will use the bearer
++    | token that's present on an incoming request for authentication.
++    |
++    */
++
++    'guard' => ['web'],
++
+     /*
+     |--------------------------------------------------------------------------
+     | Expiration Minutes
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 9fab4d92..51735fee 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -36,6 +36,8 @@ return [
+     'date' => 'The :attribute is not a valid date.',
+     'date_equals' => 'The :attribute must be a date equal to :date.',
+     'date_format' => 'The :attribute does not match the format :format.',
++    'declined' => 'The :attribute must be declined.',
++    'declined_if' => 'The :attribute must be declined when :other is :value.',
+     'different' => 'The :attribute and :other must be different.',
+     'digits' => 'The :attribute must be :digits digits.',
+     'digits_between' => 'The :attribute must be between :min and :max digits.',

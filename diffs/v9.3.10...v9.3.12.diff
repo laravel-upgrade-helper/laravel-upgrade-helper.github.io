@@ -1,0 +1,58 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 79a9f092..c96aa8f9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,19 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.9...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.11...9.x)
++
++## [v9.3.11](https://github.com/laravel/laravel/compare/v9.3.10...v9.3.11) - 2022-11-14
++
++### Changed
++
++- Adds lowercase validation rule translation by @timacdonald in https://github.com/laravel/laravel/pull/6028
++- Adds uppercase validation rule translation by @michaelnabil230 in https://github.com/laravel/laravel/pull/6029
++
++## [v9.3.10](https://github.com/laravel/laravel/compare/v9.3.9...v9.3.10) - 2022-10-28
++
++### Changed
++
++- Changing .env to make Pusher work without editing the commented out part in the bootstrap.js by @cveldman in https://github.com/laravel/laravel/pull/6021
+ 
+ ## [v9.3.9](https://github.com/laravel/laravel/compare/v9.3.8...v9.3.9) - 2022-10-17
+ 
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index 5ea01fa7..f3d8cc5f 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -71,6 +71,7 @@ return [
+     'ipv4' => 'The :attribute must be a valid IPv4 address.',
+     'ipv6' => 'The :attribute must be a valid IPv6 address.',
+     'json' => 'The :attribute must be a valid JSON string.',
++    'lowercase' => 'The :attribute must be lowercase.',
+     'lt' => [
+         'array' => 'The :attribute must have less than :value items.',
+         'file' => 'The :attribute must be less than :value kilobytes.',
+@@ -138,6 +139,7 @@ return [
+     'timezone' => 'The :attribute must be a valid timezone.',
+     'unique' => 'The :attribute has already been taken.',
+     'uploaded' => 'The :attribute failed to upload.',
++    'uppercase' => 'The :attribute must be uppercase.',
+     'url' => 'The :attribute must be a valid URL.',
+     'uuid' => 'The :attribute must be a valid UUID.',
+ 
+diff --git a/package.json b/package.json
+index 36489d96..a11c53af 100644
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,7 @@
+     },
+     "devDependencies": {
+         "axios": "^1.1.2",
+-        "laravel-vite-plugin": "^0.6.0",
++        "laravel-vite-plugin": "^0.7.0",
+         "lodash": "^4.17.19",
+         "postcss": "^8.1.14",
+         "vite": "^3.0.0"

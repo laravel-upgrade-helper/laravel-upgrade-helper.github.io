@@ -1,0 +1,25 @@
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index 7daf51f1..12fdf8b5 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -10,7 +10,7 @@ class TrustProxies extends Middleware
+     /**
+      * The trusted proxies for this application.
+      *
+-     * @var array
++     * @var array|string
+      */
+     protected $proxies;
+ 
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 8ab929cb..e1d879f3 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -40,6 +40,7 @@ return [
+     'dimensions' => 'The :attribute has invalid image dimensions.',
+     'distinct' => 'The :attribute field has a duplicate value.',
+     'email' => 'The :attribute must be a valid email address.',
++    'ends_with' => 'The :attribute must end with one of the following: :values',
+     'exists' => 'The selected :attribute is invalid.',
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',

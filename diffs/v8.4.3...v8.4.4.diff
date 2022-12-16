@@ -1,0 +1,72 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 80d51eb7..195610f2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,16 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.4.3...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.4.4...8.x)
++
++
++## [v8.4.4 (2020-12-01)](https://github.com/laravel/laravel/compare/v8.4.3...v8.4.4)
++
++### Changed
++- Comment out `Redis` facade by default ([612d166](https://github.com/laravel/laravel/commit/612d16600419265566d01a19c852ddb13b5e9f4b))
++- Uncomment `TrustHosts` middleware to enable it by default ([#5477](https://github.com/laravel/laravel/pull/5477))
++
++### Removed
++- Remove cloud option ([82213fb](https://github.com/laravel/laravel/commit/82213fbf40fc4ec687781d0b93ff60a7de536913))
+ 
+ 
+ ## [v8.4.3 (2020-11-24)](https://github.com/laravel/laravel/compare/v8.4.2...v8.4.3)
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 30020a50..21a8754b 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -14,7 +14,7 @@ class Kernel extends HttpKernel
+      * @var array
+      */
+     protected $middleware = [
+-        // \App\Http\Middleware\TrustHosts::class,
++        \App\Http\Middleware\TrustHosts::class,
+         \App\Http\Middleware\TrustProxies::class,
+         \Fruitcake\Cors\HandleCors::class,
+         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+diff --git a/config/app.php b/config/app.php
+index 8409e00e..2a2f0ebe 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -215,7 +215,7 @@ return [
+         'Password' => Illuminate\Support\Facades\Password::class,
+         'Queue' => Illuminate\Support\Facades\Queue::class,
+         'Redirect' => Illuminate\Support\Facades\Redirect::class,
+-        'Redis' => Illuminate\Support\Facades\Redis::class,
++        // 'Redis' => Illuminate\Support\Facades\Redis::class,
+         'Request' => Illuminate\Support\Facades\Request::class,
+         'Response' => Illuminate\Support\Facades\Response::class,
+         'Route' => Illuminate\Support\Facades\Route::class,
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 94c81126..10c9d9be 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -15,19 +15,6 @@ return [
+ 
+     'default' => env('FILESYSTEM_DRIVER', 'local'),
+ 
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Default Cloud Filesystem Disk
+-    |--------------------------------------------------------------------------
+-    |
+-    | Many applications store files both locally and in the cloud. For this
+-    | reason, you may specify a default "cloud" driver here. This driver
+-    | will be bound as the Cloud disk implementation in the container.
+-    |
+-    */
+-
+-    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
+-
+     /*
+     |--------------------------------------------------------------------------
+     | Filesystem Disks

@@ -1,0 +1,110 @@
+diff --git a/.styleci.yml b/.styleci.yml
+index 4705a373..9daadf16 100644
+--- a/.styleci.yml
++++ b/.styleci.yml
+@@ -5,8 +5,5 @@ php:
+   finder:
+     not-name:
+       - index.php
+-js:
+-  finder:
+-    not-name:
+-      - vite.config.js
++js: true
+ css: true
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0f534dbd..5c278f3e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,24 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.2.1...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.1...9.x)
++
++## [v9.3.1](https://github.com/laravel/laravel/compare/v9.3.0...v9.3.1) - 2022-07-26
++
++### Changed
++
++- Update font delivery by @abenerd in https://github.com/laravel/laravel/pull/5952
++- Don't need to ignore vite config file by @GrahamCampbell in https://github.com/laravel/laravel/pull/5953
++
++## [v9.3.0](https://github.com/laravel/laravel/compare/v9.2.1...v9.3.0) - 2022-07-20
++
++### Added
++
++- Uses `laravel/pint` for styling by @nunomaduro in https://github.com/laravel/laravel/pull/5945
++
++### Changed
++
++- Bump axios version by @ankurk91 in https://github.com/laravel/laravel/pull/5946
++- Vite 3 support by @timacdonald in https://github.com/laravel/laravel/pull/5944
+ 
+ ## [v9.2.1](https://github.com/laravel/laravel/compare/v9.2.0...v9.2.1) - 2022-07-13
+ 
+diff --git a/composer.json b/composer.json
+index 14da264d..299b7e8a 100644
+--- a/composer.json
++++ b/composer.json
+@@ -8,7 +8,7 @@
+         "php": "^8.0.2",
+         "guzzlehttp/guzzle": "^7.2",
+         "laravel/framework": "^9.19",
+-        "laravel/sanctum": "^2.14.1",
++        "laravel/sanctum": "^3.0",
+         "laravel/tinker": "^2.7"
+     },
+     "require-dev": {
+@@ -55,7 +55,10 @@
+     "config": {
+         "optimize-autoloader": true,
+         "preferred-install": "dist",
+-        "sort-packages": true
++        "sort-packages": true,
++        "allow-plugins": {
++            "pestphp/pest-plugin": true
++        }
+     },
+     "minimum-stability": "dev",
+     "prefer-stable": true
+diff --git a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+index fd235f8c..6c81fd22 100644
+--- a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
++++ b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+@@ -20,6 +20,7 @@ return new class extends Migration
+             $table->string('token', 64)->unique();
+             $table->text('abilities')->nullable();
+             $table->timestamp('last_used_at')->nullable();
++            $table->timestamp('expires_at')->nullable();
+             $table->timestamps();
+         });
+     }
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index dd6a45db..de233926 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -7,7 +7,7 @@
+         <title>Laravel</title>
+ 
+         <!-- Fonts -->
+-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
++        <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+ 
+         <!-- Styles -->
+         <style>
+diff --git a/vite.config.js b/vite.config.js
+index 89f26f5d..421b5695 100644
+--- a/vite.config.js
++++ b/vite.config.js
+@@ -4,10 +4,7 @@ import laravel from 'laravel-vite-plugin';
+ export default defineConfig({
+     plugins: [
+         laravel({
+-            input: [
+-                'resources/css/app.css',
+-                'resources/js/app.js',
+-            ],
++            input: ['resources/css/app.css', 'resources/js/app.js'],
+             refresh: true,
+         }),
+     ],

@@ -1,0 +1,59 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0d52d22f..7fb1abe5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.23...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.24...8.x)
++
++
++## [v8.5.24 (2021-08-10)](https://github.com/laravel/laravel/compare/v8.5.23...v8.5.24)
++
++### Changed
++- Use new `TrustProxies` middleware ([#5662](https://github.com/laravel/laravel/pull/5662))
+ 
+ 
+ ## [v8.5.23 (2021-08-03)](https://github.com/laravel/laravel/compare/v8.5.22...v8.5.23)
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index a3b6aef9..d11dd5f0 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -2,7 +2,7 @@
+ 
+ namespace App\Http\Middleware;
+ 
+-use Fideloper\Proxy\TrustProxies as Middleware;
++use Illuminate\Http\Middleware\TrustProxies as Middleware;
+ use Illuminate\Http\Request;
+ 
+ class TrustProxies extends Middleware
+diff --git a/composer.json b/composer.json
+index 703acae9..74327619 100644
+--- a/composer.json
++++ b/composer.json
+@@ -6,10 +6,9 @@
+     "license": "MIT",
+     "require": {
+         "php": "^7.3|^8.0",
+-        "fideloper/proxy": "^4.4",
+         "fruitcake/laravel-cors": "^2.0",
+         "guzzlehttp/guzzle": "^7.0.1",
+-        "laravel/framework": "^8.40",
++        "laravel/framework": "^8.54",
+         "laravel/tinker": "^2.5"
+     },
+     "require-dev": {
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 6100f808..6ee8d8d7 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -14,6 +14,7 @@ return [
+     */
+ 
+     'accepted' => 'The :attribute must be accepted.',
++    'accepted_if' => 'The :attribute must be accepted when :other is :value.',
+     'active_url' => 'The :attribute is not a valid URL.',
+     'after' => 'The :attribute must be a date after :date.',
+     'after_or_equal' => 'The :attribute must be a date after or equal to :date.',

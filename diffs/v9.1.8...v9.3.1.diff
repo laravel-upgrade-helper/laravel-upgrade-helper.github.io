@@ -1,0 +1,410 @@
+diff --git a/.env.example b/.env.example
+index 9bb1bd7c..00b6110e 100644
+--- a/.env.example
++++ b/.env.example
+@@ -46,7 +46,13 @@ AWS_USE_PATH_STYLE_ENDPOINT=false
+ PUSHER_APP_ID=
+ PUSHER_APP_KEY=
+ PUSHER_APP_SECRET=
++PUSHER_HOST=
++PUSHER_PORT=443
++PUSHER_SCHEME=https
+ PUSHER_APP_CLUSTER=mt1
+ 
+-MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+-MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
++VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
++VITE_PUSHER_HOST="${PUSHER_HOST}"
++VITE_PUSHER_PORT="${PUSHER_PORT}"
++VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
++VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+diff --git a/.gitattributes b/.gitattributes
+index 510d9961..7dbbf41a 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -8,3 +8,4 @@
+ 
+ /.github export-ignore
+ CHANGELOG.md export-ignore
++.styleci.yml export-ignore
+diff --git a/.github/workflows/pull-requests.yml b/.github/workflows/pull-requests.yml
+index 156b46eb..18b32b32 100644
+--- a/.github/workflows/pull-requests.yml
++++ b/.github/workflows/pull-requests.yml
+@@ -1,9 +1,8 @@
+-name: Pull Requests
++name: pull requests
+ 
+ on:
+   pull_request_target:
+-    types:
+-      - opened
++    types: [opened]
+ 
+ permissions:
+   pull-requests: write
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index 9870c819..b27e503d 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -8,7 +8,7 @@ jobs:
+ 
+     steps:
+       - name: Checkout code
+-        uses: actions/checkout@v2
++        uses: actions/checkout@v3
+ 
+       - name: Setup PHP
+         uses: shivammathur/setup-php@v2
+diff --git a/.github/workflows/update-changelog.yml b/.github/workflows/update-changelog.yml
+index eaeaf1f8..1625bda1 100644
+--- a/.github/workflows/update-changelog.yml
++++ b/.github/workflows/update-changelog.yml
+@@ -1,4 +1,4 @@
+-name: "Update Changelog"
++name: update changelog
+ 
+ on:
+   release:
+diff --git a/.gitignore b/.gitignore
+index bc67a663..38e5b253 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,4 +1,5 @@
+ /node_modules
++/public/build
+ /public/hot
+ /public/storage
+ /storage/*.key
+@@ -8,6 +9,7 @@
+ .phpunit.result.cache
+ Homestead.json
+ Homestead.yaml
++auth.json
+ npm-debug.log
+ yarn-error.log
+ /.idea
+diff --git a/.styleci.yml b/.styleci.yml
+index 79f63b44..9daadf16 100644
+--- a/.styleci.yml
++++ b/.styleci.yml
+@@ -5,8 +5,5 @@ php:
+   finder:
+     not-name:
+       - index.php
+-js:
+-  finder:
+-    not-name:
+-      - webpack.mix.js
++js: true
+ css: true
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5a221fb2..3a94d1db 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,57 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.7...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.0...9.x)
++
++## [v9.3.0](https://github.com/laravel/laravel/compare/v9.2.1...v9.3.0) - 2022-07-20
++
++### Added
++
++- Uses `laravel/pint` for styling by @nunomaduro in https://github.com/laravel/laravel/pull/5945
++
++### Changed
++
++- Bump axios version by @ankurk91 in https://github.com/laravel/laravel/pull/5946
++- Vite 3 support by @timacdonald in https://github.com/laravel/laravel/pull/5944
++
++## [v9.2.1](https://github.com/laravel/laravel/compare/v9.2.0...v9.2.1) - 2022-07-13
++
++### Changed
++
++- Add auth.json to skeleton by @driesvints in https://github.com/laravel/laravel/pull/5924
++- Update `bootstrap.js` by @irsyadadl in https://github.com/laravel/laravel/pull/5929
++- Add default reloading to skeleton by @timacdonald in https://github.com/laravel/laravel/pull/5927
++- Update to the latest version of laravel-vite-plugin by @jessarcher in https://github.com/laravel/laravel/pull/5943
++
++## [v9.2.0](https://github.com/laravel/laravel/compare/v9.1.10...v9.2.0) - 2022-06-28
++
++### Added
++
++- Vite by @jessarcher in https://github.com/laravel/laravel/pull/5904
++- Added support for easy development configuration in bootstrap.js by @rennokki in https://github.com/laravel/laravel/pull/5900
++
++### Changed
++
++- Sorted entries in the `en` validation translations file by @FaridAghili in https://github.com/laravel/laravel/pull/5899
++
++## [v9.1.10](https://github.com/laravel/laravel/compare/v9.1.9...v9.1.10) - 2022-06-07
++
++### Changed
++
++- Add language line by @taylorotwell in https://github.com/laravel/laravel/commit/b084aacc5ad105e39c2b058e9523e73655be8d1f
++- Improve Pusher configuration for easy development by @oanhnn in https://github.com/laravel/laravel/pull/5897
++
++## [v9.1.9](https://github.com/laravel/laravel/compare/v9.1.8...v9.1.9) - 2022-05-28
++
++### Changed
++
++- Switch to ESM imports by @jessarcher in https://github.com/laravel/laravel/pull/5895
++
++## [v9.1.8](https://github.com/laravel/laravel/compare/v9.1.7...v9.1.8) - 2022-05-05
++
++### Changed
++
++- Add local_domain option to smtp configuration by @bintzandt in https://github.com/laravel/laravel/pull/5877
++- Add specific test user in seeder by @driesvints in https://github.com/laravel/laravel/pull/5879
+ 
+ ## [v9.1.7](https://github.com/laravel/laravel/compare/v9.1.6...v9.1.7) - 2022-05-03
+ 
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 89963686..23b40634 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -2,7 +2,7 @@
+ 
+ namespace App\Models;
+ 
+-use Illuminate\Contracts\Auth\MustVerifyEmail;
++// use Illuminate\Contracts\Auth\MustVerifyEmail;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
+ use Illuminate\Notifications\Notifiable;
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index 51b351b0..33b83f56 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -2,8 +2,8 @@
+ 
+ namespace App\Providers;
+ 
++// use Illuminate\Support\Facades\Gate;
+ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+-use Illuminate\Support\Facades\Gate;
+ 
+ class AuthServiceProvider extends ServiceProvider
+ {
+diff --git a/composer.json b/composer.json
+index 164c94bd..14da264d 100644
+--- a/composer.json
++++ b/composer.json
+@@ -7,12 +7,13 @@
+     "require": {
+         "php": "^8.0.2",
+         "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^9.11",
++        "laravel/framework": "^9.19",
+         "laravel/sanctum": "^2.14.1",
+         "laravel/tinker": "^2.7"
+     },
+     "require-dev": {
+         "fakerphp/faker": "^1.9.1",
++        "laravel/pint": "^1.0",
+         "laravel/sail": "^1.0.1",
+         "mockery/mockery": "^1.4.4",
+         "nunomaduro/collision": "^6.1",
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index 67fcbbd6..16882424 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -36,8 +36,11 @@ return [
+             'secret' => env('PUSHER_APP_SECRET'),
+             'app_id' => env('PUSHER_APP_ID'),
+             'options' => [
+-                'cluster' => env('PUSHER_APP_CLUSTER'),
+-                'useTLS' => true,
++                'host' => env('PUSHER_HOST', 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com') ?: 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com',
++                'port' => env('PUSHER_PORT', 443),
++                'scheme' => env('PUSHER_SCHEME', 'https'),
++                'encrypted' => true,
++                'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
+             ],
+             'client_options' => [
+                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 23b61d24..20b35322 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -18,8 +18,8 @@ class UserFactory extends Factory
+     public function definition()
+     {
+         return [
+-            'name' => $this->faker->name(),
+-            'email' => $this->faker->unique()->safeEmail(),
++            'name' => fake()->name(),
++            'email' => fake()->safeEmail(),
+             'email_verified_at' => now(),
+             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+             'remember_token' => Str::random(10),
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index c1c48a06..76d96dc7 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -2,7 +2,7 @@
+ 
+ namespace Database\Seeders;
+ 
+-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
++// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+ use Illuminate\Database\Seeder;
+ 
+ class DatabaseSeeder extends Seeder
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index 724b5ace..cef02f58 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -43,6 +43,7 @@ return [
+     'digits_between' => 'The :attribute must be between :min and :max digits.',
+     'dimensions' => 'The :attribute has invalid image dimensions.',
+     'distinct' => 'The :attribute field has a duplicate value.',
++    'doesnt_start_with' => 'The :attribute may not start with one of the following: :values.',
+     'email' => 'The :attribute must be a valid email address.',
+     'ends_with' => 'The :attribute must end with one of the following: :values.',
+     'enum' => 'The selected :attribute is invalid.',
+diff --git a/package.json b/package.json
+index 7a9aecdf..6267eac1 100644
+--- a/package.json
++++ b/package.json
+@@ -1,18 +1,14 @@
+ {
+     "private": true,
+     "scripts": {
+-        "dev": "npm run development",
+-        "development": "mix",
+-        "watch": "mix watch",
+-        "watch-poll": "mix watch -- --watch-options-poll=1000",
+-        "hot": "mix watch --hot",
+-        "prod": "npm run production",
+-        "production": "mix --production"
++        "dev": "vite",
++        "build": "vite build"
+     },
+     "devDependencies": {
+-        "axios": "^0.25",
+-        "laravel-mix": "^6.0.6",
++        "axios": "^0.27",
++        "laravel-vite-plugin": "^0.5.0",
+         "lodash": "^4.17.19",
+-        "postcss": "^8.1.14"
++        "postcss": "^8.1.14",
++        "vite": "^3.0.0"
+     }
+ }
+diff --git a/resources/js/app.js b/resources/js/app.js
+index 40c55f65..e59d6a0a 100644
+--- a/resources/js/app.js
++++ b/resources/js/app.js
+@@ -1 +1 @@
+-require('./bootstrap');
++import './bootstrap';
+diff --git a/resources/js/bootstrap.js b/resources/js/bootstrap.js
+index 69225776..d21a8c0f 100644
+--- a/resources/js/bootstrap.js
++++ b/resources/js/bootstrap.js
+@@ -1,4 +1,5 @@
+-window._ = require('lodash');
++import _ from 'lodash';
++window._ = _;
+ 
+ /**
+  * We'll load the axios HTTP library which allows us to easily issue requests
+@@ -6,7 +7,8 @@ window._ = require('lodash');
+  * CSRF token as a header based on the value of the "XSRF" token cookie.
+  */
+ 
+-window.axios = require('axios');
++import axios from 'axios';
++window.axios = axios;
+ 
+ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+ 
+@@ -18,11 +20,15 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+ 
+ // import Echo from 'laravel-echo';
+ 
+-// window.Pusher = require('pusher-js');
++// import Pusher from 'pusher-js';
++// window.Pusher = Pusher;
+ 
+ // window.Echo = new Echo({
+ //     broadcaster: 'pusher',
+-//     key: process.env.MIX_PUSHER_APP_KEY,
+-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+-//     forceTLS: true
++//     key: import.meta.env.VITE_PUSHER_APP_KEY,
++//     wsHost: import.meta.env.VITE_PUSHER_HOST ?? `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
++//     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
++//     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
++//     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
++//     enabledTransports: ['ws', 'wss'],
+ // });
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index dd6a45db..de233926 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -7,7 +7,7 @@
+         <title>Laravel</title>
+ 
+         <!-- Fonts -->
+-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
++        <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+ 
+         <!-- Styles -->
+         <style>
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index 78ccc21f..1eafba61 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -2,7 +2,7 @@
+ 
+ namespace Tests\Feature;
+ 
+-use Illuminate\Foundation\Testing\RefreshDatabase;
++// use Illuminate\Foundation\Testing\RefreshDatabase;
+ use Tests\TestCase;
+ 
+ class ExampleTest extends TestCase
+diff --git a/vite.config.js b/vite.config.js
+new file mode 100644
+index 00000000..421b5695
+--- /dev/null
++++ b/vite.config.js
+@@ -0,0 +1,11 @@
++import { defineConfig } from 'vite';
++import laravel from 'laravel-vite-plugin';
++
++export default defineConfig({
++    plugins: [
++        laravel({
++            input: ['resources/css/app.css', 'resources/js/app.js'],
++            refresh: true,
++        }),
++    ],
++});
+diff --git a/webpack.mix.js b/webpack.mix.js
+deleted file mode 100644
+index 2a22dc12..00000000
+--- a/webpack.mix.js
++++ /dev/null
+@@ -1,17 +0,0 @@
+-const mix = require('laravel-mix');
+-
+-/*
+- |--------------------------------------------------------------------------
+- | Mix Asset Management
+- |--------------------------------------------------------------------------
+- |
+- | Mix provides a clean, fluent API for defining some Webpack build steps
+- | for your Laravel applications. By default, we are compiling the CSS
+- | file for the application as well as bundling up all the JS files.
+- |
+- */
+-
+-mix.js('resources/js/app.js', 'public/js')
+-    .postCss('resources/css/app.css', 'public/css', [
+-        //
+-    ]);

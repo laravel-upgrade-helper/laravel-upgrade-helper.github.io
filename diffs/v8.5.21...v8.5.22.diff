@@ -1,0 +1,30 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 472b2a18..3e01e78e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.21...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.22...8.x)
++
++
++## [v8.5.22 (2021-07-13)](https://github.com/laravel/laravel/compare/v8.5.21...v8.5.22)
++
++### Changed
++- Add RateLimiter facade alias ([#5642](https://github.com/laravel/laravel/pull/5642))
+ 
+ 
+ ## [v8.5.21 (2021-07-06)](https://github.com/laravel/laravel/compare/v8.5.20...v8.5.21)
+diff --git a/config/app.php b/config/app.php
+index f572b646..c9b8f5ae 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -215,6 +215,7 @@ return [
+         'Notification' => Illuminate\Support\Facades\Notification::class,
+         'Password' => Illuminate\Support\Facades\Password::class,
+         'Queue' => Illuminate\Support\Facades\Queue::class,
++        'RateLimiter' => Illuminate\Support\Facades\RateLimiter::class,
+         'Redirect' => Illuminate\Support\Facades\Redirect::class,
+         // 'Redis' => Illuminate\Support\Facades\Redis::class,
+         'Request' => Illuminate\Support\Facades\Request::class,

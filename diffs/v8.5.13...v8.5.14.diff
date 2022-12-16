@@ -1,0 +1,92 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index cc72064f..ef1c2904 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,17 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.13...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.14...8.x)
++
++
++## [v8.5.14 (2021-03-16)](https://github.com/laravel/laravel/compare/v8.5.13...v8.5.14)
++
++### Changed
++- Add language for prohibited_if and prohibited_unless validation rules ([#5557](https://github.com/laravel/laravel/pull/5557))
++- Add date facade alias ([#5556](https://github.com/laravel/laravel/pull/5556))
++
++### Fixed
++- Add log level config value to stderr channel ([#5558](https://github.com/laravel/laravel/pull/5558))
++- Fix footer on mobile ([#5561](https://github.com/laravel/laravel/pull/5561))
+ 
+ 
+ ## [v8.5.13 (2021-03-09)](https://github.com/laravel/laravel/compare/v8.5.12...v8.5.13)
+diff --git a/config/app.php b/config/app.php
+index 2a2f0ebe..f572b646 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -201,6 +201,7 @@ return [
+         'Config' => Illuminate\Support\Facades\Config::class,
+         'Cookie' => Illuminate\Support\Facades\Cookie::class,
+         'Crypt' => Illuminate\Support\Facades\Crypt::class,
++        'Date' => Illuminate\Support\Facades\Date::class,
+         'DB' => Illuminate\Support\Facades\DB::class,
+         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+         'Event' => Illuminate\Support\Facades\Event::class,
+diff --git a/config/logging.php b/config/logging.php
+index 6aa77fe2..1aa06aa3 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -74,6 +74,7 @@ return [
+ 
+         'stderr' => [
+             'driver' => 'monolog',
++            'level' => env('LOG_LEVEL', 'debug'),
+             'handler' => StreamHandler::class,
+             'formatter' => env('LOG_STDERR_FORMATTER'),
+             'with' => [
+diff --git a/public/index.php b/public/index.php
+index a8137b13..66ea93cd 100644
+--- a/public/index.php
++++ b/public/index.php
+@@ -7,11 +7,11 @@ define('LARAVEL_START', microtime(true));
+ 
+ /*
+ |--------------------------------------------------------------------------
+-| Check If Application Is Under Maintenance
++| Check If The Application Is Under Maintenance
+ |--------------------------------------------------------------------------
+ |
+-| If the application is maintenance / demo mode via the "down" command we
+-| will require this file so that any prerendered template can be shown
++| If the application is in maintenance / demo mode via the "down" command
++| we will load this file so that any pre-rendered content can be shown
+ | instead of starting the framework, which could cause an exception.
+ |
+ */
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 9a8dfcf8..0f861e32 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -104,6 +104,8 @@ return [
+     'required_with_all' => 'The :attribute field is required when :values are present.',
+     'required_without' => 'The :attribute field is required when :values is not present.',
+     'required_without_all' => 'The :attribute field is required when none of :values are present.',
++    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
++    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
+     'same' => 'The :attribute and :other must match.',
+     'size' => [
+         'numeric' => 'The :attribute must be :size.',
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index f8ba9e21..b1905c92 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -21,7 +21,7 @@
+         </style>
+     </head>
+     <body class="antialiased">
+-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
++        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
+             @if (Route::has('login'))
+                 <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+                     @auth

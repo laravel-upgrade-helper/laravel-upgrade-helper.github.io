@@ -1,0 +1,24 @@
+diff --git a/.editorconfig b/.editorconfig
+index 6f313c6a..6537ca46 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -11,5 +11,5 @@ trim_trailing_whitespace = true
+ [*.md]
+ trim_trailing_whitespace = false
+ 
+-[*.yml]
++[*.{yml,yaml}]
+ indent_size = 2
+diff --git a/composer.json b/composer.json
+index 88385dbc..7cd832e8 100644
+--- a/composer.json
++++ b/composer.json
+@@ -14,7 +14,7 @@
+         "laravel/tinker": "^1.0"
+     },
+     "require-dev": {
+-        "filp/whoops": "^2.0",
++        "facade/ignition": "^1.4",
+         "fzaninotto/faker": "^1.4",
+         "mockery/mockery": "^1.0",
+         "nunomaduro/collision": "^3.0",

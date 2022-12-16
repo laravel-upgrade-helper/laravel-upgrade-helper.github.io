@@ -1,0 +1,48 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2da613ca..fa2498ea 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.8...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.9...9.x)
++
++## [v9.1.9](https://github.com/laravel/laravel/compare/v9.1.8...v9.1.9) - 2022-05-28
++
++### Changed
++
++- Switch to ESM imports by @jessarcher in https://github.com/laravel/laravel/pull/5895
+ 
+ ## [v9.1.8](https://github.com/laravel/laravel/compare/v9.1.7...v9.1.8) - 2022-05-05
+ 
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index 67fcbbd6..7cc99087 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -36,8 +36,11 @@ return [
+             'secret' => env('PUSHER_APP_SECRET'),
+             'app_id' => env('PUSHER_APP_ID'),
+             'options' => [
+-                'cluster' => env('PUSHER_APP_CLUSTER'),
+-                'useTLS' => true,
++                'host' => env('PUSHER_HOST', 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com'),
++                'port' => env('PUSHER_PORT', 443),
++                'scheme' => env('PUSHER_SCHEME', 'https'),
++                'encrypted' => true,
++                'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
+             ],
+             'client_options' => [
+                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index 724b5ace..77fb5118 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -129,6 +129,7 @@ return [
+         'string' => 'The :attribute must be :size characters.',
+     ],
+     'starts_with' => 'The :attribute must start with one of the following: :values.',
++    'doesnt_start_with' => 'The :attribute may not start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',
+     'timezone' => 'The :attribute must be a valid timezone.',
+     'unique' => 'The :attribute has already been taken.',

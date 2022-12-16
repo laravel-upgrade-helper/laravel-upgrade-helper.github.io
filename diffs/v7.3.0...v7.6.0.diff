@@ -1,0 +1,81 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8f3fb9c9..5908aad3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,15 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v7.3.0...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v7.6.0...master)
++
++
++## [v7.6.0 (2020-04-15)](https://github.com/laravel/laravel/compare/v7.3.0...v7.6.0)
++
++### Changed
++- Disable Telescope in PHPUnit ([#5277](https://github.com/laravel/laravel/pull/5277))
++
++### Fixed
++- Add both endpoint and url env variables ([#5276](https://github.com/laravel/laravel/pull/5276))
+ 
+ 
+ ## [v7.3.0 (2020-03-24)](https://github.com/laravel/laravel/compare/v7.0.0...v7.3.0)
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 3ec3dac9..94c81126 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -61,7 +61,8 @@ return [
+             'secret' => env('AWS_SECRET_ACCESS_KEY'),
+             'region' => env('AWS_DEFAULT_REGION'),
+             'bucket' => env('AWS_BUCKET'),
+-            'endpoint' => env('AWS_URL'),
++            'url' => env('AWS_URL'),
++            'endpoint' => env('AWS_ENDPOINT'),
+         ],
+ 
+     ],
+diff --git a/config/session.php b/config/session.php
+index d0ccd5a8..da692f3b 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -188,7 +188,7 @@ return [
+     |
+     | This option determines how your cookies behave when cross-site requests
+     | take place, and can be used to mitigate CSRF attacks. By default, we
+-    | do not enable this as other CSRF protection services are in place.
++    | will set this value to "lax" since this is a secure default value.
+     |
+     | Supported: "lax", "strict", "none", null
+     |
+diff --git a/database/seeds/DatabaseSeeder.php b/database/seeds/DatabaseSeeder.php
+index 91cb6d1c..237dfc5d 100644
+--- a/database/seeds/DatabaseSeeder.php
++++ b/database/seeds/DatabaseSeeder.php
+@@ -11,6 +11,6 @@ class DatabaseSeeder extends Seeder
+      */
+     public function run()
+     {
+-        // $this->call(UsersTableSeeder::class);
++        // $this->call(UserSeeder::class);
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index 5cf0875e..964ff0c5 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -2,7 +2,8 @@
+ <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+          bootstrap="vendor/autoload.php"
+-         colors="true">
++         colors="true"
++>
+     <testsuites>
+         <testsuite name="Unit">
+             <directory suffix="Test.php">./tests/Unit</directory>
+@@ -25,5 +26,6 @@
+         <server name="MAIL_MAILER" value="array"/>
+         <server name="QUEUE_CONNECTION" value="sync"/>
+         <server name="SESSION_DRIVER" value="array"/>
++        <server name="TELESCOPE_ENABLED" value="false"/>
+     </php>
+ </phpunit>

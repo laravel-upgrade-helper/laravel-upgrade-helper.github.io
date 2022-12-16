@@ -1,0 +1,64 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 13a6f08e..089daeaa 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.4...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.5...8.x)
++
++
++## [v8.6.5 (2021-10-26)](https://github.com/laravel/laravel/compare/v8.6.4...v8.6.5)
++
++### Changed
++- Guess database factory model by default ([#5713](https://github.com/laravel/laravel/pull/5713))
+ 
+ 
+ ## [v8.6.4 (2021-10-20)](https://github.com/laravel/laravel/compare/v8.6.3...v8.6.4)
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index c18c43cc..3ca4b345 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -10,7 +10,7 @@ class Handler extends ExceptionHandler
+     /**
+      * A list of the exception types that are not reported.
+      *
+-     * @var array
++     * @var string[]
+      */
+     protected $dontReport = [
+         //
+@@ -19,7 +19,7 @@ class Handler extends ExceptionHandler
+     /**
+      * A list of the inputs that are never flashed for validation exceptions.
+      *
+-     * @var array
++     * @var string[]
+      */
+     protected $dontFlash = [
+         'current_password',
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index a24ce53f..a3eb239a 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -2,19 +2,11 @@
+ 
+ namespace Database\Factories;
+ 
+-use App\Models\User;
+ use Illuminate\Database\Eloquent\Factories\Factory;
+ use Illuminate\Support\Str;
+ 
+ class UserFactory extends Factory
+ {
+-    /**
+-     * The name of the factory's corresponding model.
+-     *
+-     * @var string
+-     */
+-    protected $model = User::class;
+-
+     /**
+      * Define the model's default state.
+      *

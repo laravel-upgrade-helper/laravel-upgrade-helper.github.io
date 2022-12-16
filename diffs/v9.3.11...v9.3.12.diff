@@ -1,0 +1,32 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2f090663..c96aa8f9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,13 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.10...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.11...9.x)
++
++## [v9.3.11](https://github.com/laravel/laravel/compare/v9.3.10...v9.3.11) - 2022-11-14
++
++### Changed
++
++- Adds lowercase validation rule translation by @timacdonald in https://github.com/laravel/laravel/pull/6028
++- Adds uppercase validation rule translation by @michaelnabil230 in https://github.com/laravel/laravel/pull/6029
+ 
+ ## [v9.3.10](https://github.com/laravel/laravel/compare/v9.3.9...v9.3.10) - 2022-10-28
+ 
+diff --git a/package.json b/package.json
+index 36489d96..a11c53af 100644
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,7 @@
+     },
+     "devDependencies": {
+         "axios": "^1.1.2",
+-        "laravel-vite-plugin": "^0.6.0",
++        "laravel-vite-plugin": "^0.7.0",
+         "lodash": "^4.17.19",
+         "postcss": "^8.1.14",
+         "vite": "^3.0.0"

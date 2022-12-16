@@ -1,0 +1,13 @@
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index a80fcf71..19664568 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -22,6 +22,8 @@ class RouteServiceProvider extends ServiceProvider
+     /**
+      * The controller namespace for the application.
+      *
++     * When present, controller route declarations will automatically be prefixed with this namespace.
++     *
+      * @var string|null
+      */
+     // protected $namespace = 'App\\Http\\Controllers';

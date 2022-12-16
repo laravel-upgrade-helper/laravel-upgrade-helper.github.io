@@ -1,0 +1,279 @@
+diff --git a/.styleci.yml b/.styleci.yml
+new file mode 100644
+index 00000000..1db61d96
+--- /dev/null
++++ b/.styleci.yml
+@@ -0,0 +1,13 @@
++php:
++  preset: laravel
++  disabled:
++    - unused_use
++  finder:
++    not-name:
++      - index.php
++      - server.php
++js:
++  finder:
++    not-name:
++      - webpack.mix.js
++css: true
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 58c52246..8c33a856 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,36 @@
+ # Release Notes
+ 
++## [Unreleased](https://github.com/laravel/laravel/compare/v5.8.3...master)
++
++
++## [v5.8.16 (2019-05-07)](https://github.com/laravel/laravel/compare/v5.8.3...master)
++
++### Added
++- Add IDE type-hint to UserFactory ([#4990](https://github.com/laravel/laravel/pull/4990))
++- Update database config relating to Url addition ([#5018](https://github.com/laravel/laravel/pull/5018), [b0e0bdc](https://github.com/laravel/laravel/commit/b0e0bdc060ce068b73371919b904f3c7f0c1cfa6))
++
++### Changed
++- Upgrade the collision dependency from v2 to v3 ([#4963](https://github.com/laravel/laravel/pull/4963))
++- Ignore SQLite journals ([#4971](https://github.com/laravel/laravel/pull/4971))
++- Prefix redis database connection by default ([#4982](https://github.com/laravel/laravel/pull/4982), [#4986](https://github.com/laravel/laravel/pull/4986), [#4987](https://github.com/laravel/laravel/pull/4987))
++
++### Removed
++- Remove `.navbar-laravel` CSS class ([65f8271](https://github.com/laravel/laravel/commit/65f8271032c113883fb3f1e8e7b3279821148ad1))
++
++
++## [v5.8.3 (2019-03-05)](https://github.com/laravel/laravel/compare/v5.8.0...v5.8.3)
++
++### Added
++- Add AWS S3 Bucket to `.env.example` ([f84a69e](https://github.com/laravel/laravel/commit/f84a69ee852bd44363042a61995d330574b6b8c3))
++
++### Changed
++- Set default AWS region ([ff4f40f](https://github.com/laravel/laravel/commit/ff4f40fbabcefcb87facb1346fcfe5b8266eb40d), [#4956](https://github.com/laravel/laravel/pull/4956))
++
++### Fixed
++- Comment out non-existing model class and policy example ([f4ff4f4](https://github.com/laravel/laravel/commit/f4ff4f4176f7d931e301f36b95a46285ac61b8b8))
++- Only apply MySQL PDO options when extension exists ([3001f3c](https://github.com/laravel/laravel/commit/3001f3c6e232ba7ce2ecdbdfe6e43b4c64ee05ad))
++
++
+ ## [v5.8.0 (2019-02-26)](https://github.com/laravel/laravel/compare/v5.7.28...v5.8.0)
+ 
+ ### Added
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index 7daf51f1..12fdf8b5 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -10,7 +10,7 @@ class TrustProxies extends Middleware
+     /**
+      * The trusted proxies for this application.
+      *
+-     * @var array
++     * @var array|string
+      */
+     protected $proxies;
+ 
+diff --git a/composer.json b/composer.json
+index bda43337..8e2b2d7e 100644
+--- a/composer.json
++++ b/composer.json
+@@ -18,7 +18,7 @@
+         "filp/whoops": "^2.0",
+         "fzaninotto/faker": "^1.4",
+         "mockery/mockery": "^1.0",
+-        "nunomaduro/collision": "^2.0",
++        "nunomaduro/collision": "^3.0",
+         "phpunit/phpunit": "^7.5"
+     },
+     "config": {
+diff --git a/config/database.php b/config/database.php
+index 49ec59af..0cf54458 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use Illuminate\Support\Str;
++
+ return [
+ 
+     /*
+@@ -35,6 +37,7 @@ return [
+ 
+         'sqlite' => [
+             'driver' => 'sqlite',
++            'url' => env('DATABASE_URL'),
+             'database' => env('DB_DATABASE', database_path('database.sqlite')),
+             'prefix' => '',
+             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+@@ -42,6 +45,7 @@ return [
+ 
+         'mysql' => [
+             'driver' => 'mysql',
++            'url' => env('DATABASE_URL'),
+             'host' => env('DB_HOST', '127.0.0.1'),
+             'port' => env('DB_PORT', '3306'),
+             'database' => env('DB_DATABASE', 'forge'),
+@@ -61,6 +65,7 @@ return [
+ 
+         'pgsql' => [
+             'driver' => 'pgsql',
++            'url' => env('DATABASE_URL'),
+             'host' => env('DB_HOST', '127.0.0.1'),
+             'port' => env('DB_PORT', '5432'),
+             'database' => env('DB_DATABASE', 'forge'),
+@@ -75,6 +80,7 @@ return [
+ 
+         'sqlsrv' => [
+             'driver' => 'sqlsrv',
++            'url' => env('DATABASE_URL'),
+             'host' => env('DB_HOST', 'localhost'),
+             'port' => env('DB_PORT', '1433'),
+             'database' => env('DB_DATABASE', 'forge'),
+@@ -117,6 +123,7 @@ return [
+ 
+         'options' => [
+             'cluster' => env('REDIS_CLUSTER', 'predis'),
++            'prefix' => Str::slug(env('APP_NAME', 'laravel'), '_').'_database_',
+         ],
+ 
+         'default' => [
+diff --git a/database/.gitignore b/database/.gitignore
+index 9b1dffd9..97fc9767 100644
+--- a/database/.gitignore
++++ b/database/.gitignore
+@@ -1 +1,2 @@
+ *.sqlite
++*.sqlite-journal
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 2985ea24..5e516cee 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -1,5 +1,6 @@
+ <?php
+ 
++/** @var \Illuminate\Database\Eloquent\Factory $factory */
+ use App\User;
+ use Illuminate\Support\Str;
+ use Faker\Generator as Faker;
+diff --git a/package.json b/package.json
+index 76bd3983..52311d25 100644
+--- a/package.json
++++ b/package.json
+@@ -11,7 +11,7 @@
+     },
+     "devDependencies": {
+         "axios": "^0.18",
+-        "bootstrap": "^4.0.0",
++        "bootstrap": "^4.1.0",
+         "cross-env": "^5.1",
+         "jquery": "^3.2",
+         "laravel-mix": "^4.0.7",
+diff --git a/readme.md b/readme.md
+index 2cb6913f..8b5717ed 100644
+--- a/readme.md
++++ b/readme.md
+@@ -25,7 +25,7 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
+ 
+ Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+ 
+-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost you and your team's skills by digging into our comprehensive video library.
++If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1400 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+ 
+ ## Laravel Sponsors
+ 
+@@ -57,6 +57,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - [We Are The Robots Inc.](https://watr.mx/)
+ - [Understand.io](https://www.understand.io/)
+ - [Abdel Elrafa](https://abdelelrafa.com)
++- [Hyper Host](https://hyper.host)
+ 
+ ## Contributing
+ 
+diff --git a/resources/js/app.js b/resources/js/app.js
+index 4131ca04..a1efb5c3 100644
+--- a/resources/js/app.js
++++ b/resources/js/app.js
+@@ -1,4 +1,3 @@
+-
+ /**
+  * First we will load all of this project's JavaScript dependencies which
+  * includes Vue and other libraries. It is a great starting point when
+@@ -29,5 +28,5 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
+  */
+ 
+ const app = new Vue({
+-    el: '#app'
++    el: '#app',
+ });
+diff --git a/resources/js/bootstrap.js b/resources/js/bootstrap.js
+index c1f8ac39..f29bb81d 100644
+--- a/resources/js/bootstrap.js
++++ b/resources/js/bootstrap.js
+@@ -1,4 +1,3 @@
+-
+ window._ = require('lodash');
+ 
+ /**
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 8ab929cb..e1d879f3 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -40,6 +40,7 @@ return [
+     'dimensions' => 'The :attribute has invalid image dimensions.',
+     'distinct' => 'The :attribute field has a duplicate value.',
+     'email' => 'The :attribute must be a valid email address.',
++    'ends_with' => 'The :attribute must end with one of the following: :values',
+     'exists' => 'The selected :attribute is invalid.',
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',
+diff --git a/resources/sass/_variables.scss b/resources/sass/_variables.scss
+index 6799fc45..0407ab57 100644
+--- a/resources/sass/_variables.scss
++++ b/resources/sass/_variables.scss
+@@ -1,9 +1,8 @@
+-
+ // Body
+ $body-bg: #f8fafc;
+ 
+ // Typography
+-$font-family-sans-serif: "Nunito", sans-serif;
++$font-family-sans-serif: 'Nunito', sans-serif;
+ $font-size-base: 0.9rem;
+ $line-height-base: 1.6;
+ 
+@@ -11,7 +10,7 @@ $line-height-base: 1.6;
+ $blue: #3490dc;
+ $indigo: #6574cd;
+ $purple: #9561e2;
+-$pink: #f66D9b;
++$pink: #f66d9b;
+ $red: #e3342f;
+ $orange: #f6993f;
+ $yellow: #ffed4a;
+diff --git a/resources/sass/app.scss b/resources/sass/app.scss
+index f42e7986..3193ffa2 100644
+--- a/resources/sass/app.scss
++++ b/resources/sass/app.scss
+@@ -1,4 +1,3 @@
+-
+ // Fonts
+ @import url('https://fonts.googleapis.com/css?family=Nunito');
+ 
+@@ -7,8 +6,3 @@
+ 
+ // Bootstrap
+ @import '~bootstrap/scss/bootstrap';
+-
+-.navbar-laravel {
+-  background-color: #fff;
+-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+-}
+diff --git a/webpack.mix.js b/webpack.mix.js
+index 19a48fa1..8a923cbb 100644
+--- a/webpack.mix.js
++++ b/webpack.mix.js
+@@ -12,4 +12,4 @@ const mix = require('laravel-mix');
+  */
+ 
+ mix.js('resources/js/app.js', 'public/js')
+-   .sass('resources/sass/app.scss', 'public/css');
++    .sass('resources/sass/app.scss', 'public/css');

@@ -1,0 +1,124 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5908aad3..b44e48f6 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -56,6 +56,12 @@
+ - Use `MAIL_MAILER` in test environment ([#5239](https://github.com/laravel/laravel/pull/5239))
+ 
+ 
++## [v6.18.8 (2020-04-16)](https://github.com/laravel/laravel/compare/v6.18.3...v6.18.8)
++
++### Fixed
++- Add both endpoint and url env variables ([#5276](https://github.com/laravel/laravel/pull/5276))
++
++
+ ## [v6.18.3 (2020-03-24)](https://github.com/laravel/laravel/compare/v6.18.0...v6.18.3)
+ 
+ ### Fixed
+diff --git a/README.md b/README.md
+index e4bc97ee..3cae01ea 100644
+--- a/README.md
++++ b/README.md
+@@ -37,7 +37,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[64 Robots](https://64robots.com)**
+ - **[Cubet Techno Labs](https://cubettech.com)**
+ - **[Cyber-Duck](https://cyber-duck.co.uk)**
+-- **[British Software Development](https://www.britishsoftware.co)**
++- **[Many](https://www.many.co.uk)**
+ - **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+ - **[DevSquad](https://devsquad.com)**
+ - [UserInsights](https://userinsights.com)
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index c3640f30..36ced134 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -14,6 +14,7 @@ class Kernel extends HttpKernel
+      * @var array
+      */
+     protected $middleware = [
++        // \App\Http\Middleware\TrustHosts::class,
+         \App\Http\Middleware\TrustProxies::class,
+         \Fruitcake\Cors\HandleCors::class,
+         \App\Http\Middleware\CheckForMaintenanceMode::class,
+diff --git a/app/Http/Middleware/TrustHosts.php b/app/Http/Middleware/TrustHosts.php
+new file mode 100644
+index 00000000..b0550cfc
+--- /dev/null
++++ b/app/Http/Middleware/TrustHosts.php
+@@ -0,0 +1,20 @@
++<?php
++
++namespace App\Http\Middleware;
++
++use Illuminate\Http\Middleware\TrustHosts as Middleware;
++
++class TrustHosts extends Middleware
++{
++    /**
++     * Get the host patterns that should be trusted.
++     *
++     * @return array
++     */
++    public function hosts()
++    {
++        return [
++            $this->allSubdomainsOfApplicationUrl(),
++        ];
++    }
++}
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index ee5b5958..14befceb 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -10,7 +10,7 @@ class TrustProxies extends Middleware
+     /**
+      * The trusted proxies for this application.
+      *
+-     * @var array|string
++     * @var array|string|null
+      */
+     protected $proxies;
+ 
+diff --git a/config/mail.php b/config/mail.php
+index 5201bb76..54299aab 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -42,6 +42,7 @@ return [
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+             'timeout' => null,
++            'auth_mode' => null,
+         ],
+ 
+         'ses' => [
+diff --git a/config/session.php b/config/session.php
+index da692f3b..4e0f66cd 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -92,10 +92,12 @@ return [
+     | Session Cache Store
+     |--------------------------------------------------------------------------
+     |
+-    | When using the "apc", "memcached", or "dynamodb" session drivers you may
++    | While using one of the framework's cache driven session backends you may
+     | list a cache store that should be used for these sessions. This value
+     | must match with one of the application's configured cache "stores".
+     |
++    | Affects: "apc", "dynamodb", "memcached", "redis"
++    |
+     */
+ 
+     'store' => env('SESSION_STORE', null),
+diff --git a/package.json b/package.json
+index 3729fb78..2c35181c 100644
+--- a/package.json
++++ b/package.json
+@@ -5,7 +5,7 @@
+         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "watch": "npm run development -- --watch",
+         "watch-poll": "npm run watch -- --watch-poll",
+-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "prod": "npm run production",
+         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },

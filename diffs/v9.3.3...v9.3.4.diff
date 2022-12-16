@@ -1,0 +1,59 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a6e9a6cb..81f8bc53 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.2...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.3...9.x)
++
++## [v9.3.3](https://github.com/laravel/laravel/compare/v9.3.2...v9.3.3) - 2022-08-03
++
++### Changed
++
++- Validation added `doesnt_end_with` translation by @kichetof in https://github.com/laravel/laravel/pull/5962
+ 
+ ## [v9.3.2](https://github.com/laravel/laravel/compare/v9.3.1...v9.3.2) - 2022-08-01
+ 
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index c3be2544..00796881 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -60,7 +60,7 @@ class Kernel extends HttpKernel
+         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+-        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
++        'signed' => \App\Http\Middleware\ValidateSignature::class,
+         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+     ];
+diff --git a/app/Http/Middleware/ValidateSignature.php b/app/Http/Middleware/ValidateSignature.php
+new file mode 100644
+index 00000000..ee4045d8
+--- /dev/null
++++ b/app/Http/Middleware/ValidateSignature.php
+@@ -0,0 +1,22 @@
++<?php
++
++namespace App\Http\Middleware;
++
++use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
++
++class ValidateSignature extends Middleware
++{
++    /**
++     * The names of the parameters that should be ignored.
++     *
++     * @var array<int, string>
++     */
++    protected $ignore = [
++        // 'fbclid',
++        // 'utm_campaign',
++        // 'utm_content',
++        // 'utm_medium',
++        // 'utm_source',
++        // 'utm_term',
++    ];
++}

@@ -1,0 +1,102 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ca04d691..5c037b49 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,23 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.9...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.11...8.x)
++
++
++## [v8.5.11 (2021-02-23)](https://github.com/laravel/laravel/compare/v8.5.10...v8.5.11)
++
++### Fixed
++- Don't flash 'current_password' input ([#5541](https://github.com/laravel/laravel/pull/5541))
++
++
++## [v8.5.10 (2021-02-16)](https://github.com/laravel/laravel/compare/v8.5.9...v8.5.10)
++
++### Changed
++- Add "ably" in comment as a broadcast connection ([#5531](https://github.com/laravel/laravel/pull/5531))
++- Add unverified state to UserFactory ([#5533](https://github.com/laravel/laravel/pull/5533))
++- Update login wording ([9a56a60](https://github.com/laravel/laravel/commit/9a56a60cc9e3785683e256d511ee1fb533025a0a))
++
++### Fixed
++- Fix dead link in web.config ([#5528](https://github.com/laravel/laravel/pull/5528))
+ 
+ 
+ ## [v8.5.9 (2021-01-19)](https://github.com/laravel/laravel/compare/v8.5.8...v8.5.9)
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index f9644add..c18c43cc 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -22,6 +22,7 @@ class Handler extends ExceptionHandler
+      * @var array
+      */
+     protected $dontFlash = [
++        'current_password',
+         'password',
+         'password_confirmation',
+     ];
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index ef208598..2d529820 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -11,7 +11,7 @@ return [
+     | framework when an event needs to be broadcast. You may set this to
+     | any of the connections defined in the "connections" array below.
+     |
+-    | Supported: "pusher", "redis", "log", "null"
++    | Supported: "pusher", "ably", "redis", "log", "null"
+     |
+     */
+ 
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index bdea1a32..3510ed67 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -30,4 +30,18 @@ class UserFactory extends Factory
+             'remember_token' => Str::random(10),
+         ];
+     }
++
++    /**
++     * Indicate that the model's email address should be unverified.
++     *
++     * @return \Illuminate\Database\Eloquent\Factories\Factory
++     */
++    public function unverified()
++    {
++        return $this->state(function (array $attributes) {
++            return [
++                'email_verified_at' => null,
++            ];
++        });
++    }
+ }
+diff --git a/public/web.config b/public/web.config
+index d3711d7c..323482f1 100644
+--- a/public/web.config
++++ b/public/web.config
+@@ -1,6 +1,6 @@
+ <!--
+     Rewrites requires Microsoft URL Rewrite Module for IIS
+-    Download: https://www.microsoft.com/en-us/download/details.aspx?id=47337
++    Download: https://www.iis.net/downloads/microsoft/url-rewrite
+     Debug Help: https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/using-failed-request-tracing-to-trace-rewrite-rules
+ -->
+ <configuration>
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index e305e336..917fddfa 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -27,7 +27,7 @@
+                     @auth
+                         <a href="{{ url('/home') }}" class="text-sm text-gray-700 underline">Home</a>
+                     @else
+-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
++                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
+ 
+                         @if (Route::has('register'))
+                             <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>

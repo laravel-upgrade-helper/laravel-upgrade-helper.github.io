@@ -1,0 +1,872 @@
+diff --git a/.editorconfig b/.editorconfig
+index 6537ca46..1671c9b9 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -13,3 +13,6 @@ trim_trailing_whitespace = false
+ 
+ [*.{yml,yaml}]
+ indent_size = 2
++
++[docker-compose.yml]
++indent_size = 4
+diff --git a/.env.example b/.env.example
+index c3ed2a91..44853cd5 100644
+--- a/.env.example
++++ b/.env.example
+@@ -16,6 +16,7 @@ DB_PASSWORD=
+ 
+ BROADCAST_DRIVER=log
+ CACHE_DRIVER=file
++FILESYSTEM_DRIVER=local
+ QUEUE_CONNECTION=sync
+ SESSION_DRIVER=file
+ SESSION_LIFETIME=120
+@@ -39,6 +40,7 @@ AWS_ACCESS_KEY_ID=
+ AWS_SECRET_ACCESS_KEY=
+ AWS_DEFAULT_REGION=us-east-1
+ AWS_BUCKET=
++AWS_USE_PATH_STYLE_ENDPOINT=false
+ 
+ PUSHER_APP_ID=
+ PUSHER_APP_KEY=
+diff --git a/.gitignore b/.gitignore
+index 0ae59f0b..eb003b01 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -11,3 +11,5 @@ Homestead.json
+ Homestead.yaml
+ npm-debug.log
+ yarn-error.log
++/.idea
++/.vscode
+diff --git a/.styleci.yml b/.styleci.yml
+index 9231873a..877ea701 100644
+--- a/.styleci.yml
++++ b/.styleci.yml
+@@ -1,5 +1,6 @@
+ php:
+   preset: laravel
++  version: 8
+   disabled:
+     - no_unused_imports
+   finder:
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ca04d691..c9038778 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,126 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.9...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.1...8.x)
++
++
++## [v8.6.1 (2021-08-24)](https://github.com/laravel/laravel/compare/v8.6.0...v8.6.1)
++
++### Changed
++- Add failover driver to default mail config file ([#5672](https://github.com/laravel/laravel/pull/5672))
++
++
++## [v8.6.0 (2021-08-17)](https://github.com/laravel/laravel/compare/v8.5.24...v8.6.0)
++
++### Added
++- Sanctum ([#5663](https://github.com/laravel/laravel/pull/5663))
++
++
++## [v8.5.24 (2021-08-10)](https://github.com/laravel/laravel/compare/v8.5.23...v8.5.24)
++
++### Changed
++- Use new `TrustProxies` middleware ([#5662](https://github.com/laravel/laravel/pull/5662))
++
++
++## [v8.5.23 (2021-08-03)](https://github.com/laravel/laravel/compare/v8.5.22...v8.5.23)
++
++### Changed
++- Unified asset publishing ([#5654](https://github.com/laravel/laravel/pull/5654))
++
++
++## [v8.5.22 (2021-07-13)](https://github.com/laravel/laravel/compare/v8.5.21...v8.5.22)
++
++### Changed
++- Add RateLimiter facade alias ([#5642](https://github.com/laravel/laravel/pull/5642))
++
++
++## [v8.5.21 (2021-07-06)](https://github.com/laravel/laravel/compare/v8.5.20...v8.5.21)
++
++### Changed
++- Update validation language files ([#5637](https://github.com/laravel/laravel/pull/5637), [#5636](https://github.com/laravel/laravel/pull/5636))
++
++
++## [v8.5.20 (2021-06-15)](https://github.com/laravel/laravel/compare/v8.5.19...v8.5.20)
++
++### Changed
++- Add translation for current_password rule ([#5628](https://github.com/laravel/laravel/pull/5628))
++
++
++## [v8.5.19 (2021-06-01)](https://github.com/laravel/laravel/compare/v8.5.18...v8.5.19)
++
++### Changed
++- Update skeleton for filesystem tweaks to make sail usage easier ([c5d38d4](https://github.com/laravel/laravel/commit/c5d38d469a447d6831c3cf56d193be7941d6586f))
++
++
++## [v8.5.18 (2021-05-18)](https://github.com/laravel/laravel/compare/v8.5.17...v8.5.18)
++
++### Changed
++- Add Octane cache store ([#5610](https://github.com/laravel/laravel/pull/5610), [637c85d](https://github.com/laravel/laravel/commit/637c85d624bf19355025b68aaa90e6cadf8a2881))
++
++
++## [v8.5.17 (2021-05-11)](https://github.com/laravel/laravel/compare/v8.5.16...v8.5.17)
++
++### Security
++- Bump framework version to include SQL server security fix ([#5601](https://github.com/laravel/laravel/pull/5601))
++
++
++## [v8.5.16 (2021-04-20)](https://github.com/laravel/laravel/compare/v8.5.15...v8.5.16)
++
++### Changed
++- Rename test methods ([#5574](https://github.com/laravel/laravel/pull/5574))
++- Using faker method instead of properties ([#5583](https://github.com/laravel/laravel/pull/5583))
++
++### Fixed
++- Ignore SQLite files generated on parallel testing ([#5593](https://github.com/laravel/laravel/pull/5593))
++
++
++## [v8.5.15 (2021-03-23)](https://github.com/laravel/laravel/compare/v8.5.14...v8.5.15)
++
++### Changed
++- Add prohibited validation rule ([#5569](https://github.com/laravel/laravel/pull/5569))
++- Re-order composer.json ([#5570](https://github.com/laravel/laravel/pull/5570))
++
++
++## [v8.5.14 (2021-03-16)](https://github.com/laravel/laravel/compare/v8.5.13...v8.5.14)
++
++### Changed
++- Add language for prohibited_if and prohibited_unless validation rules ([#5557](https://github.com/laravel/laravel/pull/5557))
++- Add date facade alias ([#5556](https://github.com/laravel/laravel/pull/5556))
++
++### Fixed
++- Add log level config value to stderr channel ([#5558](https://github.com/laravel/laravel/pull/5558))
++- Fix footer on mobile ([#5561](https://github.com/laravel/laravel/pull/5561))
++
++
++## [v8.5.13 (2021-03-09)](https://github.com/laravel/laravel/compare/v8.5.12...v8.5.13)
++
++### Changed
++- Use same default queue name for all drivers ([#5549](https://github.com/laravel/laravel/pull/5549))
++- Standardise "must" and "may" language in validation ([#5552](https://github.com/laravel/laravel/pull/5552))
++- Add missing 'after_commit' key to queue config ([#5554](https://github.com/laravel/laravel/pull/5554))
++
++
++## [v8.5.12 (2021-03-02)](https://github.com/laravel/laravel/compare/v8.5.11...v8.5.12)
++
++### Fixed
++- Added sans-serif as Fallback Font ([#5543](https://github.com/laravel/laravel/pull/5543))
++- Don't trim `current_password` ([#5546](https://github.com/laravel/laravel/pull/5546))
++
++
++## [v8.5.11 (2021-02-23)](https://github.com/laravel/laravel/compare/v8.5.10...v8.5.11)
++
++### Fixed
++- Don't flash 'current_password' input ([#5541](https://github.com/laravel/laravel/pull/5541))
++
++
++## [v8.5.10 (2021-02-16)](https://github.com/laravel/laravel/compare/v8.5.9...v8.5.10)
++
++### Changed
++- Add "ably" in comment as a broadcast connection ([#5531](https://github.com/laravel/laravel/pull/5531))
++- Add unverified state to UserFactory ([#5533](https://github.com/laravel/laravel/pull/5533))
++- Update login wording ([9a56a60](https://github.com/laravel/laravel/commit/9a56a60cc9e3785683e256d511ee1fb533025a0a))
++
++### Fixed
++- Fix dead link in web.config ([#5528](https://github.com/laravel/laravel/pull/5528))
+ 
+ 
+ ## [v8.5.9 (2021-01-19)](https://github.com/laravel/laravel/compare/v8.5.8...v8.5.9)
+diff --git a/README.md b/README.md
+index e1dcd2e1..49c38be9 100644
+--- a/README.md
++++ b/README.md
+@@ -42,8 +42,10 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[Many](https://www.many.co.uk)**
+ - **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+ - **[DevSquad](https://devsquad.com)**
+-- **[Curotec](https://www.curotec.com/)**
++- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+ - **[OP.GG](https://op.gg)**
++- **[CMS Max](https://www.cmsmax.com/)**
++- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+ 
+ ## Contributing
+ 
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index f9644add..c18c43cc 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -22,6 +22,7 @@ class Handler extends ExceptionHandler
+      * @var array
+      */
+     protected $dontFlash = [
++        'current_password',
+         'password',
+         'password_confirmation',
+     ];
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 30020a50..39910d78 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
+         ],
+ 
+         'api' => [
++            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+             'throttle:api',
+             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+         ],
+diff --git a/app/Http/Middleware/TrimStrings.php b/app/Http/Middleware/TrimStrings.php
+index 5a50e7b5..a8a252df 100644
+--- a/app/Http/Middleware/TrimStrings.php
++++ b/app/Http/Middleware/TrimStrings.php
+@@ -12,6 +12,7 @@ class TrimStrings extends Middleware
+      * @var array
+      */
+     protected $except = [
++        'current_password',
+         'password',
+         'password_confirmation',
+     ];
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index a3b6aef9..0c7d3b6b 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -2,7 +2,7 @@
+ 
+ namespace App\Http\Middleware;
+ 
+-use Fideloper\Proxy\TrustProxies as Middleware;
++use Illuminate\Http\Middleware\TrustProxies as Middleware;
+ use Illuminate\Http\Request;
+ 
+ class TrustProxies extends Middleware
+@@ -19,5 +19,10 @@ class TrustProxies extends Middleware
+      *
+      * @var int
+      */
+-    protected $headers = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_AWS_ELB;
++    protected $headers =
++        Request::HEADER_X_FORWARDED_FOR |
++        Request::HEADER_X_FORWARDED_HOST |
++        Request::HEADER_X_FORWARDED_PORT |
++        Request::HEADER_X_FORWARDED_PROTO |
++        Request::HEADER_X_FORWARDED_AWS_ELB;
+ }
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 804799ba..e23e0905 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -6,15 +6,16 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
+ use Illuminate\Notifications\Notifiable;
++use Laravel\Sanctum\HasApiTokens;
+ 
+ class User extends Authenticatable
+ {
+-    use HasFactory, Notifiable;
++    use HasApiTokens, HasFactory, Notifiable;
+ 
+     /**
+      * The attributes that are mass assignable.
+      *
+-     * @var array
++     * @var string[]
+      */
+     protected $fillable = [
+         'name',
+@@ -23,7 +24,7 @@ class User extends Authenticatable
+     ];
+ 
+     /**
+-     * The attributes that should be hidden for arrays.
++     * The attributes that should be hidden for serialization.
+      *
+      * @var array
+      */
+@@ -33,7 +34,7 @@ class User extends Authenticatable
+     ];
+ 
+     /**
+-     * The attributes that should be cast to native types.
++     * The attributes that should be cast.
+      *
+      * @var array
+      */
+diff --git a/artisan b/artisan
+index 5c23e2e2..67a3329b 100755
+--- a/artisan
++++ b/artisan
+@@ -11,7 +11,7 @@ define('LARAVEL_START', microtime(true));
+ | Composer provides a convenient, automatically generated class loader
+ | for our application. We just need to utilize it! We'll require it
+ | into the script here so that we do not have to worry about the
+-| loading of any our classes "manually". Feels great to relax.
++| loading of any of our classes manually. It's great to relax.
+ |
+ */
+ 
+diff --git a/composer.json b/composer.json
+index 3795a6db..4f6a9280 100644
+--- a/composer.json
++++ b/composer.json
+@@ -2,17 +2,14 @@
+     "name": "laravel/laravel",
+     "type": "project",
+     "description": "The Laravel Framework.",
+-    "keywords": [
+-        "framework",
+-        "laravel"
+-    ],
++    "keywords": ["framework", "laravel"],
+     "license": "MIT",
+     "require": {
+         "php": "^7.3|^8.0",
+-        "fideloper/proxy": "^4.4",
+         "fruitcake/laravel-cors": "^2.0",
+         "guzzlehttp/guzzle": "^7.0.1",
+-        "laravel/framework": "^8.12",
++        "laravel/framework": "^8.54",
++        "laravel/sanctum": "^2.11",
+         "laravel/tinker": "^2.5"
+     },
+     "require-dev": {
+@@ -23,16 +20,6 @@
+         "nunomaduro/collision": "^5.0",
+         "phpunit/phpunit": "^9.3.3"
+     },
+-    "config": {
+-        "optimize-autoloader": true,
+-        "preferred-install": "dist",
+-        "sort-packages": true
+-    },
+-    "extra": {
+-        "laravel": {
+-            "dont-discover": []
+-        }
+-    },
+     "autoload": {
+         "psr-4": {
+             "App\\": "app/",
+@@ -45,18 +32,31 @@
+             "Tests\\": "tests/"
+         }
+     },
+-    "minimum-stability": "dev",
+-    "prefer-stable": true,
+     "scripts": {
+         "post-autoload-dump": [
+             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+             "@php artisan package:discover --ansi"
+         ],
++        "post-update-cmd": [
++            "@php artisan vendor:publish --tag=laravel-assets --ansi"
++        ],
+         "post-root-package-install": [
+             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+         ],
+         "post-create-project-cmd": [
+             "@php artisan key:generate --ansi"
+         ]
+-    }
++    },
++    "extra": {
++        "laravel": {
++            "dont-discover": []
++        }
++    },
++    "config": {
++        "optimize-autoloader": true,
++        "preferred-install": "dist",
++        "sort-packages": true
++    },
++    "minimum-stability": "dev",
++    "prefer-stable": true
+ }
+diff --git a/config/app.php b/config/app.php
+index 2a2f0ebe..c9b8f5ae 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -201,6 +201,7 @@ return [
+         'Config' => Illuminate\Support\Facades\Config::class,
+         'Cookie' => Illuminate\Support\Facades\Cookie::class,
+         'Crypt' => Illuminate\Support\Facades\Crypt::class,
++        'Date' => Illuminate\Support\Facades\Date::class,
+         'DB' => Illuminate\Support\Facades\DB::class,
+         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+         'Event' => Illuminate\Support\Facades\Event::class,
+@@ -214,6 +215,7 @@ return [
+         'Notification' => Illuminate\Support\Facades\Notification::class,
+         'Password' => Illuminate\Support\Facades\Password::class,
+         'Queue' => Illuminate\Support\Facades\Queue::class,
++        'RateLimiter' => Illuminate\Support\Facades\RateLimiter::class,
+         'Redirect' => Illuminate\Support\Facades\Redirect::class,
+         // 'Redis' => Illuminate\Support\Facades\Redis::class,
+         'Request' => Illuminate\Support\Facades\Request::class,
+diff --git a/config/auth.php b/config/auth.php
+index ba1a4d8c..e29a3f7d 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -31,7 +31,7 @@ return [
+     | users are actually retrieved out of your database or other storage
+     | mechanisms used by this application to persist your user's data.
+     |
+-    | Supported: "session", "token"
++    | Supported: "session"
+     |
+     */
+ 
+@@ -40,12 +40,6 @@ return [
+             'driver' => 'session',
+             'provider' => 'users',
+         ],
+-
+-        'api' => [
+-            'driver' => 'token',
+-            'provider' => 'users',
+-            'hash' => false,
+-        ],
+     ],
+ 
+     /*
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index ef208598..2d529820 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -11,7 +11,7 @@ return [
+     | framework when an event needs to be broadcast. You may set this to
+     | any of the connections defined in the "connections" array below.
+     |
+-    | Supported: "pusher", "redis", "log", "null"
++    | Supported: "pusher", "ably", "redis", "log", "null"
+     |
+     */
+ 
+diff --git a/config/cache.php b/config/cache.php
+index e32a2fd3..8736c7a7 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -27,7 +27,7 @@ return [
+     | same cache driver to group types of items stored in your caches.
+     |
+     | Supported drivers: "apc", "array", "database", "file",
+-    |            "memcached", "redis", "dynamodb", "null"
++    |         "memcached", "redis", "dynamodb", "octane", "null"
+     |
+     */
+ 
+@@ -88,6 +88,10 @@ return [
+             'endpoint' => env('DYNAMODB_ENDPOINT'),
+         ],
+ 
++        'octane' => [
++            'driver' => 'octane',
++        ],
++
+     ],
+ 
+     /*
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 10c9d9be..760ef972 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -50,6 +50,7 @@ return [
+             'bucket' => env('AWS_BUCKET'),
+             'url' => env('AWS_URL'),
+             'endpoint' => env('AWS_ENDPOINT'),
++            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+         ],
+ 
+     ],
+diff --git a/config/logging.php b/config/logging.php
+index 6aa77fe2..1aa06aa3 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -74,6 +74,7 @@ return [
+ 
+         'stderr' => [
+             'driver' => 'monolog',
++            'level' => env('LOG_LEVEL', 'debug'),
+             'handler' => StreamHandler::class,
+             'formatter' => env('LOG_STDERR_FORMATTER'),
+             'with' => [
+diff --git a/config/mail.php b/config/mail.php
+index 54299aab..db963365 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -70,6 +70,14 @@ return [
+         'array' => [
+             'transport' => 'array',
+         ],
++
++        'failover' => [
++            'transport' => 'failover',
++            'mailers' => [
++                'smtp',
++                'log',
++            ],
++        ],
+     ],
+ 
+     /*
+diff --git a/config/queue.php b/config/queue.php
+index 12222966..25ea5a81 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -39,6 +39,7 @@ return [
+             'table' => 'jobs',
+             'queue' => 'default',
+             'retry_after' => 90,
++            'after_commit' => false,
+         ],
+ 
+         'beanstalkd' => [
+@@ -47,6 +48,7 @@ return [
+             'queue' => 'default',
+             'retry_after' => 90,
+             'block_for' => 0,
++            'after_commit' => false,
+         ],
+ 
+         'sqs' => [
+@@ -54,9 +56,10 @@ return [
+             'key' => env('AWS_ACCESS_KEY_ID'),
+             'secret' => env('AWS_SECRET_ACCESS_KEY'),
+             'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+-            'queue' => env('SQS_QUEUE', 'your-queue-name'),
++            'queue' => env('SQS_QUEUE', 'default'),
+             'suffix' => env('SQS_SUFFIX'),
+             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
++            'after_commit' => false,
+         ],
+ 
+         'redis' => [
+@@ -65,6 +68,7 @@ return [
+             'queue' => env('REDIS_QUEUE', 'default'),
+             'retry_after' => 90,
+             'block_for' => null,
++            'after_commit' => false,
+         ],
+ 
+     ],
+diff --git a/config/sanctum.php b/config/sanctum.php
+new file mode 100644
+index 00000000..442726a7
+--- /dev/null
++++ b/config/sanctum.php
+@@ -0,0 +1,51 @@
++<?php
++
++return [
++
++    /*
++    |--------------------------------------------------------------------------
++    | Stateful Domains
++    |--------------------------------------------------------------------------
++    |
++    | Requests from the following domains / hosts will receive stateful API
++    | authentication cookies. Typically, these should include your local
++    | and production domains which access your API via a frontend SPA.
++    |
++    */
++
++    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
++        '%s%s',
++        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
++        env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
++    ))),
++
++    /*
++    |--------------------------------------------------------------------------
++    | Expiration Minutes
++    |--------------------------------------------------------------------------
++    |
++    | This value controls the number of minutes until an issued token will be
++    | considered expired. If this value is null, personal access tokens do
++    | not expire. This won't tweak the lifetime of first-party sessions.
++    |
++    */
++
++    'expiration' => null,
++
++    /*
++    |--------------------------------------------------------------------------
++    | Sanctum Middleware
++    |--------------------------------------------------------------------------
++    |
++    | When authenticating your first-party SPA with Sanctum you may need to
++    | customize some of the middleware Sanctum uses while processing the
++    | request. You may change the middleware listed below as required.
++    |
++    */
++
++    'middleware' => [
++        'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
++        'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
++    ],
++
++];
+diff --git a/config/session.php b/config/session.php
+index 4e0f66cd..ac0802b1 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -164,7 +164,7 @@ return [
+     |
+     | By setting this option to true, session cookies will only be sent back
+     | to the server if the browser has a HTTPS connection. This will keep
+-    | the cookie from being sent to you if it can not be done securely.
++    | the cookie from being sent to you when it can't be done securely.
+     |
+     */
+ 
+diff --git a/database/.gitignore b/database/.gitignore
+index 97fc9767..9b19b93c 100644
+--- a/database/.gitignore
++++ b/database/.gitignore
+@@ -1,2 +1 @@
+-*.sqlite
+-*.sqlite-journal
++*.sqlite*
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index bdea1a32..a24ce53f 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -23,11 +23,25 @@ class UserFactory extends Factory
+     public function definition()
+     {
+         return [
+-            'name' => $this->faker->name,
+-            'email' => $this->faker->unique()->safeEmail,
++            'name' => $this->faker->name(),
++            'email' => $this->faker->unique()->safeEmail(),
+             'email_verified_at' => now(),
+             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+             'remember_token' => Str::random(10),
+         ];
+     }
++
++    /**
++     * Indicate that the model's email address should be unverified.
++     *
++     * @return \Illuminate\Database\Eloquent\Factories\Factory
++     */
++    public function unverified()
++    {
++        return $this->state(function (array $attributes) {
++            return [
++                'email_verified_at' => null,
++            ];
++        });
++    }
+ }
+diff --git a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+new file mode 100644
+index 00000000..3ce00023
+--- /dev/null
++++ b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+@@ -0,0 +1,36 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++class CreatePersonalAccessTokensTable extends Migration
++{
++    /**
++     * Run the migrations.
++     *
++     * @return void
++     */
++    public function up()
++    {
++        Schema::create('personal_access_tokens', function (Blueprint $table) {
++            $table->bigIncrements('id');
++            $table->morphs('tokenable');
++            $table->string('name');
++            $table->string('token', 64)->unique();
++            $table->text('abilities')->nullable();
++            $table->timestamp('last_used_at')->nullable();
++            $table->timestamps();
++        });
++    }
++
++    /**
++     * Reverse the migrations.
++     *
++     * @return void
++     */
++    public function down()
++    {
++        Schema::dropIfExists('personal_access_tokens');
++    }
++}
+diff --git a/public/index.php b/public/index.php
+index a8137b13..66ea93cd 100644
+--- a/public/index.php
++++ b/public/index.php
+@@ -7,11 +7,11 @@ define('LARAVEL_START', microtime(true));
+ 
+ /*
+ |--------------------------------------------------------------------------
+-| Check If Application Is Under Maintenance
++| Check If The Application Is Under Maintenance
+ |--------------------------------------------------------------------------
+ |
+-| If the application is maintenance / demo mode via the "down" command we
+-| will require this file so that any prerendered template can be shown
++| If the application is in maintenance / demo mode via the "down" command
++| we will load this file so that any pre-rendered content can be shown
+ | instead of starting the framework, which could cause an exception.
+ |
+ */
+diff --git a/public/web.config b/public/web.config
+index d3711d7c..323482f1 100644
+--- a/public/web.config
++++ b/public/web.config
+@@ -1,6 +1,6 @@
+ <!--
+     Rewrites requires Microsoft URL Rewrite Module for IIS
+-    Download: https://www.microsoft.com/en-us/download/details.aspx?id=47337
++    Download: https://www.iis.net/downloads/microsoft/url-rewrite
+     Debug Help: https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/using-failed-request-tracing-to-trace-rewrite-rules
+ -->
+ <configuration>
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index c77e41ce..6ee8d8d7 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -14,12 +14,13 @@ return [
+     */
+ 
+     'accepted' => 'The :attribute must be accepted.',
++    'accepted_if' => 'The :attribute must be accepted when :other is :value.',
+     'active_url' => 'The :attribute is not a valid URL.',
+     'after' => 'The :attribute must be a date after :date.',
+     'after_or_equal' => 'The :attribute must be a date after or equal to :date.',
+-    'alpha' => 'The :attribute may only contain letters.',
+-    'alpha_dash' => 'The :attribute may only contain letters, numbers, dashes and underscores.',
+-    'alpha_num' => 'The :attribute may only contain letters and numbers.',
++    'alpha' => 'The :attribute must only contain letters.',
++    'alpha_dash' => 'The :attribute must only contain letters, numbers, dashes and underscores.',
++    'alpha_num' => 'The :attribute must only contain letters and numbers.',
+     'array' => 'The :attribute must be an array.',
+     'before' => 'The :attribute must be a date before :date.',
+     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
+@@ -31,6 +32,7 @@ return [
+     ],
+     'boolean' => 'The :attribute field must be true or false.',
+     'confirmed' => 'The :attribute confirmation does not match.',
++    'current_password' => 'The password is incorrect.',
+     'date' => 'The :attribute is not a valid date.',
+     'date_equals' => 'The :attribute must be a date equal to :date.',
+     'date_format' => 'The :attribute does not match the format :format.',
+@@ -77,10 +79,10 @@ return [
+         'array' => 'The :attribute must not have more than :value items.',
+     ],
+     'max' => [
+-        'numeric' => 'The :attribute may not be greater than :max.',
+-        'file' => 'The :attribute may not be greater than :max kilobytes.',
+-        'string' => 'The :attribute may not be greater than :max characters.',
+-        'array' => 'The :attribute may not have more than :max items.',
++        'numeric' => 'The :attribute must not be greater than :max.',
++        'file' => 'The :attribute must not be greater than :max kilobytes.',
++        'string' => 'The :attribute must not be greater than :max characters.',
++        'array' => 'The :attribute must not have more than :max items.',
+     ],
+     'mimes' => 'The :attribute must be a file of type: :values.',
+     'mimetypes' => 'The :attribute must be a file of type: :values.',
+@@ -104,6 +106,9 @@ return [
+     'required_with_all' => 'The :attribute field is required when :values are present.',
+     'required_without' => 'The :attribute field is required when :values is not present.',
+     'required_without_all' => 'The :attribute field is required when none of :values are present.',
++    'prohibited' => 'The :attribute field is prohibited.',
++    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
++    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
+     'same' => 'The :attribute and :other must match.',
+     'size' => [
+         'numeric' => 'The :attribute must be :size.',
+@@ -113,10 +118,10 @@ return [
+     ],
+     'starts_with' => 'The :attribute must start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',
+-    'timezone' => 'The :attribute must be a valid zone.',
++    'timezone' => 'The :attribute must be a valid timezone.',
+     'unique' => 'The :attribute has already been taken.',
+     'uploaded' => 'The :attribute failed to upload.',
+-    'url' => 'The :attribute format is invalid.',
++    'url' => 'The :attribute must be a valid URL.',
+     'uuid' => 'The :attribute must be a valid UUID.',
+ 
+     /*
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index e305e336..b1905c92 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -16,18 +16,18 @@
+ 
+         <style>
+             body {
+-                font-family: 'Nunito';
++                font-family: 'Nunito', sans-serif;
+             }
+         </style>
+     </head>
+     <body class="antialiased">
+-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
++        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
+             @if (Route::has('login'))
+                 <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+                     @auth
+                         <a href="{{ url('/home') }}" class="text-sm text-gray-700 underline">Home</a>
+                     @else
+-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
++                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
+ 
+                         @if (Route::has('register'))
+                             <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>
+diff --git a/routes/api.php b/routes/api.php
+index bcb8b189..eb6fa48c 100644
+--- a/routes/api.php
++++ b/routes/api.php
+@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
+ |
+ */
+ 
+-Route::middleware('auth:api')->get('/user', function (Request $request) {
++Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+     return $request->user();
+ });
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index cdb51119..4ae02bc5 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -12,7 +12,7 @@ class ExampleTest extends TestCase
+      *
+      * @return void
+      */
+-    public function testBasicTest()
++    public function test_example()
+     {
+         $response = $this->get('/');
+ 
+diff --git a/tests/Unit/ExampleTest.php b/tests/Unit/ExampleTest.php
+index 358cfc88..62e8c3cd 100644
+--- a/tests/Unit/ExampleTest.php
++++ b/tests/Unit/ExampleTest.php
+@@ -11,7 +11,7 @@ class ExampleTest extends TestCase
+      *
+      * @return void
+      */
+-    public function testBasicTest()
++    public function test_example()
+     {
+         $this->assertTrue(true);
+     }

@@ -1,0 +1,555 @@
+diff --git a/.env.example b/.env.example
+index 8510237c..9bb1bd7c 100644
+--- a/.env.example
++++ b/.env.example
+@@ -34,7 +34,7 @@ MAIL_PORT=1025
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+ MAIL_ENCRYPTION=null
+-MAIL_FROM_ADDRESS=null
++MAIL_FROM_ADDRESS="hello@example.com"
+ MAIL_FROM_NAME="${APP_NAME}"
+ 
+ AWS_ACCESS_KEY_ID=
+diff --git a/.github/workflows/pull-requests.yml b/.github/workflows/pull-requests.yml
+new file mode 100644
+index 00000000..156b46eb
+--- /dev/null
++++ b/.github/workflows/pull-requests.yml
+@@ -0,0 +1,13 @@
++name: Pull Requests
++
++on:
++  pull_request_target:
++    types:
++      - opened
++
++permissions:
++  pull-requests: write
++
++jobs:
++  uneditable:
++    uses: laravel/.github/.github/workflows/pull-requests.yml@main
+diff --git a/.github/workflows/update-changelog.yml b/.github/workflows/update-changelog.yml
+index 0200e2b9..eaeaf1f8 100644
+--- a/.github/workflows/update-changelog.yml
++++ b/.github/workflows/update-changelog.yml
+@@ -6,24 +6,4 @@ on:
+ 
+ jobs:
+   update:
+-    runs-on: ubuntu-latest
+-
+-    steps:
+-      - name: Checkout code
+-        uses: actions/checkout@v2
+-        with:
+-          ref: ${{ github.ref_name }}
+-
+-      - name: Update Changelog
+-        uses: stefanzweifel/changelog-updater-action@v1
+-        with:
+-          latest-version: ${{ github.event.release.tag_name }}
+-          release-notes: ${{ github.event.release.body }}
+-          compare-url-target-revision: ${{ github.event.release.target_commitish }}
+-
+-      - name: Commit updated CHANGELOG
+-        uses: stefanzweifel/git-auto-commit-action@v4
+-        with:
+-          branch: ${{ github.event.release.target_commitish }}
+-          commit_message: Update CHANGELOG.md
+-          file_pattern: CHANGELOG.md
++    uses: laravel/.github/.github/workflows/update-changelog.yml@main
+diff --git a/.gitignore b/.gitignore
+index eb003b01..bc67a663 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,7 +6,6 @@
+ .env
+ .env.backup
+ .phpunit.result.cache
+-docker-compose.override.yml
+ Homestead.json
+ Homestead.yaml
+ npm-debug.log
+diff --git a/.styleci.yml b/.styleci.yml
+index 679a631e..79f63b44 100644
+--- a/.styleci.yml
++++ b/.styleci.yml
+@@ -1,6 +1,5 @@
+ php:
+   preset: laravel
+-  version: 8
+   disabled:
+     - no_unused_imports
+   finder:
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4d3b1735..e39743c5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,3 +1,62 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.10...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.4...9.x)
++
++## [v9.1.4](https://github.com/laravel/laravel/compare/v9.1.3...v9.1.4) - 2022-03-29
++
++### Changed
++
++- Add encryption configuration by @taylorotwell in https://github.com/laravel/laravel/commit/f7b982ebdf7bd31eda9f05f901bd92ed32446156
++
++## [v9.1.3](https://github.com/laravel/laravel/compare/v9.1.2...v9.1.3) - 2022-03-29
++
++### Changed
++
++- Add an example to the class aliases by @nshiro in https://github.com/laravel/laravel/pull/5846
++- Add username in config to use with phpredis + ACL by @neoteknic in https://github.com/laravel/laravel/pull/5851
++- Remove "password" from validation lang by @mnastalski in https://github.com/laravel/laravel/pull/5856
++- Make authenticate session a route middleware by @taylorotwell in https://github.com/laravel/laravel/pull/5842
++
++## [v9.1.2](https://github.com/laravel/laravel/compare/v9.1.1...v9.1.2) - 2022-03-15
++
++### Changed
++
++- The docker-compose.override.yml should not be ignored by default by @dakira in https://github.com/laravel/laravel/pull/5838
++
++## [v9.1.1](https://github.com/laravel/laravel/compare/v9.1.0...v9.1.1) - 2022-03-08
++
++### Changed
++
++- Add option to configure Mailgun transporter scheme by @jnoordsij in https://github.com/laravel/laravel/pull/5831
++- Add `throw` to filesystems config by @ankurk91 in https://github.com/laravel/laravel/pull/5835
++
++### Fixed
++
++- Small typo fix in filesystems.php by @tooshay in https://github.com/laravel/laravel/pull/5827
++- Update sendmail default params by @driesvints in https://github.com/laravel/laravel/pull/5836
++
++## [v9.1.0](https://github.com/laravel/laravel/compare/v9.0.1...v9.1.0) - 2022-02-22
++
++### Changed
++
++- Remove namespace from Routes by @emargareten in https://github.com/laravel/laravel/pull/5818
++- Update sanctum config file by @suyar in https://github.com/laravel/laravel/pull/5820
++- Replace Laravel CORS package by @driesvints in https://github.com/laravel/laravel/pull/5825
++
++## [v9.0.1](https://github.com/laravel/laravel/compare/v9.0.0...v9.0.1) - 2022-02-15
++
++### Changed
++
++- Improve typing on user factory by @axlon in https://github.com/laravel/laravel/pull/5806
++- Align min PHP version with docs by @u01jmg3 in https://github.com/laravel/laravel/pull/5807
++- Remove redundant `null`s by @felixdorn in https://github.com/laravel/laravel/pull/5811
++- Remove default commented namespace by @driesvints in https://github.com/laravel/laravel/pull/5816
++- Add underscore to prefix in database cache key by @m4tlch in https://github.com/laravel/laravel/pull/5817
++
++### Fixed
++
++- Fix lang alphabetical order by @shuvroroy in https://github.com/laravel/laravel/pull/5812
++
++## [v9.0.0 (2022-02-08)](https://github.com/laravel/laravel/compare/v8.6.11...v9.0.0)
++
++Laravel 9 includes a variety of changes to the application skeleton. Please consult the diff to see what's new.
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 8e7fbd1b..008b40fa 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -7,10 +7,19 @@ use Throwable;
+ 
+ class Handler extends ExceptionHandler
+ {
++    /**
++     * A list of exception types with their corresponding custom log levels.
++     *
++     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
++     */
++    protected $levels = [
++        //
++    ];
++
+     /**
+      * A list of the exception types that are not reported.
+      *
+-     * @var array<int, class-string<Throwable>>
++     * @var array<int, class-string<\Throwable>>
+      */
+     protected $dontReport = [
+         //
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index d3722c2d..c3be2544 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -16,7 +16,7 @@ class Kernel extends HttpKernel
+     protected $middleware = [
+         // \App\Http\Middleware\TrustHosts::class,
+         \App\Http\Middleware\TrustProxies::class,
+-        \Fruitcake\Cors\HandleCors::class,
++        \Illuminate\Http\Middleware\HandleCors::class,
+         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+         \App\Http\Middleware\TrimStrings::class,
+@@ -33,7 +33,6 @@ class Kernel extends HttpKernel
+             \App\Http\Middleware\EncryptCookies::class,
+             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+             \Illuminate\Session\Middleware\StartSession::class,
+-            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+             \App\Http\Middleware\VerifyCsrfToken::class,
+             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+@@ -56,6 +55,7 @@ class Kernel extends HttpKernel
+     protected $routeMiddleware = [
+         'auth' => \App\Http\Middleware\Authenticate::class,
+         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
++        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+diff --git a/app/Providers/EventServiceProvider.php b/app/Providers/EventServiceProvider.php
+index 23499eb8..45ca6685 100644
+--- a/app/Providers/EventServiceProvider.php
++++ b/app/Providers/EventServiceProvider.php
+@@ -29,4 +29,14 @@ class EventServiceProvider extends ServiceProvider
+     {
+         //
+     }
++
++    /**
++     * Determine if events and listeners should be automatically discovered.
++     *
++     * @return bool
++     */
++    public function shouldDiscoverEvents()
++    {
++        return false;
++    }
+ }
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 7c17d1f0..f34af12a 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -19,15 +19,6 @@ class RouteServiceProvider extends ServiceProvider
+      */
+     public const HOME = '/home';
+ 
+-    /**
+-     * The controller namespace for the application.
+-     *
+-     * When present, controller route declarations will automatically be prefixed with this namespace.
+-     *
+-     * @var string|null
+-     */
+-    // protected $namespace = 'App\\Http\\Controllers';
+-
+     /**
+      * Define your route model bindings, pattern filters, etc.
+      *
+@@ -38,13 +29,11 @@ class RouteServiceProvider extends ServiceProvider
+         $this->configureRateLimiting();
+ 
+         $this->routes(function () {
+-            Route::prefix('api')
+-                ->middleware('api')
+-                ->namespace($this->namespace)
++            Route::middleware('api')
++                ->prefix('api')
+                 ->group(base_path('routes/api.php'));
+ 
+             Route::middleware('web')
+-                ->namespace($this->namespace)
+                 ->group(base_path('routes/web.php'));
+         });
+     }
+diff --git a/composer.json b/composer.json
+index 69137367..438f4487 100644
+--- a/composer.json
++++ b/composer.json
+@@ -5,11 +5,10 @@
+     "keywords": ["framework", "laravel"],
+     "license": "MIT",
+     "require": {
+-        "php": "^8.0",
+-        "fruitcake/laravel-cors": "^2.0.5",
++        "php": "^8.0.2",
+         "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^9.0",
+-        "laravel/sanctum": "^2.14",
++        "laravel/framework": "^9.2",
++        "laravel/sanctum": "^2.14.1",
+         "laravel/tinker": "^2.7"
+     },
+     "require-dev": {
+diff --git a/config/app.php b/config/app.php
+index 1941d7c7..b02c7f4b 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -56,7 +56,7 @@ return [
+ 
+     'url' => env('APP_URL', 'http://localhost'),
+ 
+-    'asset_url' => env('ASSET_URL', null),
++    'asset_url' => env('ASSET_URL'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -191,7 +191,7 @@ return [
+     */
+ 
+     'aliases' => Facade::defaultAliases()->merge([
+-        // ...
++        // 'ExampleClass' => App\Example\ExampleClass::class,
+     ])->toArray(),
+ 
+ ];
+diff --git a/config/cache.php b/config/cache.php
+index 8736c7a7..33bb2954 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -99,12 +99,12 @@ return [
+     | Cache Key Prefix
+     |--------------------------------------------------------------------------
+     |
+-    | When utilizing a RAM based store such as APC or Memcached, there might
+-    | be other applications utilizing the same cache. So, we'll specify a
+-    | value to get prefixed to all our keys so we can avoid collisions.
++    | When utilizing the APC, database, memcached, Redis, or DynamoDB cache
++    | stores there might be other applications using the same cache. For
++    | that reason, you may prefix every cache key to avoid collisions.
+     |
+     */
+ 
+-    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
++    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
+ 
+ ];
+diff --git a/config/database.php b/config/database.php
+index 0faebaee..137ad18c 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -89,6 +89,8 @@ return [
+             'charset' => 'utf8',
+             'prefix' => '',
+             'prefix_indexes' => true,
++            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
++            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+         ],
+ 
+     ],
+@@ -129,6 +131,7 @@ return [
+         'default' => [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
++            'username' => env('REDIS_USERNAME'),
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_DB', '0'),
+@@ -137,6 +140,7 @@ return [
+         'cache' => [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
++            'username' => env('REDIS_USERNAME'),
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_CACHE_DB', '1'),
+diff --git a/config/filesystems.php b/config/filesystems.php
+index cf5abce7..e9d9dbdb 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -22,7 +22,7 @@ return [
+     |
+     | Here you may configure as many filesystem "disks" as you wish, and you
+     | may even configure multiple disks of the same driver. Defaults have
+-    | been setup for each driver as an example of the required options.
++    | been set up for each driver as an example of the required values.
+     |
+     | Supported Drivers: "local", "ftp", "sftp", "s3"
+     |
+@@ -33,6 +33,7 @@ return [
+         'local' => [
+             'driver' => 'local',
+             'root' => storage_path('app'),
++            'throw' => false,
+         ],
+ 
+         'public' => [
+@@ -40,6 +41,7 @@ return [
+             'root' => storage_path('app/public'),
+             'url' => env('APP_URL').'/storage',
+             'visibility' => 'public',
++            'throw' => false,
+         ],
+ 
+         's3' => [
+@@ -51,6 +53,7 @@ return [
+             'url' => env('AWS_URL'),
+             'endpoint' => env('AWS_ENDPOINT'),
+             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
++            'throw' => false,
+         ],
+ 
+     ],
+diff --git a/config/mail.php b/config/mail.php
+index 87b6fe3c..11bfe7e1 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -58,7 +58,7 @@ return [
+ 
+         'sendmail' => [
+             'transport' => 'sendmail',
+-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -t -i'),
++            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+         ],
+ 
+         'log' => [
+diff --git a/config/sanctum.php b/config/sanctum.php
+index 9281c92d..529cfdc9 100644
+--- a/config/sanctum.php
++++ b/config/sanctum.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use Laravel\Sanctum\Sanctum;
++
+ return [
+ 
+     /*
+@@ -16,7 +18,7 @@ return [
+     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
+         '%s%s',
+         'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+-        env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
++        Sanctum::currentApplicationUrlWithPort()
+     ))),
+ 
+     /*
+diff --git a/config/services.php b/config/services.php
+index 2a1d616c..0ace530e 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -18,6 +18,7 @@ return [
+         'domain' => env('MAILGUN_DOMAIN'),
+         'secret' => env('MAILGUN_SECRET'),
+         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
++        'scheme' => 'https',
+     ],
+ 
+     'postmark' => [
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index d6ca9267..23b61d24 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -13,7 +13,7 @@ class UserFactory extends Factory
+     /**
+      * Define the model's default state.
+      *
+-     * @return array
++     * @return array<string, mixed>
+      */
+     public function definition()
+     {
+@@ -29,7 +29,7 @@ class UserFactory extends Factory
+     /**
+      * Indicate that the model's email address should be unverified.
+      *
+-     * @return \Illuminate\Database\Eloquent\Factories\Factory
++     * @return static
+      */
+     public function unverified()
+     {
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index 783003cf..397f78e2 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -25,10 +25,10 @@ return [
+     'before' => 'The :attribute must be a date before :date.',
+     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
+     'between' => [
+-        'numeric' => 'The :attribute must be between :min and :max.',
++        'array' => 'The :attribute must have between :min and :max items.',
+         'file' => 'The :attribute must be between :min and :max kilobytes.',
++        'numeric' => 'The :attribute must be between :min and :max.',
+         'string' => 'The :attribute must be between :min and :max characters.',
+-        'array' => 'The :attribute must have between :min and :max items.',
+     ],
+     'boolean' => 'The :attribute field must be true or false.',
+     'confirmed' => 'The :attribute confirmation does not match.',
+@@ -50,16 +50,16 @@ return [
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',
+     'gt' => [
+-        'numeric' => 'The :attribute must be greater than :value.',
++        'array' => 'The :attribute must have more than :value items.',
+         'file' => 'The :attribute must be greater than :value kilobytes.',
++        'numeric' => 'The :attribute must be greater than :value.',
+         'string' => 'The :attribute must be greater than :value characters.',
+-        'array' => 'The :attribute must have more than :value items.',
+     ],
+     'gte' => [
+-        'numeric' => 'The :attribute must be greater than or equal to :value.',
++        'array' => 'The :attribute must have :value items or more.',
+         'file' => 'The :attribute must be greater than or equal to :value kilobytes.',
++        'numeric' => 'The :attribute must be greater than or equal to :value.',
+         'string' => 'The :attribute must be greater than or equal to :value characters.',
+-        'array' => 'The :attribute must have :value items or more.',
+     ],
+     'image' => 'The :attribute must be an image.',
+     'in' => 'The selected :attribute is invalid.',
+@@ -70,37 +70,36 @@ return [
+     'ipv6' => 'The :attribute must be a valid IPv6 address.',
+     'json' => 'The :attribute must be a valid JSON string.',
+     'lt' => [
+-        'numeric' => 'The :attribute must be less than :value.',
++        'array' => 'The :attribute must have less than :value items.',
+         'file' => 'The :attribute must be less than :value kilobytes.',
++        'numeric' => 'The :attribute must be less than :value.',
+         'string' => 'The :attribute must be less than :value characters.',
+-        'array' => 'The :attribute must have less than :value items.',
+     ],
+     'lte' => [
+-        'numeric' => 'The :attribute must be less than or equal to :value.',
++        'array' => 'The :attribute must not have more than :value items.',
+         'file' => 'The :attribute must be less than or equal to :value kilobytes.',
++        'numeric' => 'The :attribute must be less than or equal to :value.',
+         'string' => 'The :attribute must be less than or equal to :value characters.',
+-        'array' => 'The :attribute must not have more than :value items.',
+     ],
+     'mac_address' => 'The :attribute must be a valid MAC address.',
+     'max' => [
+-        'numeric' => 'The :attribute must not be greater than :max.',
++        'array' => 'The :attribute must not have more than :max items.',
+         'file' => 'The :attribute must not be greater than :max kilobytes.',
++        'numeric' => 'The :attribute must not be greater than :max.',
+         'string' => 'The :attribute must not be greater than :max characters.',
+-        'array' => 'The :attribute must not have more than :max items.',
+     ],
+     'mimes' => 'The :attribute must be a file of type: :values.',
+     'mimetypes' => 'The :attribute must be a file of type: :values.',
+     'min' => [
+-        'numeric' => 'The :attribute must be at least :min.',
++        'array' => 'The :attribute must have at least :min items.',
+         'file' => 'The :attribute must be at least :min kilobytes.',
++        'numeric' => 'The :attribute must be at least :min.',
+         'string' => 'The :attribute must be at least :min characters.',
+-        'array' => 'The :attribute must have at least :min items.',
+     ],
+     'multiple_of' => 'The :attribute must be a multiple of :value.',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
+-    'password' => 'The password is incorrect.',
+     'present' => 'The :attribute field must be present.',
+     'prohibited' => 'The :attribute field is prohibited.',
+     'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
+@@ -117,10 +116,10 @@ return [
+     'required_without_all' => 'The :attribute field is required when none of :values are present.',
+     'same' => 'The :attribute and :other must match.',
+     'size' => [
+-        'numeric' => 'The :attribute must be :size.',
++        'array' => 'The :attribute must contain :size items.',
+         'file' => 'The :attribute must be :size kilobytes.',
++        'numeric' => 'The :attribute must be :size.',
+         'string' => 'The :attribute must be :size characters.',
+-        'array' => 'The :attribute must contain :size items.',
+     ],
+     'starts_with' => 'The :attribute must start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',

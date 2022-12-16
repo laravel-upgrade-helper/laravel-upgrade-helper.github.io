@@ -1,0 +1,343 @@
+diff --git a/.gitattributes b/.gitattributes
+index 510d9961..7dbbf41a 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -8,3 +8,4 @@
+ 
+ /.github export-ignore
+ CHANGELOG.md export-ignore
++.styleci.yml export-ignore
+diff --git a/.styleci.yml b/.styleci.yml
+index 4705a373..9daadf16 100644
+--- a/.styleci.yml
++++ b/.styleci.yml
+@@ -5,8 +5,5 @@ php:
+   finder:
+     not-name:
+       - index.php
+-js:
+-  finder:
+-    not-name:
+-      - vite.config.js
++js: true
+ css: true
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6535994b..9b7c9744 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,66 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.2.0...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.6...9.x)
++
++## [v9.3.6](https://github.com/laravel/laravel/compare/v9.3.5...v9.3.6) - 2022-08-29
++
++### Changed
++
++- Bump Vite plugin version by @timacdonald in https://github.com/laravel/laravel/pull/5977
++
++## [v9.3.5](https://github.com/laravel/laravel/compare/v9.3.4...v9.3.5) - 2022-08-22
++
++### Changed
++
++- `max_digits` and `min_digits` validation translations by @danharrin in https://github.com/laravel/laravel/pull/5975
++- Use short closure by @taylorotwell in https://github.com/laravel/laravel/commit/7b17f5f32623c2ee75f2bff57a42bb8f180ac779
++- Use except by @taylorotwell in https://github.com/laravel/laravel/commit/e2e25f607a894427d6545f611ad3c8d94d022e9d
++
++## [v9.3.4](https://github.com/laravel/laravel/compare/v9.3.3...v9.3.4) - 2022-08-15
++
++### Changed
++
++- Add ValidateSignature middleware for ignore params by @valorin in https://github.com/laravel/laravel/pull/5942
++
++## [v9.3.3](https://github.com/laravel/laravel/compare/v9.3.2...v9.3.3) - 2022-08-03
++
++### Changed
++
++- Validation added `doesnt_end_with` translation by @kichetof in https://github.com/laravel/laravel/pull/5962
++
++## [v9.3.2](https://github.com/laravel/laravel/compare/v9.3.1...v9.3.2) - 2022-08-01
++
++### Changed
++
++- Update Sanctum by @suyar in https://github.com/laravel/laravel/pull/5957
++- Allow Pest plugin in Composer by @driesvints in https://github.com/laravel/laravel/pull/5959
++
++## [v9.3.1](https://github.com/laravel/laravel/compare/v9.3.0...v9.3.1) - 2022-07-26
++
++### Changed
++
++- Update font delivery by @abenerd in https://github.com/laravel/laravel/pull/5952
++- Don't need to ignore vite config file by @GrahamCampbell in https://github.com/laravel/laravel/pull/5953
++
++## [v9.3.0](https://github.com/laravel/laravel/compare/v9.2.1...v9.3.0) - 2022-07-20
++
++### Added
++
++- Uses `laravel/pint` for styling by @nunomaduro in https://github.com/laravel/laravel/pull/5945
++
++### Changed
++
++- Bump axios version by @ankurk91 in https://github.com/laravel/laravel/pull/5946
++- Vite 3 support by @timacdonald in https://github.com/laravel/laravel/pull/5944
++
++## [v9.2.1](https://github.com/laravel/laravel/compare/v9.2.0...v9.2.1) - 2022-07-13
++
++### Changed
++
++- Add auth.json to skeleton by @driesvints in https://github.com/laravel/laravel/pull/5924
++- Update `bootstrap.js` by @irsyadadl in https://github.com/laravel/laravel/pull/5929
++- Add default reloading to skeleton by @timacdonald in https://github.com/laravel/laravel/pull/5927
++- Update to the latest version of laravel-vite-plugin by @jessarcher in https://github.com/laravel/laravel/pull/5943
+ 
+ ## [v9.2.0](https://github.com/laravel/laravel/compare/v9.1.10...v9.2.0) - 2022-06-28
+ 
+diff --git a/README.md b/README.md
+index f171ecac..1378e855 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
++<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index c3be2544..00796881 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -60,7 +60,7 @@ class Kernel extends HttpKernel
+         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+-        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
++        'signed' => \App\Http\Middleware\ValidateSignature::class,
+         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+     ];
+diff --git a/app/Http/Middleware/ValidateSignature.php b/app/Http/Middleware/ValidateSignature.php
+new file mode 100644
+index 00000000..093bf64a
+--- /dev/null
++++ b/app/Http/Middleware/ValidateSignature.php
+@@ -0,0 +1,22 @@
++<?php
++
++namespace App\Http\Middleware;
++
++use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
++
++class ValidateSignature extends Middleware
++{
++    /**
++     * The names of the query string parameters that should be ignored.
++     *
++     * @var array<int, string>
++     */
++    protected $except = [
++        // 'fbclid',
++        // 'utm_campaign',
++        // 'utm_content',
++        // 'utm_medium',
++        // 'utm_source',
++        // 'utm_term',
++    ];
++}
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 89963686..23b40634 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -2,7 +2,7 @@
+ 
+ namespace App\Models;
+ 
+-use Illuminate\Contracts\Auth\MustVerifyEmail;
++// use Illuminate\Contracts\Auth\MustVerifyEmail;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
+ use Illuminate\Notifications\Notifiable;
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index 51b351b0..33b83f56 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -2,8 +2,8 @@
+ 
+ namespace App\Providers;
+ 
++// use Illuminate\Support\Facades\Gate;
+ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+-use Illuminate\Support\Facades\Gate;
+ 
+ class AuthServiceProvider extends ServiceProvider
+ {
+diff --git a/composer.json b/composer.json
+index ebc44b15..299b7e8a 100644
+--- a/composer.json
++++ b/composer.json
+@@ -8,11 +8,12 @@
+         "php": "^8.0.2",
+         "guzzlehttp/guzzle": "^7.2",
+         "laravel/framework": "^9.19",
+-        "laravel/sanctum": "^2.14.1",
++        "laravel/sanctum": "^3.0",
+         "laravel/tinker": "^2.7"
+     },
+     "require-dev": {
+         "fakerphp/faker": "^1.9.1",
++        "laravel/pint": "^1.0",
+         "laravel/sail": "^1.0.1",
+         "mockery/mockery": "^1.4.4",
+         "nunomaduro/collision": "^6.1",
+@@ -54,7 +55,10 @@
+     "config": {
+         "optimize-autoloader": true,
+         "preferred-install": "dist",
+-        "sort-packages": true
++        "sort-packages": true,
++        "allow-plugins": {
++            "pestphp/pest-plugin": true
++        }
+     },
+     "minimum-stability": "dev",
+     "prefer-stable": true
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 20b35322..41f8ae89 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -19,7 +19,7 @@ class UserFactory extends Factory
+     {
+         return [
+             'name' => fake()->name(),
+-            'email' => fake()->safeEmail(),
++            'email' => fake()->unique()->safeEmail(),
+             'email_verified_at' => now(),
+             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+             'remember_token' => Str::random(10),
+@@ -33,10 +33,8 @@ class UserFactory extends Factory
+      */
+     public function unverified()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'email_verified_at' => null,
+-            ];
+-        });
++        return $this->state(fn (array $attributes) => [
++            'email_verified_at' => null,
++        ]);
+     }
+ }
+diff --git a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+index fd235f8c..6c81fd22 100644
+--- a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
++++ b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+@@ -20,6 +20,7 @@ return new class extends Migration
+             $table->string('token', 64)->unique();
+             $table->text('abilities')->nullable();
+             $table->timestamp('last_used_at')->nullable();
++            $table->timestamp('expires_at')->nullable();
+             $table->timestamps();
+         });
+     }
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index c1c48a06..76d96dc7 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -2,7 +2,7 @@
+ 
+ namespace Database\Seeders;
+ 
+-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
++// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+ use Illuminate\Database\Seeder;
+ 
+ class DatabaseSeeder extends Seeder
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index cef02f58..d5490e5c 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -43,6 +43,7 @@ return [
+     'digits_between' => 'The :attribute must be between :min and :max digits.',
+     'dimensions' => 'The :attribute has invalid image dimensions.',
+     'distinct' => 'The :attribute field has a duplicate value.',
++    'doesnt_end_with' => 'The :attribute may not end with one of the following: :values.',
+     'doesnt_start_with' => 'The :attribute may not start with one of the following: :values.',
+     'email' => 'The :attribute must be a valid email address.',
+     'ends_with' => 'The :attribute must end with one of the following: :values.',
+@@ -89,6 +90,7 @@ return [
+         'numeric' => 'The :attribute must not be greater than :max.',
+         'string' => 'The :attribute must not be greater than :max characters.',
+     ],
++    'max_digits' => 'The :attribute must not have more than :max digits.',
+     'mimes' => 'The :attribute must be a file of type: :values.',
+     'mimetypes' => 'The :attribute must be a file of type: :values.',
+     'min' => [
+@@ -97,6 +99,7 @@ return [
+         'numeric' => 'The :attribute must be at least :min.',
+         'string' => 'The :attribute must be at least :min characters.',
+     ],
++    'min_digits' => 'The :attribute must have at least :min digits.',
+     'multiple_of' => 'The :attribute must be a multiple of :value.',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+diff --git a/package.json b/package.json
+index 98b60ba6..6d30231c 100644
+--- a/package.json
++++ b/package.json
+@@ -5,10 +5,10 @@
+         "build": "vite build"
+     },
+     "devDependencies": {
+-        "axios": "^0.25",
+-        "laravel-vite-plugin": "^0.4.0",
++        "axios": "^0.27",
++        "laravel-vite-plugin": "^0.6.0",
+         "lodash": "^4.17.19",
+         "postcss": "^8.1.14",
+-        "vite": "^2.9.11"
++        "vite": "^3.0.0"
+     }
+ }
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index dd6a45db..de233926 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -7,7 +7,7 @@
+         <title>Laravel</title>
+ 
+         <!-- Fonts -->
+-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
++        <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+ 
+         <!-- Styles -->
+         <style>
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index 78ccc21f..1eafba61 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -2,7 +2,7 @@
+ 
+ namespace Tests\Feature;
+ 
+-use Illuminate\Foundation\Testing\RefreshDatabase;
++// use Illuminate\Foundation\Testing\RefreshDatabase;
+ use Tests\TestCase;
+ 
+ class ExampleTest extends TestCase
+diff --git a/vite.config.js b/vite.config.js
+index 89f26f5d..421b5695 100644
+--- a/vite.config.js
++++ b/vite.config.js
+@@ -4,10 +4,7 @@ import laravel from 'laravel-vite-plugin';
+ export default defineConfig({
+     plugins: [
+         laravel({
+-            input: [
+-                'resources/css/app.css',
+-                'resources/js/app.js',
+-            ],
++            input: ['resources/css/app.css', 'resources/js/app.js'],
+             refresh: true,
+         }),
+     ],

@@ -1,0 +1,38 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 79a9f092..2f090663 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.9...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.10...9.x)
++
++## [v9.3.10](https://github.com/laravel/laravel/compare/v9.3.9...v9.3.10) - 2022-10-28
++
++### Changed
++
++- Changing .env to make Pusher work without editing the commented out part in the bootstrap.js by @cveldman in https://github.com/laravel/laravel/pull/6021
+ 
+ ## [v9.3.9](https://github.com/laravel/laravel/compare/v9.3.8...v9.3.9) - 2022-10-17
+ 
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index 5ea01fa7..f3d8cc5f 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -71,6 +71,7 @@ return [
+     'ipv4' => 'The :attribute must be a valid IPv4 address.',
+     'ipv6' => 'The :attribute must be a valid IPv6 address.',
+     'json' => 'The :attribute must be a valid JSON string.',
++    'lowercase' => 'The :attribute must be lowercase.',
+     'lt' => [
+         'array' => 'The :attribute must have less than :value items.',
+         'file' => 'The :attribute must be less than :value kilobytes.',
+@@ -138,6 +139,7 @@ return [
+     'timezone' => 'The :attribute must be a valid timezone.',
+     'unique' => 'The :attribute has already been taken.',
+     'uploaded' => 'The :attribute failed to upload.',
++    'uppercase' => 'The :attribute must be uppercase.',
+     'url' => 'The :attribute must be a valid URL.',
+     'uuid' => 'The :attribute must be a valid UUID.',
+ 

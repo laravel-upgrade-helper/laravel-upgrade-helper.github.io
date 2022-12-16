@@ -1,0 +1,142 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e8365d68..cc72064f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,27 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.10...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.13...8.x)
++
++
++## [v8.5.13 (2021-03-09)](https://github.com/laravel/laravel/compare/v8.5.12...v8.5.13)
++
++### Changed
++- Use same default queue name for all drivers ([#5549](https://github.com/laravel/laravel/pull/5549))
++- Standardise "must" and "may" language in validation ([#5552](https://github.com/laravel/laravel/pull/5552))
++- Add missing 'after_commit' key to queue config ([#5554](https://github.com/laravel/laravel/pull/5554))
++
++
++## [v8.5.12 (2021-03-02)](https://github.com/laravel/laravel/compare/v8.5.11...v8.5.12)
++
++### Fixed
++- Added sans-serif as Fallback Font ([#5543](https://github.com/laravel/laravel/pull/5543))
++- Don't trim `current_password` ([#5546](https://github.com/laravel/laravel/pull/5546))
++
++
++## [v8.5.11 (2021-02-23)](https://github.com/laravel/laravel/compare/v8.5.10...v8.5.11)
++
++### Fixed
++- Don't flash 'current_password' input ([#5541](https://github.com/laravel/laravel/pull/5541))
+ 
+ 
+ ## [v8.5.10 (2021-02-16)](https://github.com/laravel/laravel/compare/v8.5.9...v8.5.10)
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index f9644add..c18c43cc 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -22,6 +22,7 @@ class Handler extends ExceptionHandler
+      * @var array
+      */
+     protected $dontFlash = [
++        'current_password',
+         'password',
+         'password_confirmation',
+     ];
+diff --git a/app/Http/Middleware/TrimStrings.php b/app/Http/Middleware/TrimStrings.php
+index 5a50e7b5..a8a252df 100644
+--- a/app/Http/Middleware/TrimStrings.php
++++ b/app/Http/Middleware/TrimStrings.php
+@@ -12,6 +12,7 @@ class TrimStrings extends Middleware
+      * @var array
+      */
+     protected $except = [
++        'current_password',
+         'password',
+         'password_confirmation',
+     ];
+diff --git a/config/queue.php b/config/queue.php
+index 12222966..25ea5a81 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -39,6 +39,7 @@ return [
+             'table' => 'jobs',
+             'queue' => 'default',
+             'retry_after' => 90,
++            'after_commit' => false,
+         ],
+ 
+         'beanstalkd' => [
+@@ -47,6 +48,7 @@ return [
+             'queue' => 'default',
+             'retry_after' => 90,
+             'block_for' => 0,
++            'after_commit' => false,
+         ],
+ 
+         'sqs' => [
+@@ -54,9 +56,10 @@ return [
+             'key' => env('AWS_ACCESS_KEY_ID'),
+             'secret' => env('AWS_SECRET_ACCESS_KEY'),
+             'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+-            'queue' => env('SQS_QUEUE', 'your-queue-name'),
++            'queue' => env('SQS_QUEUE', 'default'),
+             'suffix' => env('SQS_SUFFIX'),
+             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
++            'after_commit' => false,
+         ],
+ 
+         'redis' => [
+@@ -65,6 +68,7 @@ return [
+             'queue' => env('REDIS_QUEUE', 'default'),
+             'retry_after' => 90,
+             'block_for' => null,
++            'after_commit' => false,
+         ],
+ 
+     ],
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index c77e41ce..9a8dfcf8 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -17,9 +17,9 @@ return [
+     'active_url' => 'The :attribute is not a valid URL.',
+     'after' => 'The :attribute must be a date after :date.',
+     'after_or_equal' => 'The :attribute must be a date after or equal to :date.',
+-    'alpha' => 'The :attribute may only contain letters.',
+-    'alpha_dash' => 'The :attribute may only contain letters, numbers, dashes and underscores.',
+-    'alpha_num' => 'The :attribute may only contain letters and numbers.',
++    'alpha' => 'The :attribute must only contain letters.',
++    'alpha_dash' => 'The :attribute must only contain letters, numbers, dashes and underscores.',
++    'alpha_num' => 'The :attribute must only contain letters and numbers.',
+     'array' => 'The :attribute must be an array.',
+     'before' => 'The :attribute must be a date before :date.',
+     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
+@@ -77,10 +77,10 @@ return [
+         'array' => 'The :attribute must not have more than :value items.',
+     ],
+     'max' => [
+-        'numeric' => 'The :attribute may not be greater than :max.',
+-        'file' => 'The :attribute may not be greater than :max kilobytes.',
+-        'string' => 'The :attribute may not be greater than :max characters.',
+-        'array' => 'The :attribute may not have more than :max items.',
++        'numeric' => 'The :attribute must not be greater than :max.',
++        'file' => 'The :attribute must not be greater than :max kilobytes.',
++        'string' => 'The :attribute must not be greater than :max characters.',
++        'array' => 'The :attribute must not have more than :max items.',
+     ],
+     'mimes' => 'The :attribute must be a file of type: :values.',
+     'mimetypes' => 'The :attribute must be a file of type: :values.',
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 917fddfa..f8ba9e21 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -16,7 +16,7 @@
+ 
+         <style>
+             body {
+-                font-family: 'Nunito';
++                font-family: 'Nunito', sans-serif;
+             }
+         </style>
+     </head>

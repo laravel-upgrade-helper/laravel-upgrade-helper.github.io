@@ -1,0 +1,428 @@
+diff --git a/.editorconfig b/.editorconfig
+index 1492202b..6f313c6a 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -12,5 +12,4 @@ trim_trailing_whitespace = true
+ trim_trailing_whitespace = false
+ 
+ [*.yml]
+-indent_style = space
+ indent_size = 2
+diff --git a/.env.example b/.env.example
+index ec44a125..27f6db4b 100644
+--- a/.env.example
++++ b/.env.example
+@@ -15,9 +15,9 @@ DB_PASSWORD=secret
+ 
+ BROADCAST_DRIVER=log
+ CACHE_DRIVER=file
++QUEUE_CONNECTION=sync
+ SESSION_DRIVER=file
+ SESSION_LIFETIME=120
+-QUEUE_DRIVER=sync
+ 
+ REDIS_HOST=127.0.0.1
+ REDIS_PASSWORD=null
+diff --git a/app/Http/Controllers/Auth/VerificationController.php b/app/Http/Controllers/Auth/VerificationController.php
+new file mode 100644
+index 00000000..b5d8ba33
+--- /dev/null
++++ b/app/Http/Controllers/Auth/VerificationController.php
+@@ -0,0 +1,42 @@
++<?php
++
++namespace App\Http\Controllers\Auth;
++
++use Illuminate\Http\Request;
++use Illuminate\Routing\Controller;
++use Illuminate\Foundation\Auth\VerifiesEmails;
++
++class VerificationController extends Controller
++{
++    /*
++    |--------------------------------------------------------------------------
++    | Email Verification Controller
++    |--------------------------------------------------------------------------
++    |
++    | This controller is responsible for handling email verification for any
++    | user that recently registered with the application. Emails may also
++    | be resent if the user did not receive the original email message.
++    |
++    */
++
++    use VerifiesEmails;
++
++    /**
++     * Where to redirect users after verification.
++     *
++     * @var string
++     */
++    protected $redirectTo = '/home';
++
++    /**
++     * Create a new controller instance.
++     *
++     * @return void
++     */
++    public function __construct()
++    {
++        $this->middleware('auth');
++        $this->middleware('signed')->only('verify');
++        $this->middleware('throttle:6,1')->only('verify', 'resend');
++    }
++}
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index fb9616a3..0e5dff86 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -51,7 +51,7 @@ class Kernel extends HttpKernel
+      * @var array
+      */
+     protected $routeMiddleware = [
+-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
++        'auth' => \App\Http\Middleware\Authenticate::class,
+         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+@@ -59,5 +59,6 @@ class Kernel extends HttpKernel
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
++        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+     ];
+ }
+diff --git a/app/Http/Middleware/Authenticate.php b/app/Http/Middleware/Authenticate.php
+new file mode 100644
+index 00000000..41ad4a90
+--- /dev/null
++++ b/app/Http/Middleware/Authenticate.php
+@@ -0,0 +1,19 @@
++<?php
++
++namespace App\Http\Middleware;
++
++use Illuminate\Auth\Middleware\Authenticate as Middleware;
++
++class Authenticate extends Middleware
++{
++    /**
++     * Get the path the user should be redirected to when they are not authenticated.
++     *
++     * @param  \Illuminate\Http\Request  $request
++     * @return string
++     */
++    protected function redirectTo($request)
++    {
++        return route('login');
++    }
++}
+diff --git a/app/Http/Middleware/VerifyCsrfToken.php b/app/Http/Middleware/VerifyCsrfToken.php
+index 0c13b854..324a166b 100644
+--- a/app/Http/Middleware/VerifyCsrfToken.php
++++ b/app/Http/Middleware/VerifyCsrfToken.php
+@@ -6,6 +6,13 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+ 
+ class VerifyCsrfToken extends Middleware
+ {
++    /**
++     * Indicates whether the XSRF-TOKEN cookie should be set on the response.
++     *
++     * @var bool
++     */
++    protected $addHttpCookie = true;
++
+     /**
+      * The URIs that should be excluded from CSRF verification.
+      *
+diff --git a/app/Providers/EventServiceProvider.php b/app/Providers/EventServiceProvider.php
+index fca6152c..6c64e52b 100644
+--- a/app/Providers/EventServiceProvider.php
++++ b/app/Providers/EventServiceProvider.php
+@@ -3,6 +3,8 @@
+ namespace App\Providers;
+ 
+ use Illuminate\Support\Facades\Event;
++use Illuminate\Auth\Events\Registered;
++use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+ 
+ class EventServiceProvider extends ServiceProvider
+@@ -13,8 +15,8 @@ class EventServiceProvider extends ServiceProvider
+      * @var array
+      */
+     protected $listen = [
+-        'App\Events\Event' => [
+-            'App\Listeners\EventListener',
++        Registered::class => [
++            SendEmailVerificationNotification::class,
+         ],
+     ];
+ 
+diff --git a/app/User.php b/app/User.php
+index bfd96a6a..fbc0e589 100644
+--- a/app/User.php
++++ b/app/User.php
+@@ -3,6 +3,7 @@
+ namespace App;
+ 
+ use Illuminate\Notifications\Notifiable;
++use Illuminate\Contracts\Auth\MustVerifyEmail;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
+ 
+ class User extends Authenticatable
+diff --git a/composer.json b/composer.json
+index 65bf8b4f..3cb9426f 100644
+--- a/composer.json
++++ b/composer.json
+@@ -7,10 +7,11 @@
+     "require": {
+         "php": "^7.1.3",
+         "fideloper/proxy": "^4.0",
+-        "laravel/framework": "5.6.*",
++        "laravel/framework": "5.7.*",
+         "laravel/tinker": "^1.0"
+     },
+     "require-dev": {
++        "beyondcode/laravel-dump-server": "^1.0",
+         "filp/whoops": "^2.0",
+         "fzaninotto/faker": "^1.4",
+         "mockery/mockery": "^1.0",
+diff --git a/config/app.php b/config/app.php
+index b16e7f77..056512b2 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -22,7 +22,7 @@ return [
+     |
+     | This value determines the "environment" your application is currently
+     | running in. This may determine how you prefer to configure various
+-    | services your application utilizes. Set this in your ".env" file.
++    | services the application utilizes. Set this in your ".env" file.
+     |
+     */
+ 
+diff --git a/config/cache.php b/config/cache.php
+index fa12e5e4..6c4629d2 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -70,7 +70,7 @@ return [
+ 
+         'redis' => [
+             'driver' => 'redis',
+-            'connection' => 'default',
++            'connection' => 'cache',
+         ],
+ 
+     ],
+diff --git a/config/database.php b/config/database.php
+index cab5d068..c60c8855 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -112,7 +112,14 @@ return [
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+             'password' => env('REDIS_PASSWORD', null),
+             'port' => env('REDIS_PORT', 6379),
+-            'database' => 0,
++            'database' => env('REDIS_DB', 0),
++        ],
++
++        'cache' => [
++            'host' => env('REDIS_HOST', '127.0.0.1'),
++            'password' => env('REDIS_PASSWORD', null),
++            'port' => env('REDIS_PORT', 6379),
++            'database' => env('REDIS_CACHE_DB', 1),
+         ],
+ 
+     ],
+diff --git a/config/hashing.php b/config/hashing.php
+index d3c8e2fb..84257708 100644
+--- a/config/hashing.php
++++ b/config/hashing.php
+@@ -11,7 +11,7 @@ return [
+     | passwords for your application. By default, the bcrypt algorithm is
+     | used; however, you remain free to modify this option if you wish.
+     |
+-    | Supported: "bcrypt", "argon"
++    | Supported: "bcrypt", "argon", "argon2id"
+     |
+     */
+ 
+diff --git a/config/queue.php b/config/queue.php
+index 391304f3..38326eff 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -13,7 +13,7 @@ return [
+     |
+     */
+ 
+-    'default' => env('QUEUE_DRIVER', 'sync'),
++    'default' => env('QUEUE_CONNECTION', 'sync'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/config/session.php b/config/session.php
+index 736fb3c7..38829b77 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -70,7 +70,7 @@ return [
+     |
+     */
+ 
+-    'connection' => null,
++    'connection' => env('SESSION_CONNECTION', null),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -96,7 +96,7 @@ return [
+     |
+     */
+ 
+-    'store' => null,
++    'store' => env('SESSION_STORE', null),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/database/migrations/2014_10_12_000000_create_users_table.php b/database/migrations/2014_10_12_000000_create_users_table.php
+index 689cbeea..16a61086 100644
+--- a/database/migrations/2014_10_12_000000_create_users_table.php
++++ b/database/migrations/2014_10_12_000000_create_users_table.php
+@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
+             $table->increments('id');
+             $table->string('name');
+             $table->string('email')->unique();
++            $table->timestamp('email_verified_at')->nullable();
+             $table->string('password');
+             $table->rememberToken();
+             $table->timestamps();
+diff --git a/package.json b/package.json
+index e81ab87f..d5f92f9b 100644
+--- a/package.json
++++ b/package.json
+@@ -12,11 +12,11 @@
+     "devDependencies": {
+         "axios": "^0.18",
+         "bootstrap": "^4.0.0",
+-        "popper.js": "^1.12",
+         "cross-env": "^5.1",
+         "jquery": "^3.2",
+         "laravel-mix": "^2.0",
+-        "lodash": "^4.17.4",
++        "lodash": "^4.17.5",
++        "popper.js": "^1.12",
+         "vue": "^2.5.7"
+     }
+ }
+diff --git a/public/svg/403.svg b/public/svg/403.svg
+new file mode 100644
+index 00000000..682aa982
+--- /dev/null
++++ b/public/svg/403.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><defs><linearGradient id="a" x1="50%" x2="50%" y1="100%" y2="0%"><stop offset="0%" stop-color="#76C3C3"/><stop offset="100%" stop-color="#183468"/></linearGradient><linearGradient id="b" x1="100%" x2="0%" y1="50%" y2="50%"><stop offset="0%" stop-color="#486587"/><stop offset="33.23%" stop-color="#183352"/><stop offset="66.67%" stop-color="#264A6E"/><stop offset="100%" stop-color="#183352"/></linearGradient><linearGradient id="c" x1="49.87%" x2="48.5%" y1="3.62%" y2="100%"><stop offset="0%" stop-color="#E0F2FA"/><stop offset="8.98%" stop-color="#89BED6"/><stop offset="32.98%" stop-color="#1E3C6E"/><stop offset="100%" stop-color="#1B376B"/></linearGradient><linearGradient id="d" x1="49.87%" x2="49.87%" y1="3.62%" y2="77.75%"><stop offset="0%" stop-color="#B0DDF1"/><stop offset="100%" stop-color="#325C82"/></linearGradient><linearGradient id="e" x1="91.59%" x2="66.97%" y1="5.89%" y2="100%"><stop offset="0%" stop-color="#1D3A6D"/><stop offset="100%" stop-color="#467994"/></linearGradient><linearGradient id="f" x1="97.27%" x2="52.53%" y1="6.88%" y2="100%"><stop offset="0%" stop-color="#1D3A6D"/><stop offset="100%" stop-color="#467994"/></linearGradient><linearGradient id="g" x1="82.73%" x2="41.46%" y1="41.06%" y2="167.23%"><stop offset="0%" stop-color="#1D3A6D"/><stop offset="100%" stop-color="#467994"/></linearGradient><linearGradient id="h" x1="49.87%" x2="49.87%" y1="3.62%" y2="100.77%"><stop offset="0%" stop-color="#B0DDF1"/><stop offset="100%" stop-color="#325C82"/></linearGradient><linearGradient id="i" x1="100%" x2="72.45%" y1="0%" y2="85.2%"><stop offset="0%" stop-color="#1D3A6D"/><stop offset="100%" stop-color="#467994"/></linearGradient><linearGradient id="j" x1="100%" x2="62.1%" y1="0%" y2="68.86%"><stop offset="0%" stop-color="#163055"/><stop offset="100%" stop-color="#2F587F"/></linearGradient><circle id="l" cx="180" cy="102" r="40"/><filter id="k" width="340%" height="340%" x="-120%" y="-120%" filterUnits="objectBoundingBox"><feOffset in="SourceAlpha" result="shadowOffsetOuter1"/><feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="32"/><feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.696473053 0"/></filter><linearGradient id="m" x1="0%" y1="50%" y2="50%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="100%" stop-color="#FFFFFF"/></linearGradient></defs><g fill="none" fill-rule="evenodd"><rect width="1024" height="1024" fill="url(#a)"/><g transform="translate(761 481)"><polygon fill="#8DBCD2" points="96 27 100 26 100 37 96 37"/><polygon fill="#8DBCD2" points="76 23 80 22 80 37 76 37"/><polygon fill="#183352" points="40 22 44 23 44 37 40 37"/><polygon fill="#183352" points="20 26 24 27 24 41 20 41"/><rect width="2" height="20" x="59" fill="#183352" opacity=".5"/><path fill="url(#b)" d="M61 0c3 0 3 2 6 2s3-2 6-2 3 2 6 2v8c-3 0-3-2-6-2s-3 2-6 2-3-2-6-2V0z"/><path fill="#8DBCD2" d="M50 20l10-2v110H0L10 28l10-2v10.92l10-.98V24l10-2v12.96l10-.98V20z"/><path fill="#183352" d="M100 26l10 2 10 100H60V18l10 2v13.98l10 .98V22l10 2v11.94l10 .98V26z"/></g><g transform="translate(0 565)"><path fill="url(#c)" d="M1024 385H0V106.86c118.4 21.09 185.14 57.03 327.4 48.14 198.54-12.4 250-125 500-125 90.18 0 147.92 16.3 196.6 37.12V385z"/><path fill="url(#d)" d="M1024 355H0V79.56C76.46 43.81 137.14 0 285 0c250 0 301.46 112.6 500 125 103.24 6.45 166.7-10.7 239-28.66V355z"/><path fill="url(#d)" d="M344.12 130.57C367.22 144.04 318.85 212.52 199 336h649C503.94 194.3 335.98 125.83 344.12 130.57z"/><path fill="url(#e)" d="M0 336V79.56C76.46 43.81 137.14 0 285 0c71.14 0 86.22 26.04 32.5 82-48 50 147.33 58.02 36 136.5-40.67 28.67 21.17 67.83 185.5 117.5H0z"/><path fill="url(#f)" d="M317.5 82c-48 50 147.33 58.02 36 136.5-40.67 28.67 21.17 67.83 185.5 117.5H55L317.5 82z"/><path fill="url(#g)" d="M353.5 218.5C312.83 247.17 374.67 286.33 539 336H175l178.5-117.5z"/><path fill="url(#h)" d="M0 459V264.54c100.25 21.2 167.18 50.29 296.67 42.19 198.57-12.43 250.04-125.15 500.07-125.15 109.75 0 171.47 24.16 227.26 51.25V459H0z"/><path fill="url(#i)" d="M1024 459H846.16c51.95-58.9 48.86-97.16-9.28-114.78-186.64-56.58-101.76-162.64-39.97-162.64 109.64 0 171.34 24.12 227.09 51.19V459z"/><path fill="url(#j)" d="M1024 459H846.19c52.01-59.01 48.94-97.34-9.22-115L1024 397.48V459z"/></g><g transform="translate(94 23)"><use fill="black" filter="url(#k)" xlink:href="#l"/><use fill="#D2F1FE" xlink:href="#l"/><circle cx="123" cy="255" r="3" fill="#FFFFFF" fill-opacity=".4"/><circle cx="2" cy="234" r="2" fill="#FFFFFF"/><circle cx="33" cy="65" r="3" fill="#FFFFFF"/><circle cx="122" cy="2" r="2" fill="#FFFFFF"/><circle cx="72" cy="144" r="2" fill="#FFFFFF"/><circle cx="282" cy="224" r="2" fill="#FFFFFF"/><circle cx="373" cy="65" r="3" fill="#FFFFFF" opacity=".4"/><circle cx="433" cy="255" r="3" fill="#FFFFFF"/><path fill="url(#m)" d="M373.25 325.25a5 5 0 0 0 0-10h-75v10h75z" opacity=".4" transform="rotate(45 338.251 320.251)"/><circle cx="363" cy="345" r="3" fill="#FFFFFF"/><circle cx="513" cy="115" r="3" fill="#FFFFFF"/><circle cx="723" cy="5" r="3" fill="#FFFFFF" opacity=".4"/><circle cx="422" cy="134" r="2" fill="#FFFFFF"/><circle cx="752" cy="204" r="2" fill="#FFFFFF"/><circle cx="672" cy="114" r="2" fill="#FFFFFF"/><circle cx="853" cy="255" r="3" fill="#FFFFFF" opacity=".4"/><circle cx="623" cy="225" r="3" fill="#FFFFFF"/><circle cx="823" cy="55" r="3" fill="#FFFFFF"/><circle cx="902" cy="144" r="2" fill="#FFFFFF"/><circle cx="552" cy="14" r="2" fill="#FFFFFF"/></g><path fill="#486587" d="M796 535a4 4 0 0 1 4 4v20h-8v-20a4 4 0 0 1 4-4z"/><path fill="#071423" d="M798 535.54a4 4 0 0 0-2 3.46v20h-4v-20a4 4 0 0 1 6-3.46zm48-.54a4 4 0 0 1 4 4v20h-8v-20a4 4 0 0 1 4-4z"/><path fill="#8DBCD2" d="M846 559v-20a4 4 0 0 0-2-3.46 4 4 0 0 1 6 3.46v20h-4z"/><g fill="#FFFFFF" opacity=".07" transform="translate(54 301)"><path d="M554.67 131.48a9.46 9.46 0 0 1 13.33 0 9.46 9.46 0 0 0 13.33 0l13.33-13.24a28.39 28.39 0 0 1 40 0l10 9.93a14.2 14.2 0 0 0 20 0 14.2 14.2 0 0 1 20 0l.6.6a31.8 31.8 0 0 1 9.4 22.56H548v-3.84c0-6.01 2.4-11.78 6.67-16.01zM751 8.25c11.07-11 28.93-11 40 0l10 9.94a14.19 14.19 0 0 0 20 0 14.19 14.19 0 0 1 20 0 16.36 16.36 0 0 0 21.3 1.5l8.7-6.47a33.47 33.47 0 0 1 40 0l4.06 3.03A39.6 39.6 0 0 1 931 48H731c0-12.72 8.93-28.75 20-39.75zM14.1 75.14l.9-.9a21.29 21.29 0 0 1 30 0 21.29 21.29 0 0 0 30 0l10-9.93a35.48 35.48 0 0 1 50 0l15 14.9a14.2 14.2 0 0 0 20 0 14.2 14.2 0 0 1 20 0c6.4 6.35 10 15 10 24.02V109H0c0-12.71 5.07-24.9 14.1-33.86z"/></g></g></svg>
+\ No newline at end of file
+diff --git a/public/svg/404.svg b/public/svg/404.svg
+new file mode 100644
+index 00000000..b6cd6f23
+--- /dev/null
++++ b/public/svg/404.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><defs><linearGradient id="a" x1="50.31%" x2="50%" y1="74.74%" y2="0%"><stop offset="0%" stop-color="#FFE98A"/><stop offset="67.7%" stop-color="#B63E59"/><stop offset="100%" stop-color="#68126F"/></linearGradient><circle id="c" cx="603" cy="682" r="93"/><filter id="b" width="203.2%" height="203.2%" x="-51.6%" y="-51.6%" filterUnits="objectBoundingBox"><feOffset in="SourceAlpha" result="shadowOffsetOuter1"/><feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="32"/><feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/></filter><linearGradient id="d" x1="49.48%" x2="49.87%" y1="11.66%" y2="77.75%"><stop offset="0%" stop-color="#F7EAB9"/><stop offset="100%" stop-color="#E5765E"/></linearGradient><linearGradient id="e" x1="91.59%" x2="66.97%" y1="5.89%" y2="100%"><stop offset="0%" stop-color="#A22A50"/><stop offset="100%" stop-color="#EE7566"/></linearGradient><linearGradient id="f" x1="49.48%" x2="49.61%" y1="11.66%" y2="98.34%"><stop offset="0%" stop-color="#F7EAB9"/><stop offset="100%" stop-color="#E5765E"/></linearGradient><linearGradient id="g" x1="78.5%" x2="36.4%" y1="106.76%" y2="26.41%"><stop offset="0%" stop-color="#A22A50"/><stop offset="100%" stop-color="#EE7566"/></linearGradient></defs><g fill="none" fill-rule="evenodd"><rect width="1024" height="1024" fill="url(#a)"/><use fill="black" filter="url(#b)" xlink:href="#c"/><use fill="#FFF6CB" xlink:href="#c"/><g fill="#FFFFFF" opacity=".3" transform="translate(14 23)"><circle cx="203" cy="255" r="3" fill-opacity=".4"/><circle cx="82" cy="234" r="2"/><circle cx="22" cy="264" r="2" opacity=".4"/><circle cx="113" cy="65" r="3"/><circle cx="202" cy="2" r="2"/><circle cx="2" cy="114" r="2"/><circle cx="152" cy="144" r="2"/><circle cx="362" cy="224" r="2"/><circle cx="453" cy="65" r="3" opacity=".4"/><circle cx="513" cy="255" r="3"/><circle cx="593" cy="115" r="3"/><circle cx="803" cy="5" r="3" opacity=".4"/><circle cx="502" cy="134" r="2"/><circle cx="832" cy="204" r="2"/><circle cx="752" cy="114" r="2"/><circle cx="933" cy="255" r="3" opacity=".4"/><circle cx="703" cy="225" r="3"/><circle cx="903" cy="55" r="3"/><circle cx="982" cy="144" r="2"/><circle cx="632" cy="14" r="2"/></g><g transform="translate(0 550)"><path fill="#8E2C15" d="M259 5.47c0 5.33 3.33 9.5 10 12.5s9.67 9.16 9 18.5h1c.67-6.31 1-11.8 1-16.47 8.67 0 13.33-1.33 14-4 .67 4.98 1.67 8.3 3 9.97 1.33 1.66 2 5.16 2 10.5h1c0-5.65.33-9.64 1-11.97 1-3.5 4-10.03-1-14.53S295 7 290 3c-5-4-10-3-13 2s-5 7-9 7-5-3.53-5-5.53c0-2 2-5-1.5-5s-7.5 0-7.5 2c0 1.33 1.67 2 5 2z"/><path fill="url(#d)" d="M1024 390H0V105.08C77.3 71.4 155.26 35 297.4 35c250 0 250.76 125.25 500 125 84.03-.08 160.02-18.2 226.6-40.93V390z"/><path fill="url(#d)" d="M1024 442H0V271.82c137.51-15.4 203.1-50.49 356.67-60.1C555.24 199.3 606.71 86.59 856.74 86.59c72.78 0 124.44 10.62 167.26 25.68V442z"/><path fill="url(#e)" d="M1024 112.21V412H856.91c99.31-86.5 112.63-140.75 39.97-162.78C710.24 192.64 795.12 86.58 856.9 86.58c72.7 0 124.3 10.6 167.09 25.63z"/><path fill="url(#e)" d="M1024 285.32V412H857c99.31-86.6 112.63-140.94 39.97-163L1024 285.32z"/><path fill="url(#f)" d="M0 474V223.93C67.12 190.69 129.55 155 263 155c250 0 331.46 162.6 530 175 107.42 6.71 163-26.77 231-58.92V474H0z"/><path fill="url(#e)" d="M353.02 474H0V223.93C67.12 190.69 129.55 155 263 155c71.14 0 151.5 12.76 151.5 70.5 0 54.5-45.5 79.72-112.5 109-82.26 35.95-54.57 111.68 51.02 139.5z"/><path fill="url(#g)" d="M353.02 474H0v-14.8l302-124.7c-82.26 35.95-54.57 111.68 51.02 139.5z"/></g><g fill="#FFFFFF" opacity=".2" transform="translate(288 523)"><circle cx="250" cy="110" r="110"/><circle cx="420" cy="78" r="60"/><circle cx="70" cy="220" r="70"/></g><g fill="#FFFFFF" fill-rule="nonzero" opacity=".08" transform="translate(135 316)"><path d="M10 80.22a14.2 14.2 0 0 1 20 0 14.2 14.2 0 0 0 20 0l20-19.86a42.58 42.58 0 0 1 60 0l15 14.9a21.3 21.3 0 0 0 30 0 21.3 21.3 0 0 1 30 0l.9.9A47.69 47.69 0 0 1 220 110H0v-5.76c0-9.02 3.6-17.67 10-24.02zm559.1-66.11l5.9-5.86c11.07-11 28.93-11 40 0l10 9.94a14.19 14.19 0 0 0 20 0 14.19 14.19 0 0 1 20 0 16.36 16.36 0 0 0 21.3 1.5l8.7-6.47a33.47 33.47 0 0 1 40 0l4.06 3.03A39.6 39.6 0 0 1 755 48H555a47.77 47.77 0 0 1 14.1-33.89z"/></g></g></svg>
+\ No newline at end of file
+diff --git a/public/svg/500.svg b/public/svg/500.svg
+new file mode 100644
+index 00000000..9927e8d7
+--- /dev/null
++++ b/public/svg/500.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><defs><linearGradient id="a" x1="50%" x2="50%" y1="100%" y2="0%"><stop offset="0%" stop-color="#F6EDAE"/><stop offset="100%" stop-color="#91D4D7"/></linearGradient><linearGradient id="b" x1="49.87%" x2="49.87%" y1="3.62%" y2="77.75%"><stop offset="0%" stop-color="#B0DDF1"/><stop offset="100%" stop-color="#325C82"/></linearGradient><linearGradient id="c" x1="100%" x2="72.45%" y1="0%" y2="85.2%"><stop offset="0%" stop-color="#1D3A6D"/><stop offset="100%" stop-color="#467994"/></linearGradient><linearGradient id="d" x1="54.81%" x2="50%" y1="-18.48%" y2="59.98%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="28.15%" stop-color="#F8E6B3"/><stop offset="100%" stop-color="#D5812F"/></linearGradient><linearGradient id="e" x1="52.84%" x2="49.87%" y1="2.8%" y2="77.75%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="22.15%" stop-color="#F8E6B3"/><stop offset="100%" stop-color="#F9D989"/></linearGradient><linearGradient id="f" x1="91.59%" x2="66.97%" y1="5.89%" y2="100%"><stop offset="0%" stop-color="#CE4014"/><stop offset="100%" stop-color="#FFD56E"/></linearGradient><linearGradient id="g" x1="40.28%" x2="66.37%" y1="30.88%" y2="108.51%"><stop offset="0%" stop-color="#A2491E"/><stop offset="100%" stop-color="#F4B35A"/></linearGradient><circle id="i" cx="825" cy="235" r="70"/><filter id="h" width="237.1%" height="237.1%" x="-68.6%" y="-68.6%" filterUnits="objectBoundingBox"><feOffset in="SourceAlpha" result="shadowOffsetOuter1"/><feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="32"/><feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/></filter><linearGradient id="j" x1="50%" x2="50%" y1="0%" y2="100%"><stop offset="0%" stop-color="#B29959"/><stop offset="100%" stop-color="#CEAD5B"/></linearGradient></defs><g fill="none" fill-rule="evenodd"><rect width="1024" height="1024" fill="url(#a)"/><path fill="#FFFFFF" d="M1024 378.13v39.37H790a71.59 71.59 0 0 1 21.14-50.8l1.36-1.34a31.93 31.93 0 0 1 45 0 31.93 31.93 0 0 0 45 0l15-14.9a53.21 53.21 0 0 1 75 0l22.5 22.35a21.2 21.2 0 0 0 9 5.32z" opacity=".15"/><g transform="translate(26 245)"><path fill="url(#b)" d="M289.12 450.57C312.22 464.04 263.85 532.52 144 656h649C448.94 514.3 280.98 445.83 289.12 450.57z"/><path fill="url(#c)" d="M262.5 402c-48 50 147.33 58.02 36 136.5-40.67 28.67 21.17 67.83 185.5 117.5H0l262.5-254z"/><path fill="url(#c)" d="M298.5 538.5C257.83 567.17 319.67 606.33 484 656H120l178.5-117.5z"/></g><path fill="#134F4E" d="M783 593.73a29.95 29.95 0 0 1-12-24c0-9.8 4.72-18.52 12-24-5.02 6.69-8 15-8 24 0 9.01 2.98 17.32 8 24z"/><g fill="#134F4E" transform="matrix(-1 0 0 1 876 532)"><path d="M24 66.73a29.95 29.95 0 0 1-12-24c0-9.8 4.72-18.52 12-24-5.02 6.69-8 15-8 24 0 9.01 2.98 17.32 8 24z"/><path d="M36 22.4l-3.96-3.98a5 5 0 0 0-6.5-.5 3 3 0 0 1 3.7-3.55l8.7 2.33a8 8 0 0 1 5.66 9.8l-1-1.73a2 2 0 0 0-1.21-.93L36 22.4zm-5.38-2.56L37 26.2a8 8 0 0 1 0 11.32v-2a2 2 0 0 0-.6-1.42L26.39 24.08a3 3 0 0 1 4.24-4.24zM14.21 9.8l-3.94-3.94a2 2 0 0 0-1.42-.59h-2a8 8 0 0 1 11.32 0l6.36 6.37a3 3 0 0 1-1.22 4.98 5 5 0 0 0-3.68-5.37l-5.42-1.45zm4.9 3.39a3 3 0 1 1-1.55 5.8L3.87 15.31a2 2 0 0 0-1.52.2l-1.73 1a8 8 0 0 1 9.8-5.65l8.7 2.33z"/></g><g transform="translate(0 245)"><path fill="url(#d)" d="M1024 423.16V645H58.09c-32.12-75.17-32.12-123.84 0-146 48.17-33.24 127.17-64.25 293.33-64 166.17.25 246.67-105 413.33-105 117.33 0 183.93 55.8 259.25 93.16z"/><path fill="url(#e)" d="M1024 778H0V398.62C75.53 363.05 136.43 320 283 320c111.86 0 358.86 69.82 741 209.47V778z"/><path fill="url(#f)" d="M0 778V398.62C75.53 363.05 136.43 320 283 320c71.14 0 85.96 26.04 32.5 82-79.5 83.22 279.7 2.01 336 131.5 26 59.8-69.83 141.3-287.48 244.5H0z"/><path fill="url(#g)" d="M364.02 778H0V638.4L315.5 402c-79.5 83.22 279.7 2.01 336 131.5 26 59.8-69.83 141.3-287.48 244.5z"/></g><path fill="#134F4E" d="M795 549.4l-3.96-3.98a5 5 0 0 0-6.5-.5 3 3 0 0 1 3.7-3.55l8.7 2.33a8 8 0 0 1 5.66 9.8l-1-1.73a2 2 0 0 0-1.21-.93L795 549.4zm-5.38-2.56l6.37 6.36a8 8 0 0 1 0 11.32v-2a2 2 0 0 0-.6-1.42l-10.01-10.02a3 3 0 0 1 4.24-4.24zm-16.41-10.03l-3.94-3.94a2 2 0 0 0-1.42-.59h-2a8 8 0 0 1 11.32 0l6.36 6.37a3 3 0 0 1-1.22 4.98 5 5 0 0 0-3.68-5.37l-5.42-1.45zm4.9 3.39a3 3 0 1 1-1.55 5.8l-13.69-3.68a2 2 0 0 0-1.52.2l-1.73 1a8 8 0 0 1 9.8-5.65l8.7 2.33z"/><path fill="#FFFFFF" d="M395.67 116.48a9.46 9.46 0 0 1 13.33 0 9.46 9.46 0 0 0 13.33 0l13.33-13.24a28.39 28.39 0 0 1 40 0l10 9.93a14.2 14.2 0 0 0 20 0 14.2 14.2 0 0 1 20 0l.6.6a31.8 31.8 0 0 1 9.4 22.56H389v-3.84c0-6.01 2.4-11.78 6.67-16.01zM98.1 249.1l5.9-5.86c11.07-11 28.93-11 40 0l10 9.94a14.19 14.19 0 0 0 20 0 14.19 14.19 0 0 1 20 0 16.36 16.36 0 0 0 21.3 1.5l8.7-6.47a33.47 33.47 0 0 1 40 0l4.06 3.03A39.6 39.6 0 0 1 284 283H84a47.77 47.77 0 0 1 14.1-33.89z" opacity=".15"/><use fill="black" filter="url(#h)" xlink:href="#i"/><use fill="#FFFFFF" xlink:href="#i"/><path fill="#FFFFFF" d="M702.69 960.64a4.32 4.32 0 0 1-1.04 6.87c-2.26 1.2-3.69 2.1-4.27 2.67-.51.52-1.17 1.4-1.97 2.62a3.53 3.53 0 0 1-5.45.56 3.53 3.53 0 0 1 .56-5.44c1.23-.8 2.1-1.46 2.62-1.98.58-.58 1.47-2 2.67-4.27a4.32 4.32 0 0 1 6.88-1.03z" opacity=".6"/><path fill="url(#j)" d="M700.32 962a4.32 4.32 0 0 1 4.13 5.6c-.75 2.45-1.13 4.08-1.13 4.9 0 .73.15 1.81.45 3.25a3.53 3.53 0 0 1-3.45 4.25 3.53 3.53 0 0 1-3.45-4.25c.3-1.44.45-2.52.45-3.25 0-.82-.37-2.45-1.13-4.9a4.32 4.32 0 0 1 4.13-5.6z" transform="rotate(45 700.323 971)"/><g transform="rotate(-15 3943.802 -2244.376)"><path fill="#FFFFFF" d="M16.65 3.9a4.32 4.32 0 0 1-1.03 6.87c-2.27 1.2-3.7 2.1-4.27 2.67-.52.52-1.18 1.4-1.98 2.62a3.53 3.53 0 0 1-5.44.56 3.53 3.53 0 0 1 .56-5.44c1.23-.8 2.1-1.46 2.62-1.98.58-.58 1.47-2 2.67-4.27a4.32 4.32 0 0 1 6.87-1.03z" opacity=".6"/><path fill="url(#j)" d="M13.32 5a4.32 4.32 0 0 1 4.13 5.6c-.75 2.45-1.13 4.08-1.13 4.9 0 .73.15 1.81.45 3.25A3.53 3.53 0 0 1 13.32 23a3.53 3.53 0 0 1-3.45-4.25c.3-1.44.45-2.52.45-3.25 0-.82-.37-2.45-1.13-4.9A4.32 4.32 0 0 1 13.32 5z" transform="rotate(45 13.323 14)"/></g><g transform="rotate(-15 4117.1 -2152.014)"><path fill="#FFFFFF" d="M16.65 3.9a4.32 4.32 0 0 1-1.03 6.87c-2.27 1.2-3.7 2.1-4.27 2.67-.52.52-1.18 1.4-1.98 2.62a3.53 3.53 0 0 1-5.44.56 3.53 3.53 0 0 1 .56-5.44c1.23-.8 2.1-1.46 2.62-1.98.58-.58 1.47-2 2.67-4.27a4.32 4.32 0 0 1 6.87-1.03z" opacity=".6"/><path fill="url(#j)" d="M13.32 5a4.32 4.32 0 0 1 4.13 5.6c-.75 2.45-1.13 4.08-1.13 4.9 0 .73.15 1.81.45 3.25A3.53 3.53 0 0 1 13.32 23a3.53 3.53 0 0 1-3.45-4.25c.3-1.44.45-2.52.45-3.25 0-.82-.37-2.45-1.13-4.9A4.32 4.32 0 0 1 13.32 5z" transform="rotate(45 13.323 14)"/></g><g transform="rotate(-15 4127.186 -2023.184)"><path fill="#FFFFFF" d="M16.65 3.9a4.32 4.32 0 0 1-1.03 6.87c-2.27 1.2-3.7 2.1-4.27 2.67-.52.52-1.18 1.4-1.98 2.62a3.53 3.53 0 0 1-5.44.56 3.53 3.53 0 0 1 .56-5.44c1.23-.8 2.1-1.46 2.62-1.98.58-.58 1.47-2 2.67-4.27a4.32 4.32 0 0 1 6.87-1.03z" opacity=".6"/><path fill="url(#j)" d="M13.32 5a4.32 4.32 0 0 1 4.13 5.6c-.75 2.45-1.13 4.08-1.13 4.9 0 .73.15 1.81.45 3.25A3.53 3.53 0 0 1 13.32 23a3.53 3.53 0 0 1-3.45-4.25c.3-1.44.45-2.52.45-3.25 0-.82-.37-2.45-1.13-4.9A4.32 4.32 0 0 1 13.32 5z" transform="rotate(45 13.323 14)"/></g><g transform="rotate(-30 2055.753 -866.842)"><path fill="#FFFFFF" d="M16.55 3.4a4.32 4.32 0 0 1-1.03 6.88c-2.27 1.2-3.7 2.1-4.27 2.67-.52.52-1.18 1.39-1.98 2.62a3.53 3.53 0 0 1-5.44.56 3.53 3.53 0 0 1 .56-5.44c1.23-.8 2.1-1.46 2.62-1.98.58-.58 1.47-2 2.67-4.27a4.32 4.32 0 0 1 6.87-1.04z" opacity=".6"/><path fill="url(#j)" d="M12.32 6a4.32 4.32 0 0 1 4.13 5.6c-.75 2.45-1.13 4.08-1.13 4.9 0 .73.15 1.81.45 3.25A3.53 3.53 0 0 1 12.32 24a3.53 3.53 0 0 1-3.45-4.25c.3-1.44.45-2.52.45-3.25 0-.82-.37-2.45-1.13-4.9A4.32 4.32 0 0 1 12.32 6z" transform="rotate(45 12.323 15)"/></g><g transform="rotate(-30 2046.995 -931.189)"><path fill="#FFFFFF" d="M16.55 3.4a4.32 4.32 0 0 1-1.03 6.88c-2.27 1.2-3.7 2.1-4.27 2.67-.52.52-1.18 1.39-1.98 2.62a3.53 3.53 0 0 1-5.44.56 3.53 3.53 0 0 1 .56-5.44c1.23-.8 2.1-1.46 2.62-1.98.58-.58 1.47-2 2.67-4.27a4.32 4.32 0 0 1 6.87-1.04z" opacity=".6"/><path fill="url(#j)" d="M12.32 6a4.32 4.32 0 0 1 4.13 5.6c-.75 2.45-1.13 4.08-1.13 4.9 0 .73.15 1.81.45 3.25A3.53 3.53 0 0 1 12.32 24a3.53 3.53 0 0 1-3.45-4.25c.3-1.44.45-2.52.45-3.25 0-.82-.37-2.45-1.13-4.9A4.32 4.32 0 0 1 12.32 6z" transform="rotate(45 12.323 15)"/></g><g transform="rotate(-45 1406.147 -409.132)"><path fill="#FFFFFF" d="M16.93 3.22a4.32 4.32 0 0 1-1.03 6.88c-2.27 1.2-3.7 2.09-4.27 2.67-.52.52-1.18 1.39-1.98 2.61a3.53 3.53 0 0 1-5.45.57 3.53 3.53 0 0 1 .57-5.45c1.22-.8 2.1-1.46 2.61-1.97.58-.58 1.47-2 2.67-4.27a4.32 4.32 0 0 1 6.88-1.04z" opacity=".6"/><path fill="url(#j)" d="M10.32 6a4.32 4.32 0 0 1 4.13 5.6c-.75 2.45-1.13 4.08-1.13 4.9 0 .73.15 1.81.45 3.25A3.53 3.53 0 0 1 10.32 24a3.53 3.53 0 0 1-3.45-4.25c.3-1.44.45-2.52.45-3.25 0-.82-.37-2.45-1.13-4.9A4.32 4.32 0 0 1 10.32 6z" transform="rotate(45 10.323 15)"/></g><g transform="rotate(-24 2389.63 -1296.285)"><path fill="#FFFFFF" d="M16.93 3.22a4.32 4.32 0 0 1-1.03 6.88c-2.27 1.2-3.7 2.09-4.27 2.67-.52.52-1.18 1.39-1.98 2.61a3.53 3.53 0 0 1-5.45.57 3.53 3.53 0 0 1 .57-5.45c1.22-.8 2.1-1.46 2.61-1.97.58-.58 1.47-2 2.67-4.27a4.32 4.32 0 0 1 6.88-1.04z" opacity=".6"/><path fill="url(#j)" d="M10.32 6a4.32 4.32 0 0 1 4.13 5.6c-.75 2.45-1.13 4.08-1.13 4.9 0 .73.15 1.81.45 3.25A3.53 3.53 0 0 1 10.32 24a3.53 3.53 0 0 1-3.45-4.25c.3-1.44.45-2.52.45-3.25 0-.82-.37-2.45-1.13-4.9A4.32 4.32 0 0 1 10.32 6z" transform="rotate(45 10.323 15)"/></g><g transform="rotate(-50 1258.425 -353.155)"><path fill="#FFFFFF" d="M16.93 3.22a4.32 4.32 0 0 1-1.03 6.88c-2.27 1.2-3.7 2.09-4.27 2.67-.52.52-1.18 1.39-1.98 2.61a3.53 3.53 0 0 1-5.45.57 3.53 3.53 0 0 1 .57-5.45c1.22-.8 2.1-1.46 2.61-1.97.58-.58 1.47-2 2.67-4.27a4.32 4.32 0 0 1 6.88-1.04z" opacity=".6"/><path fill="url(#j)" d="M10.32 6a4.32 4.32 0 0 1 4.13 5.6c-.75 2.45-1.13 4.08-1.13 4.9 0 .73.15 1.81.45 3.25A3.53 3.53 0 0 1 10.32 24a3.53 3.53 0 0 1-3.45-4.25c.3-1.44.45-2.52.45-3.25 0-.82-.37-2.45-1.13-4.9A4.32 4.32 0 0 1 10.32 6z" transform="rotate(45 10.323 15)"/></g><g transform="rotate(-35 1652.744 -777.703)"><path fill="#FFFFFF" d="M16.08 3.06a4.1 4.1 0 0 1-.98 6.53c-2.15 1.14-3.5 1.99-4.05 2.54-.5.5-1.12 1.32-1.88 2.49a3.35 3.35 0 0 1-5.18.53 3.35 3.35 0 0 1 .54-5.17c1.16-.76 2-1.39 2.48-1.88.55-.55 1.4-1.9 2.54-4.06a4.1 4.1 0 0 1 6.53-.98z" opacity=".6"/><path fill="url(#j)" d="M9.8 5.7a4.1 4.1 0 0 1 3.93 5.31c-.71 2.33-1.07 3.89-1.07 4.67 0 .69.14 1.72.43 3.08A3.35 3.35 0 0 1 9.8 22.8a3.35 3.35 0 0 1-3.28-4.04c.28-1.36.43-2.39.43-3.09 0-.77-.36-2.33-1.08-4.66A4.1 4.1 0 0 1 9.81 5.7z" transform="rotate(45 9.807 14.25)"/></g><g transform="rotate(-35 1605.77 -758.112)"><path fill="#FFFFFF" d="M15.24 2.9a3.89 3.89 0 0 1-.93 6.19c-2.04 1.08-3.33 1.88-3.85 2.4a15.6 15.6 0 0 0-1.78 2.36 3.17 3.17 0 0 1-4.9.5 3.17 3.17 0 0 1 .51-4.9 15.6 15.6 0 0 0 2.36-1.78c.52-.52 1.32-1.8 2.4-3.84a3.89 3.89 0 0 1 6.19-.93z" opacity=".6"/><path fill="url(#j)" d="M9.3 5.4a3.89 3.89 0 0 1 3.7 5.03c-.67 2.21-1 3.68-1 4.42 0 .66.13 1.63.4 2.92a3.17 3.17 0 0 1-3.1 3.83 3.17 3.17 0 0 1-3.12-3.83c.28-1.29.41-2.26.41-2.92 0-.74-.34-2.2-1.02-4.42A3.89 3.89 0 0 1 9.3 5.4z" transform="rotate(45 9.29 13.5)"/></g><g transform="rotate(-35 1591.812 -807.843)"><path fill="#FFFFFF" d="M15.24 2.9a3.89 3.89 0 0 1-.93 6.19c-2.04 1.08-3.33 1.88-3.85 2.4a15.6 15.6 0 0 0-1.78 2.36 3.17 3.17 0 0 1-4.9.5 3.17 3.17 0 0 1 .51-4.9 15.6 15.6 0 0 0 2.36-1.78c.52-.52 1.32-1.8 2.4-3.84a3.89 3.89 0 0 1 6.19-.93z" opacity=".6"/><path fill="url(#j)" d="M9.3 5.4a3.89 3.89 0 0 1 3.7 5.03c-.67 2.21-1 3.68-1 4.42 0 .66.13 1.63.4 2.92a3.17 3.17 0 0 1-3.1 3.83 3.17 3.17 0 0 1-3.12-3.83c.28-1.29.41-2.26.41-2.92 0-.74-.34-2.2-1.02-4.42A3.89 3.89 0 0 1 9.3 5.4z" transform="rotate(45 9.29 13.5)"/></g><g transform="rotate(-44 1287.793 -536.004)"><path fill="#FFFFFF" d="M15.24 2.9a3.89 3.89 0 0 1-.93 6.19c-2.04 1.08-3.33 1.88-3.85 2.4a15.6 15.6 0 0 0-1.78 2.36 3.17 3.17 0 0 1-4.9.5 3.17 3.17 0 0 1 .51-4.9 15.6 15.6 0 0 0 2.36-1.78c.52-.52 1.32-1.8 2.4-3.84a3.89 3.89 0 0 1 6.19-.93z" opacity=".6"/><path fill="url(#j)" d="M9.3 5.4a3.89 3.89 0 0 1 3.7 5.03c-.67 2.21-1 3.68-1 4.42 0 .66.13 1.63.4 2.92a3.17 3.17 0 0 1-3.1 3.83 3.17 3.17 0 0 1-3.12-3.83c.28-1.29.41-2.26.41-2.92 0-.74-.34-2.2-1.02-4.42A3.89 3.89 0 0 1 9.3 5.4z" transform="rotate(45 9.29 13.5)"/></g><g transform="rotate(-28 1831.874 -1151.097)"><path fill="#FFFFFF" d="M15.24 2.9a3.89 3.89 0 0 1-.93 6.19c-2.04 1.08-3.33 1.88-3.85 2.4a15.6 15.6 0 0 0-1.78 2.36 3.17 3.17 0 0 1-4.9.5 3.17 3.17 0 0 1 .51-4.9 15.6 15.6 0 0 0 2.36-1.78c.52-.52 1.32-1.8 2.4-3.84a3.89 3.89 0 0 1 6.19-.93z" opacity=".6"/><path fill="url(#j)" d="M9.3 5.4a3.89 3.89 0 0 1 3.7 5.03c-.67 2.21-1 3.68-1 4.42 0 .66.13 1.63.4 2.92a3.17 3.17 0 0 1-3.1 3.83 3.17 3.17 0 0 1-3.12-3.83c.28-1.29.41-2.26.41-2.92 0-.74-.34-2.2-1.02-4.42A3.89 3.89 0 0 1 9.3 5.4z" transform="rotate(45 9.29 13.5)"/></g><g transform="rotate(-41 1316.639 -621.138)"><path fill="#FFFFFF" d="M13.54 2.58a3.46 3.46 0 0 1-.82 5.5A17.18 17.18 0 0 0 9.3 10.2c-.41.42-.94 1.12-1.58 2.1a2.82 2.82 0 0 1-4.36.45 2.82 2.82 0 0 1 .45-4.36c.99-.64 1.68-1.17 2.1-1.58.46-.46 1.17-1.6 2.13-3.42a3.46 3.46 0 0 1 5.5-.82z" opacity=".6"/><path fill="url(#j)" d="M8.26 4.8a3.46 3.46 0 0 1 3.3 4.47c-.6 1.97-.9 3.27-.9 3.93 0 .59.12 1.45.36 2.6a2.82 2.82 0 0 1-2.76 3.4 2.82 2.82 0 0 1-2.76-3.4c.24-1.15.36-2.01.36-2.6 0-.66-.3-1.96-.9-3.93a3.46 3.46 0 0 1 3.3-4.47z" transform="rotate(45 8.258 12)"/></g><g transform="rotate(-41 1286.706 -646.924)"><path fill="#FFFFFF" d="M11.85 2.26a3.03 3.03 0 0 1-.72 4.8 15.04 15.04 0 0 0-3 1.88c-.35.36-.82.97-1.38 1.83a2.47 2.47 0 0 1-3.8.4 2.47 2.47 0 0 1 .39-3.82C4.2 6.8 4.8 6.33 5.17 5.97c.4-.4 1.03-1.4 1.87-3a3.03 3.03 0 0 1 4.81-.71z" opacity=".6"/><path fill="url(#j)" d="M7.23 4.2a3.03 3.03 0 0 1 2.89 3.91c-.53 1.72-.8 2.87-.8 3.44 0 .51.11 1.27.32 2.27a2.47 2.47 0 0 1-2.41 2.98 2.47 2.47 0 0 1-2.42-2.98c.21-1 .32-1.76.32-2.27 0-.57-.27-1.72-.8-3.44a3.03 3.03 0 0 1 2.9-3.91z" transform="rotate(45 7.226 10.5)"/></g><g transform="rotate(-24 2011.85 -1427.831)"><path fill="#FFFFFF" d="M13.54 2.58a3.46 3.46 0 0 1-.82 5.5A17.18 17.18 0 0 0 9.3 10.2c-.41.42-.94 1.12-1.58 2.1a2.82 2.82 0 0 1-4.36.45 2.82 2.82 0 0 1 .45-4.36c.99-.64 1.68-1.17 2.1-1.58.46-.46 1.17-1.6 2.13-3.42a3.46 3.46 0 0 1 5.5-.82z" opacity=".6"/><path fill="url(#j)" d="M8.26 4.8a3.46 3.46 0 0 1 3.3 4.47c-.6 1.97-.9 3.27-.9 3.93 0 .59.12 1.45.36 2.6a2.82 2.82 0 0 1-2.76 3.4 2.82 2.82 0 0 1-2.76-3.4c.24-1.15.36-2.01.36-2.6 0-.66-.3-1.96-.9-3.93a3.46 3.46 0 0 1 3.3-4.47z" transform="rotate(45 8.258 12)"/></g><circle cx="756" cy="209" r="110" fill="#FFFFFF" opacity=".2"/><circle cx="859" cy="139" r="40" fill="#FFFFFF" opacity=".2"/><circle cx="551" cy="383" r="70" fill="#FFFFFF" opacity=".2"/><circle cx="666" cy="359" r="30" fill="#FFFFFF" opacity=".2"/><rect width="60" height="6" x="722" y="547" fill="#FFFFFF" opacity=".4" rx="3"/><rect width="60" height="6" x="842" y="565" fill="#FFFFFF" opacity=".4" rx="3"/><rect width="40" height="6" x="762" y="559" fill="#FFFFFF" opacity=".4" rx="3"/><rect width="40" height="6" x="872" y="553" fill="#FFFFFF" opacity=".4" rx="3"/><rect width="40" height="6" x="811" y="547" fill="#FFFFFF" opacity=".4" rx="3"/></g></svg>
+\ No newline at end of file
+diff --git a/public/svg/503.svg b/public/svg/503.svg
+new file mode 100644
+index 00000000..6ad10933
+--- /dev/null
++++ b/public/svg/503.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><defs><linearGradient id="a" x1="50.31%" x2="50%" y1="74.74%" y2="0%"><stop offset="0%" stop-color="#E26B6B"/><stop offset="50.28%" stop-color="#F5BCF4"/><stop offset="100%" stop-color="#8690E1"/></linearGradient><linearGradient id="b" x1="50%" x2="50%" y1="0%" y2="100%"><stop offset="0%" stop-color="#8C9CE7"/><stop offset="100%" stop-color="#4353A4"/></linearGradient><linearGradient id="c" x1="50%" x2="50%" y1="0%" y2="100%"><stop offset="0%" stop-color="#D1D9FF"/><stop offset="100%" stop-color="#8395EB"/></linearGradient><circle id="e" cx="622" cy="663" r="60"/><filter id="d" width="260%" height="260%" x="-80%" y="-80%" filterUnits="objectBoundingBox"><feOffset in="SourceAlpha" result="shadowOffsetOuter1"/><feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="32"/><feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/></filter><linearGradient id="f" x1="49.87%" x2="49.87%" y1="3.62%" y2="77.75%"><stop offset="0%" stop-color="#B0DDF1"/><stop offset="100%" stop-color="#325C82"/></linearGradient><linearGradient id="g" x1="100%" x2="72.45%" y1="0%" y2="85.2%"><stop offset="0%" stop-color="#1D3A6D"/><stop offset="100%" stop-color="#467994"/></linearGradient><linearGradient id="h" x1="49.48%" x2="49.87%" y1="11.66%" y2="77.75%"><stop offset="0%" stop-color="#B9C9F7"/><stop offset="100%" stop-color="#301863"/></linearGradient><linearGradient id="i" x1="91.59%" x2="70.98%" y1="5.89%" y2="88%"><stop offset="0%" stop-color="#2D3173"/><stop offset="100%" stop-color="#7F90E0"/></linearGradient><linearGradient id="j" x1="70.98%" x2="70.98%" y1="9.88%" y2="88%"><stop offset="0%" stop-color="#2D3173"/><stop offset="100%" stop-color="#7F90E0"/></linearGradient></defs><g fill="none" fill-rule="evenodd"><rect width="1024" height="1024" fill="url(#a)"/><g transform="translate(211 420)"><path fill="#8C9CE7" d="M65 0a2 2 0 0 1 2 2v23h-4V2c0-1.1.9-2 2-2z"/><path fill="#5263B8" d="M64 24h2a3 3 0 0 1 3 3v2h-8v-2a3 3 0 0 1 3-3z"/><path fill="url(#b)" d="M65 108h40V68a40 40 0 1 0-80 0v40h40z"/><polygon fill="#2E3D87" points="0 118 30 112 30 218 0 218"/><polygon fill="#301862" points="60 118 30 112 30 218 60 218"/><path fill="url(#c)" d="M45 107V68a40.02 40.02 0 0 1 30.03-38.75C92.27 33.65 105 49.11 105 67.5V107H45z"/><polygon fill="#4353A4" points="15 78 65 68 67 70 67 178 15 178"/><polygon fill="#8C9CE7" points="115 78 65 68 65 70 65 178 115 178"/><polygon fill="#4353A4" points="75 118 105 112 105 218 75 218"/><polygon fill="#8C9CE7" points="135 118 105 112 105 218 135 218"/></g><use fill="black" filter="url(#d)" xlink:href="#e"/><use fill="#FFFFFF" xlink:href="#e"/><g transform="translate(146 245)"><path fill="url(#f)" d="M169.12 450.57C192.22 464.04 143.85 532.52 24 656h649C328.94 514.3 160.98 445.83 169.12 450.57z"/><path fill="url(#g)" d="M178.5 538.5C137.83 567.17 199.67 606.33 364 656H0l178.5-117.5z"/></g><g transform="translate(0 255)"><path fill="url(#h)" d="M1024 685H0V400.08C77.3 366.4 155.26 330 297.4 330c250 0 250.76 125.25 500 125 84.03-.08 160.02-18.2 226.6-40.93V685z"/></g><path fill="#1F2A68" d="M251 506a8 8 0 0 1 8 8v15l-16 1v-16a8 8 0 0 1 8-8z"/><path fill="#7C8CDA" d="M253 506.25a8 8 0 0 0-6 7.75v15.75l-4 .25v-16a8 8 0 0 1 10-7.75z"/><path fill="#1F2A68" d="M251 546a8 8 0 0 1 8 8v15l-16 1v-16a8 8 0 0 1 8-8z"/><path fill="#7C8CDA" d="M253 546.25a8 8 0 0 0-6 7.75v15.75l-4 .25v-16a8 8 0 0 1 10-7.75z"/><path fill="#5263B8" d="M301 506a8 8 0 0 1 8 8v16l-16-1v-15a8 8 0 0 1 8-8z"/><path fill="#293781" d="M305 529.75V514a8 8 0 0 0-6-7.75 8.01 8.01 0 0 1 10 7.75v16l-4-.25z"/><g transform="translate(0 636)"><path fill="url(#h)" d="M1024 356H0V185.82c137.51-15.4 203.1-50.49 356.67-60.1C555.24 113.3 606.71.59 856.74.59 929.52.58 981.18 11.2 1024 26.26V356z"/><path fill="url(#i)" d="M1024 26.21V326H856.91c99.31-86.5 112.63-140.75 39.97-162.78C710.24 106.64 795.12.58 856.9.58c72.7 0 124.3 10.6 167.09 25.63z"/><path fill="url(#i)" d="M1024 199.32V326H857c99.31-86.6 112.63-140.94 39.97-163L1024 199.32z"/></g><circle cx="566" cy="599" r="110" fill="#FFFFFF" opacity=".1"/><circle cx="669" cy="539" r="60" fill="#FFFFFF" opacity=".1"/><g transform="translate(0 705)"><path fill="url(#h)" d="M0 319V68.93C67.12 35.69 129.55 0 263 0c250 0 331.46 162.6 530 175 107.42 6.71 163-26.77 231-58.92V319H0z"/><path fill="url(#i)" d="M353.02 319H0V68.93C67.12 35.69 129.55 0 263 0c71.14 0 151.5 12.76 151.5 70.5 0 54.5-45.5 79.72-112.5 109-82.26 35.95-54.57 111.68 51.02 139.5z"/><path fill="url(#j)" d="M353.02 319H0v-14.8l302-124.7c-82.26 35.95-54.57 111.68 51.02 139.5z"/></g><circle cx="414" cy="799" r="70" fill="#FFFFFF" opacity=".1"/><circle cx="479" cy="745" r="30" fill="#FFFFFF" opacity=".1"/><g fill="#FFFFFF" opacity=".15" transform="translate(49 214)"><path d="M554.67 131.48a9.46 9.46 0 0 1 13.33 0 9.46 9.46 0 0 0 13.33 0l13.33-13.24a28.39 28.39 0 0 1 40 0l10 9.93a14.2 14.2 0 0 0 20 0 14.2 14.2 0 0 1 20 0l.6.6a31.8 31.8 0 0 1 9.4 22.56H548v-3.84c0-6.01 2.4-11.78 6.67-16.01zM751 8.25c11.07-11 28.93-11 40 0l10 9.94a14.19 14.19 0 0 0 20 0 14.19 14.19 0 0 1 20 0 16.36 16.36 0 0 0 21.3 1.5l8.7-6.47a33.47 33.47 0 0 1 40 0l4.06 3.03A39.6 39.6 0 0 1 931 48H731c0-12.72 8.93-28.75 20-39.75zM14.1 75.14l.9-.9a21.29 21.29 0 0 1 30 0 21.29 21.29 0 0 0 30 0l10-9.93a35.48 35.48 0 0 1 50 0l15 14.9a14.2 14.2 0 0 0 20 0 14.2 14.2 0 0 1 20 0c6.4 6.35 10 15 10 24.02V109H0c0-12.71 5.07-24.9 14.1-33.86z"/></g></g></svg>
+\ No newline at end of file
+diff --git a/resources/assets/js/app.js b/resources/js/app.js
+similarity index 100%
+rename from resources/assets/js/app.js
+rename to resources/js/app.js
+diff --git a/resources/assets/js/bootstrap.js b/resources/js/bootstrap.js
+similarity index 100%
+rename from resources/assets/js/bootstrap.js
+rename to resources/js/bootstrap.js
+diff --git a/resources/assets/js/components/ExampleComponent.vue b/resources/js/components/ExampleComponent.vue
+similarity index 100%
+rename from resources/assets/js/components/ExampleComponent.vue
+rename to resources/js/components/ExampleComponent.vue
+diff --git a/resources/lang/en/pagination.php b/resources/lang/en/pagination.php
+index d4814118..2b9b38e0 100644
+--- a/resources/lang/en/pagination.php
++++ b/resources/lang/en/pagination.php
+@@ -13,7 +13,7 @@ return [
+     |
+     */
+ 
+-    'previous' => '&laquo; Previous',
+-    'next' => 'Next &raquo;',
++    'previous' => '« Previous',
++    'next' => 'Next »',
+ 
+ ];
+diff --git a/resources/assets/sass/_variables.scss b/resources/sass/_variables.scss
+similarity index 100%
+rename from resources/assets/sass/_variables.scss
+rename to resources/sass/_variables.scss
+diff --git a/resources/assets/sass/app.scss b/resources/sass/app.scss
+similarity index 100%
+rename from resources/assets/sass/app.scss
+rename to resources/sass/app.scss
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index a246e106..9180a769 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -8,15 +8,15 @@
+         <title>Laravel</title>
+ 
+         <!-- Fonts -->
+-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
++        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
+ 
+         <!-- Styles -->
+         <style>
+             html, body {
+                 background-color: #fff;
+                 color: #636b6f;
+-                font-family: 'Raleway', sans-serif;
+-                font-weight: 100;
++                font-family: 'Nunito', sans-serif;
++                font-weight: 200;
+                 height: 100vh;
+                 margin: 0;
+             }
+@@ -86,6 +86,7 @@
+                     <a href="https://laravel.com/docs">Documentation</a>
+                     <a href="https://laracasts.com">Laracasts</a>
+                     <a href="https://laravel-news.com">News</a>
++                    <a href="https://nova.laravel.com">Nova</a>
+                     <a href="https://forge.laravel.com">Forge</a>
+                     <a href="https://github.com/laravel/laravel">GitHub</a>
+                 </div>
+diff --git a/webpack.mix.js b/webpack.mix.js
+index 72fdbb16..19a48fa1 100644
+--- a/webpack.mix.js
++++ b/webpack.mix.js
+@@ -1,4 +1,4 @@
+-let mix = require('laravel-mix');
++const mix = require('laravel-mix');
+ 
+ /*
+  |--------------------------------------------------------------------------
+@@ -11,5 +11,5 @@ let mix = require('laravel-mix');
+  |
+  */
+ 
+-mix.js('resources/assets/js/app.js', 'public/js')
+-   .sass('resources/assets/sass/app.scss', 'public/css');
++mix.js('resources/js/app.js', 'public/js')
++   .sass('resources/sass/app.scss', 'public/css');

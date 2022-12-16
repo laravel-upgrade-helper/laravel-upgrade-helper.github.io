@@ -1,0 +1,229 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6eed5ab1..15074d56 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,36 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.8...8.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.12...8.x)
++
++
++## [v8.5.12 (2021-03-02)](https://github.com/laravel/laravel/compare/v8.5.11...v8.5.12)
++
++### Fixed
++- Added sans-serif as Fallback Font ([#5543](https://github.com/laravel/laravel/pull/5543))
++- Don't trim `current_password` ([#5546](https://github.com/laravel/laravel/pull/5546))
++
++
++## [v8.5.11 (2021-02-23)](https://github.com/laravel/laravel/compare/v8.5.10...v8.5.11)
++
++### Fixed
++- Don't flash 'current_password' input ([#5541](https://github.com/laravel/laravel/pull/5541))
++
++
++## [v8.5.10 (2021-02-16)](https://github.com/laravel/laravel/compare/v8.5.9...v8.5.10)
++
++### Changed
++- Add "ably" in comment as a broadcast connection ([#5531](https://github.com/laravel/laravel/pull/5531))
++- Add unverified state to UserFactory ([#5533](https://github.com/laravel/laravel/pull/5533))
++- Update login wording ([9a56a60](https://github.com/laravel/laravel/commit/9a56a60cc9e3785683e256d511ee1fb533025a0a))
++
++### Fixed
++- Fix dead link in web.config ([#5528](https://github.com/laravel/laravel/pull/5528))
++
++
++## [v8.5.9 (2021-01-19)](https://github.com/laravel/laravel/compare/v8.5.8...v8.5.9)
++
++### Removed
++- Delete `docker-compose.yml` ([#5522](https://github.com/laravel/laravel/pull/5522))
+ 
+ 
+ ## [v8.5.8 (2021-01-12)](https://github.com/laravel/laravel/compare/v8.5.7...v8.5.8)
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index f9644add..c18c43cc 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -22,6 +22,7 @@ class Handler extends ExceptionHandler
+      * @var array
+      */
+     protected $dontFlash = [
++        'current_password',
+         'password',
+         'password_confirmation',
+     ];
+diff --git a/app/Http/Middleware/TrimStrings.php b/app/Http/Middleware/TrimStrings.php
+index 5a50e7b5..a8a252df 100644
+--- a/app/Http/Middleware/TrimStrings.php
++++ b/app/Http/Middleware/TrimStrings.php
+@@ -12,6 +12,7 @@ class TrimStrings extends Middleware
+      * @var array
+      */
+     protected $except = [
++        'current_password',
+         'password',
+         'password_confirmation',
+     ];
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index ef208598..2d529820 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -11,7 +11,7 @@ return [
+     | framework when an event needs to be broadcast. You may set this to
+     | any of the connections defined in the "connections" array below.
+     |
+-    | Supported: "pusher", "redis", "log", "null"
++    | Supported: "pusher", "ably", "redis", "log", "null"
+     |
+     */
+ 
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index bdea1a32..3510ed67 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -30,4 +30,18 @@ class UserFactory extends Factory
+             'remember_token' => Str::random(10),
+         ];
+     }
++
++    /**
++     * Indicate that the model's email address should be unverified.
++     *
++     * @return \Illuminate\Database\Eloquent\Factories\Factory
++     */
++    public function unverified()
++    {
++        return $this->state(function (array $attributes) {
++            return [
++                'email_verified_at' => null,
++            ];
++        });
++    }
+ }
+diff --git a/docker-compose.yml b/docker-compose.yml
+deleted file mode 100644
+index 5ba8e628..00000000
+--- a/docker-compose.yml
++++ /dev/null
+@@ -1,74 +0,0 @@
+-# For more information: https://laravel.com/docs/sail
+-version: '3'
+-services:
+-    laravel.test:
+-        build:
+-            context: ./vendor/laravel/sail/runtimes/8.0
+-            dockerfile: Dockerfile
+-            args:
+-                WWWGROUP: '${WWWGROUP}'
+-        image: sail-8.0/app
+-        ports:
+-            - '${APP_PORT:-80}:80'
+-        environment:
+-            WWWUSER: '${WWWUSER}'
+-            LARAVEL_SAIL: 1
+-        volumes:
+-            - '.:/var/www/html'
+-        networks:
+-            - sail
+-        depends_on:
+-            - mysql
+-            - redis
+-            # - selenium
+-    # selenium:
+-    #     image: 'selenium/standalone-chrome'
+-    #     volumes:
+-    #         - '/dev/shm:/dev/shm'
+-    #     networks:
+-    #         - sail
+-    #     depends_on:
+-    #         - laravel.test
+-    mysql:
+-        image: 'mysql:8.0'
+-        ports:
+-            - '${FORWARD_DB_PORT:-3306}:3306'
+-        environment:
+-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+-            MYSQL_DATABASE: '${DB_DATABASE}'
+-            MYSQL_USER: '${DB_USERNAME}'
+-            MYSQL_PASSWORD: '${DB_PASSWORD}'
+-            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+-        volumes:
+-            - 'sailmysql:/var/lib/mysql'
+-        networks:
+-            - sail
+-    redis:
+-        image: 'redis:alpine'
+-        ports:
+-            - '${FORWARD_REDIS_PORT:-6379}:6379'
+-        volumes:
+-            - 'sailredis:/data'
+-        networks:
+-            - sail
+-    # memcached:
+-    #     image: 'memcached:alpine'
+-    #     ports:
+-    #         - '11211:11211'
+-    #     networks:
+-    #         - sail
+-    mailhog:
+-        image: 'mailhog/mailhog:latest'
+-        ports:
+-            - 1025:1025
+-            - 8025:8025
+-        networks:
+-            - sail
+-networks:
+-    sail:
+-        driver: bridge
+-volumes:
+-    sailmysql:
+-        driver: local
+-    sailredis:
+-        driver: local
+diff --git a/public/web.config b/public/web.config
+index d3711d7c..323482f1 100644
+--- a/public/web.config
++++ b/public/web.config
+@@ -1,6 +1,6 @@
+ <!--
+     Rewrites requires Microsoft URL Rewrite Module for IIS
+-    Download: https://www.microsoft.com/en-us/download/details.aspx?id=47337
++    Download: https://www.iis.net/downloads/microsoft/url-rewrite
+     Debug Help: https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/using-failed-request-tracing-to-trace-rewrite-rules
+ -->
+ <configuration>
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 2e2820b0..c77e41ce 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -90,7 +90,7 @@ return [
+         'string' => 'The :attribute must be at least :min characters.',
+         'array' => 'The :attribute must have at least :min items.',
+     ],
+-    'multiple_of' => 'The :attribute must be a multiple of :value',
++    'multiple_of' => 'The :attribute must be a multiple of :value.',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index e305e336..f8ba9e21 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -16,7 +16,7 @@
+ 
+         <style>
+             body {
+-                font-family: 'Nunito';
++                font-family: 'Nunito', sans-serif;
+             }
+         </style>
+     </head>
+@@ -27,7 +27,7 @@
+                     @auth
+                         <a href="{{ url('/home') }}" class="text-sm text-gray-700 underline">Home</a>
+                     @else
+-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
++                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
+ 
+                         @if (Route::has('register'))
+                             <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>

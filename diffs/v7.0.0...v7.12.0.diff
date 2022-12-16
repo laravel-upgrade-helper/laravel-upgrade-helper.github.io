@@ -1,0 +1,408 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a023f703..b44e48f6 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,99 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v6.8.0...develop)
++## [Unreleased](https://github.com/laravel/laravel/compare/v7.6.0...master)
++
++
++## [v7.6.0 (2020-04-15)](https://github.com/laravel/laravel/compare/v7.3.0...v7.6.0)
++
++### Changed
++- Disable Telescope in PHPUnit ([#5277](https://github.com/laravel/laravel/pull/5277))
++
++### Fixed
++- Add both endpoint and url env variables ([#5276](https://github.com/laravel/laravel/pull/5276))
++
++
++## [v7.3.0 (2020-03-24)](https://github.com/laravel/laravel/compare/v7.0.0...v7.3.0)
++
++### Added
++- Add serialize option to array cache config ([#5244](https://github.com/laravel/laravel/pull/5244))
++- Add Mailgun and Postmark mailer ([#5243](https://github.com/laravel/laravel/pull/5243))
++- Add new SQS queue suffix option ([#5252](https://github.com/laravel/laravel/pull/5252))
++- Allow configuring the timeout for the smtp driver ([#5262](https://github.com/laravel/laravel/pull/5262))
++
++### Changed
++- Cleanup session config ([#5261](https://github.com/laravel/laravel/pull/5261))
++
++### Fixed
++- Ensure that `app.debug` is a bool ([5ddbfb8](https://github.com/laravel/laravel/commit/5ddbfb845439fcd5a46c23530b8774421a931760))
++- Fix S3 endpoint url reference ([#5267](https://github.com/laravel/laravel/pull/5267))
++- Update default CORS config ([#5259](https://github.com/laravel/laravel/pull/5259))
++
++### Removed
++- Remove `view.expires` config entry ([641fcfb](https://github.com/laravel/laravel/commit/641fcfb60aa47266c5b4767830dc45bad00c561c))
++
++
++## [v7.0.0 (2020-03-03)](https://github.com/laravel/laravel/compare/v6.18.3...v7.0.0)
++
++### Added
++- Add HandleCors middleware ([#5189](https://github.com/laravel/laravel/pull/5189), [0bec06c](https://github.com/laravel/laravel/commit/0bec06cd45a7f6eda0d52f78dd5ff767d94ed5cc))
++- Add new `view.expires` option ([#5209](https://github.com/laravel/laravel/pull/5209), [91dd1f6](https://github.com/laravel/laravel/commit/91dd1f61cdd3c7949593a4435dff8b77322761f2))
++- Add `links` option to filesystem config ([#5222](https://github.com/laravel/laravel/pull/5222))
++- Add Guzzle dependency ([c434eae](https://github.com/laravel/laravel/commit/c434eae43d673a709bb840f5f2e03b58da30682b), [705076f](https://github.com/laravel/laravel/commit/705076ffc28a834a1eb76b3550be2b6269a8fefb))
++- Add array mailer ([#5240](https://github.com/laravel/laravel/pull/5240))
++
++### Changed
++- Laravel 7 constraint ([054bb43](https://github.com/laravel/laravel/commit/054bb43038f4acb7f356dd668715225ffc2e55ba))
++- Implement new primary key syntax ([#5147](https://github.com/laravel/laravel/pull/5147))
++- Switch to Symfony 5 ([#5157](https://github.com/laravel/laravel/pull/5157))
++- Bumps `nunomaduro/collision` dependency to 4.1 ([#5221](https://github.com/laravel/laravel/pull/5221))
++- Utilize Authentication Middleware Contract ([#5181](https://github.com/laravel/laravel/pull/5181), [#5182](https://github.com/laravel/laravel/pull/5182))
++- Remove auth scaffolding ([b5bb91f](https://github.com/laravel/laravel/commit/b5bb91fea79a3bd5504cbcadfd4766f41f7d01ce), [13e4389](https://github.com/laravel/laravel/commit/13e43893ba2457c3e49898f0066a5ce8d7ea74f4), [3ee0065](https://github.com/laravel/laravel/commit/3ee0065bcd879b82ee42023165f8a8f71e893011))
++- Import facades ([4d565e6](https://github.com/laravel/laravel/commit/4d565e681cbf496e0cdfb58743d4ae8238cef15e))
++- Ignition v2 ([#5211](https://github.com/laravel/laravel/pull/5211))
++- Bumped defaults for Laravel 7 ([#5195](https://github.com/laravel/laravel/pull/5195))
++- Update mail config ([76d8227](https://github.com/laravel/laravel/commit/76d822768dcab14fa1ee1fd1f4a24065234860db), [61ec16f](https://github.com/laravel/laravel/commit/61ec16fe392967766b68d865ed10d56275a78718), [e43d454](https://github.com/laravel/laravel/commit/e43d4546a9c0bde49dae51fd6f4e2766674f1152), [130b8c8](https://github.com/laravel/laravel/commit/130b8c8bcb8f167e7013e7846004b2df3e405b72))
++- Remove hyphen on email ([ffc74ba](https://github.com/laravel/laravel/commit/ffc74ba143a7de4a89f2c3fd525a5621ca879e38))
++- Use `MAIL_MAILER` in test environment ([#5239](https://github.com/laravel/laravel/pull/5239))
++
++
++## [v6.18.8 (2020-04-16)](https://github.com/laravel/laravel/compare/v6.18.3...v6.18.8)
++
++### Fixed
++- Add both endpoint and url env variables ([#5276](https://github.com/laravel/laravel/pull/5276))
++
++
++## [v6.18.3 (2020-03-24)](https://github.com/laravel/laravel/compare/v6.18.0...v6.18.3)
++
++### Fixed
++- Ensure that `app.debug` is a bool ([5ddbfb8](https://github.com/laravel/laravel/commit/5ddbfb845439fcd5a46c23530b8774421a931760))
++- Fix S3 endpoint url reference ([#5267](https://github.com/laravel/laravel/pull/5267))
++
++
++## [v6.18.0 (2020-02-24)](https://github.com/laravel/laravel/compare/v6.12.0...v6.18.0)
++
++### Changed
++- Update cross-env and resolve-url-loader to the latest ([#5210](https://github.com/laravel/laravel/pull/5210), [#5216](https://github.com/laravel/laravel/pull/5216))
++- Bump fzaninotto/faker version to support PHP 7.4 ([#5218](https://github.com/laravel/laravel/pull/5218))
++- Remove redundant default attributes from `phpunit.xml` ([#5233](https://github.com/laravel/laravel/pull/5233))
++
++
++## [v6.12.0 (2020-01-14)](https://github.com/laravel/laravel/compare/v6.8.0...v6.12.0)
++
++### Added
++- Allow configurable emergency logger ([#5179](https://github.com/laravel/laravel/pull/5179))
++- Add `MAIL_FROM_ADDRESS` & `MAIL_FROM_NAME` to `.env` file ([#5180](https://github.com/laravel/laravel/pull/5180))
++- Add missing full stop for some validation messages ([#5205](https://github.com/laravel/laravel/pull/5205))
++
++### Changed
++- Use class name to be consistent with web middleware ([140d4d9](https://github.com/laravel/laravel/commit/140d4d9b0a4581cec046875361e87c2981b3f9fe))
++- Use file session driver again ([#5201](https://github.com/laravel/laravel/pull/5201))
++
++### Fixed
++- Correct exception handler doc ([#5187](https://github.com/laravel/laravel/pull/5187))
++- Fix types consistency in Redis database config ([#5191](https://github.com/laravel/laravel/pull/5191))
++
++### Security
++- Update laravel mix and sass loader ([#5203](https://github.com/laravel/laravel/pull/5203))
+ 
+ 
+ ## [v6.8.0 (2019-12-16)](https://github.com/laravel/laravel/compare/v6.5.2...v6.8.0)
+diff --git a/README.md b/README.md
+index 81f2f62b..3cae01ea 100644
+--- a/README.md
++++ b/README.md
+@@ -37,7 +37,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[64 Robots](https://64robots.com)**
+ - **[Cubet Techno Labs](https://cubettech.com)**
+ - **[Cyber-Duck](https://cyber-duck.co.uk)**
+-- **[British Software Development](https://www.britishsoftware.co)**
++- **[Many](https://www.many.co.uk)**
+ - **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+ - **[DevSquad](https://devsquad.com)**
+ - [UserInsights](https://userinsights.com)
+@@ -60,6 +60,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - [Hyper Host](https://hyper.host)
+ - [Appoly](https://www.appoly.co.uk)
+ - [OP.GG](https://op.gg)
++- [云软科技](http://www.yunruan.ltd/)
+ 
+ ## Contributing
+ 
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index c3640f30..36ced134 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -14,6 +14,7 @@ class Kernel extends HttpKernel
+      * @var array
+      */
+     protected $middleware = [
++        // \App\Http\Middleware\TrustHosts::class,
+         \App\Http\Middleware\TrustProxies::class,
+         \Fruitcake\Cors\HandleCors::class,
+         \App\Http\Middleware\CheckForMaintenanceMode::class,
+diff --git a/app/Http/Middleware/TrustHosts.php b/app/Http/Middleware/TrustHosts.php
+new file mode 100644
+index 00000000..b0550cfc
+--- /dev/null
++++ b/app/Http/Middleware/TrustHosts.php
+@@ -0,0 +1,20 @@
++<?php
++
++namespace App\Http\Middleware;
++
++use Illuminate\Http\Middleware\TrustHosts as Middleware;
++
++class TrustHosts extends Middleware
++{
++    /**
++     * Get the host patterns that should be trusted.
++     *
++     * @return array
++     */
++    public function hosts()
++    {
++        return [
++            $this->allSubdomainsOfApplicationUrl(),
++        ];
++    }
++}
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index ee5b5958..14befceb 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -10,7 +10,7 @@ class TrustProxies extends Middleware
+     /**
+      * The trusted proxies for this application.
+      *
+-     * @var array|string
++     * @var array|string|null
+      */
+     protected $proxies;
+ 
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 527eee34..540d17b4 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -59,8 +59,8 @@ class RouteServiceProvider extends ServiceProvider
+     protected function mapWebRoutes()
+     {
+         Route::middleware('web')
+-             ->namespace($this->namespace)
+-             ->group(base_path('routes/web.php'));
++            ->namespace($this->namespace)
++            ->group(base_path('routes/web.php'));
+     }
+ 
+     /**
+@@ -73,8 +73,8 @@ class RouteServiceProvider extends ServiceProvider
+     protected function mapApiRoutes()
+     {
+         Route::prefix('api')
+-             ->middleware('api')
+-             ->namespace($this->namespace)
+-             ->group(base_path('routes/api.php'));
++            ->middleware('api')
++            ->namespace($this->namespace)
++            ->group(base_path('routes/api.php'));
+     }
+ }
+diff --git a/config/app.php b/config/app.php
+index 5757ea7e..8409e00e 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -39,7 +39,7 @@ return [
+     |
+     */
+ 
+-    'debug' => env('APP_DEBUG', false),
++    'debug' => (bool) env('APP_DEBUG', false),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/config/cache.php b/config/cache.php
+index 46751e62..4f41fdf9 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -39,6 +39,7 @@ return [
+ 
+         'array' => [
+             'driver' => 'array',
++            'serialize' => false,
+         ],
+ 
+         'database' => [
+diff --git a/config/cors.php b/config/cors.php
+index 5c9de897..558369dc 100644
+--- a/config/cors.php
++++ b/config/cors.php
+@@ -25,9 +25,9 @@ return [
+ 
+     'allowed_headers' => ['*'],
+ 
+-    'exposed_headers' => false,
++    'exposed_headers' => [],
+ 
+-    'max_age' => false,
++    'max_age' => 0,
+ 
+     'supports_credentials' => false,
+ 
+diff --git a/config/filesystems.php b/config/filesystems.php
+index cd9f0962..94c81126 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -62,6 +62,7 @@ return [
+             'region' => env('AWS_DEFAULT_REGION'),
+             'bucket' => env('AWS_BUCKET'),
+             'url' => env('AWS_URL'),
++            'endpoint' => env('AWS_ENDPOINT'),
+         ],
+ 
+     ],
+diff --git a/config/mail.php b/config/mail.php
+index 67fb3409..54299aab 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -41,12 +41,22 @@ return [
+             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
++            'timeout' => null,
++            'auth_mode' => null,
+         ],
+ 
+         'ses' => [
+             'transport' => 'ses',
+         ],
+ 
++        'mailgun' => [
++            'transport' => 'mailgun',
++        ],
++
++        'postmark' => [
++            'transport' => 'postmark',
++        ],
++
+         'sendmail' => [
+             'transport' => 'sendmail',
+             'path' => '/usr/sbin/sendmail -bs',
+diff --git a/config/queue.php b/config/queue.php
+index 3a30d6c6..00b76d65 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -55,6 +55,7 @@ return [
+             'secret' => env('AWS_SECRET_ACCESS_KEY'),
+             'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+             'queue' => env('SQS_QUEUE', 'your-queue-name'),
++            'suffix' => env('SQS_SUFFIX'),
+             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+         ],
+ 
+diff --git a/config/session.php b/config/session.php
+index bc9174f4..4e0f66cd 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -92,10 +92,12 @@ return [
+     | Session Cache Store
+     |--------------------------------------------------------------------------
+     |
+-    | When using the "apc", "memcached", or "dynamodb" session drivers you may
++    | While using one of the framework's cache driven session backends you may
+     | list a cache store that should be used for these sessions. This value
+     | must match with one of the application's configured cache "stores".
+     |
++    | Affects: "apc", "dynamodb", "memcached", "redis"
++    |
+     */
+ 
+     'store' => env('SESSION_STORE', null),
+@@ -166,7 +168,7 @@ return [
+     |
+     */
+ 
+-    'secure' => env('SESSION_SECURE_COOKIE', null),
++    'secure' => env('SESSION_SECURE_COOKIE'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -188,9 +190,9 @@ return [
+     |
+     | This option determines how your cookies behave when cross-site requests
+     | take place, and can be used to mitigate CSRF attacks. By default, we
+-    | do not enable this as other CSRF protection services are in place.
++    | will set this value to "lax" since this is a secure default value.
+     |
+-    | Supported: "lax", "strict", "none"
++    | Supported: "lax", "strict", "none", null
+     |
+     */
+ 
+diff --git a/config/view.php b/config/view.php
+index bc73d32b..22b8a18d 100644
+--- a/config/view.php
++++ b/config/view.php
+@@ -33,17 +33,4 @@ return [
+         realpath(storage_path('framework/views'))
+     ),
+ 
+-    /*
+-     |--------------------------------------------------------------------------
+-     | Blade View Modification Checking
+-     |--------------------------------------------------------------------------
+-     |
+-     | On every request the framework will check to see if a view has expired
+-     | to determine if it needs to be recompiled. If you are in production
+-     | and precompiling views this feature may be disabled to save time.
+-     |
+-     */
+-
+-    'expires' => env('VIEW_CHECK_EXPIRATION', true),
+-
+ ];
+diff --git a/database/seeds/DatabaseSeeder.php b/database/seeds/DatabaseSeeder.php
+index 91cb6d1c..237dfc5d 100644
+--- a/database/seeds/DatabaseSeeder.php
++++ b/database/seeds/DatabaseSeeder.php
+@@ -11,6 +11,6 @@ class DatabaseSeeder extends Seeder
+      */
+     public function run()
+     {
+-        // $this->call(UsersTableSeeder::class);
++        // $this->call(UserSeeder::class);
+     }
+ }
+diff --git a/package.json b/package.json
+index 3729fb78..2c35181c 100644
+--- a/package.json
++++ b/package.json
+@@ -5,7 +5,7 @@
+         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "watch": "npm run development -- --watch",
+         "watch-poll": "npm run watch -- --watch-poll",
+-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "prod": "npm run production",
+         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },
+diff --git a/phpunit.xml b/phpunit.xml
+index 383f71ef..964ff0c5 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -2,12 +2,12 @@
+ <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+          bootstrap="vendor/autoload.php"
+-         colors="true">
++         colors="true"
++>
+     <testsuites>
+         <testsuite name="Unit">
+             <directory suffix="Test.php">./tests/Unit</directory>
+         </testsuite>
+-
+         <testsuite name="Feature">
+             <directory suffix="Test.php">./tests/Feature</directory>
+         </testsuite>
+@@ -26,5 +26,6 @@
+         <server name="MAIL_MAILER" value="array"/>
+         <server name="QUEUE_CONNECTION" value="sync"/>
+         <server name="SESSION_DRIVER" value="array"/>
++        <server name="TELESCOPE_ENABLED" value="false"/>
+     </php>
+ </phpunit>

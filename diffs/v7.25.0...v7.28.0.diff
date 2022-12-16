@@ -1,0 +1,47 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 31a05fed..17e94ebd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -73,19 +73,6 @@
+ - Use `MAIL_MAILER` in test environment ([#5239](https://github.com/laravel/laravel/pull/5239))
+ 
+ 
+-## [v6.18.8 (2020-04-16)](https://github.com/laravel/laravel/compare/v6.18.3...v6.18.8)
+-
+-### Fixed
+-- Add both endpoint and url env variables ([#5276](https://github.com/laravel/laravel/pull/5276))
+-
+-
+-## [v6.18.3 (2020-03-24)](https://github.com/laravel/laravel/compare/v6.18.0...v6.18.3)
+-
+-### Fixed
+-- Ensure that `app.debug` is a bool ([5ddbfb8](https://github.com/laravel/laravel/commit/5ddbfb845439fcd5a46c23530b8774421a931760))
+-- Fix S3 endpoint url reference ([#5267](https://github.com/laravel/laravel/pull/5267))
+-
+-
+ ## [v6.18.0 (2020-02-24)](https://github.com/laravel/laravel/compare/v6.12.0...v6.18.0)
+ 
+ ### Changed
+diff --git a/README.md b/README.md
+index 247d701c..f3decb12 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
++<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 59c585dc..5a53cd3b 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -32,7 +32,7 @@ class Handler extends ExceptionHandler
+      * @param  \Throwable  $exception
+      * @return void
+      *
+-     * @throws \Exception
++     * @throws \Throwable
+      */
+     public function report(Throwable $exception)
+     {

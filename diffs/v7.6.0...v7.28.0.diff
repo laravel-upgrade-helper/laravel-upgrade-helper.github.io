@@ -1,0 +1,279 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5908aad3..17e94ebd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,23 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v7.6.0...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v7.25.0...master)
++
++
++## [v7.25.0 (2020-08-11)](https://github.com/laravel/laravel/compare/v7.12.0...v7.25.0)
++
++### Added
++- Add password reset migration ([9e5ba57](https://github.com/laravel/laravel/commit/9e5ba571a60a57ca2c3938bc5bd81d222cb6e618))
++
++### Changed
++- Bump `fruitcake/laravel-cors` ([#5320](https://github.com/laravel/laravel/pull/5320))
++- Set framework version `^7.24` ([#5370](https://github.com/laravel/laravel/pull/5370))
++
++
++## [v7.12.0 (2020-05-18)](https://github.com/laravel/laravel/compare/v7.6.0...v7.12.0)
++
++### Added
++- Allow configuring the auth_mode for SMTP mail driver ([#5293](https://github.com/laravel/laravel/pull/5293))
++- Add basic trust host middleware ([5639581](https://github.com/laravel/laravel/commit/5639581ea56ecd556cdf6e6edc37ce5795740fd7))
+ 
+ 
+ ## [v7.6.0 (2020-04-15)](https://github.com/laravel/laravel/compare/v7.3.0...v7.6.0)
+@@ -56,13 +73,6 @@
+ - Use `MAIL_MAILER` in test environment ([#5239](https://github.com/laravel/laravel/pull/5239))
+ 
+ 
+-## [v6.18.3 (2020-03-24)](https://github.com/laravel/laravel/compare/v6.18.0...v6.18.3)
+-
+-### Fixed
+-- Ensure that `app.debug` is a bool ([5ddbfb8](https://github.com/laravel/laravel/commit/5ddbfb845439fcd5a46c23530b8774421a931760))
+-- Fix S3 endpoint url reference ([#5267](https://github.com/laravel/laravel/pull/5267))
+-
+-
+ ## [v6.18.0 (2020-02-24)](https://github.com/laravel/laravel/compare/v6.12.0...v6.18.0)
+ 
+ ### Changed
+diff --git a/README.md b/README.md
+index e4bc97ee..f3decb12 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
++<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+@@ -31,36 +31,18 @@ If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Lar
+ 
+ We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+ 
++### Premium Partners
++
+ - **[Vehikl](https://vehikl.com/)**
+ - **[Tighten Co.](https://tighten.co)**
+ - **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+ - **[64 Robots](https://64robots.com)**
+ - **[Cubet Techno Labs](https://cubettech.com)**
+ - **[Cyber-Duck](https://cyber-duck.co.uk)**
+-- **[British Software Development](https://www.britishsoftware.co)**
++- **[Many](https://www.many.co.uk)**
+ - **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+ - **[DevSquad](https://devsquad.com)**
+-- [UserInsights](https://userinsights.com)
+-- [Fragrantica](https://www.fragrantica.com)
+-- [SOFTonSOFA](https://softonsofa.com/)
+-- [User10](https://user10.com)
+-- [Soumettre.fr](https://soumettre.fr/)
+-- [CodeBrisk](https://codebrisk.com)
+-- [1Forge](https://1forge.com)
+-- [TECPRESSO](https://tecpresso.co.jp/)
+-- [Runtime Converter](http://runtimeconverter.com/)
+-- [WebL'Agence](https://weblagence.com/)
+-- [Invoice Ninja](https://www.invoiceninja.com)
+-- [iMi digital](https://www.imi-digital.de/)
+-- [Earthlink](https://www.earthlink.ro/)
+-- [Steadfast Collective](https://steadfastcollective.com/)
+-- [We Are The Robots Inc.](https://watr.mx/)
+-- [Understand.io](https://www.understand.io/)
+-- [Abdel Elrafa](https://abdelelrafa.com)
+-- [Hyper Host](https://hyper.host)
+-- [Appoly](https://www.appoly.co.uk)
+-- [OP.GG](https://op.gg)
+-- [云软科技](http://www.yunruan.ltd/)
++- **[OP.GG](https://op.gg)**
+ 
+ ## Contributing
+ 
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 59c585dc..5a53cd3b 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -32,7 +32,7 @@ class Handler extends ExceptionHandler
+      * @param  \Throwable  $exception
+      * @return void
+      *
+-     * @throws \Exception
++     * @throws \Throwable
+      */
+     public function report(Throwable $exception)
+     {
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index c3640f30..36ced134 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -14,6 +14,7 @@ class Kernel extends HttpKernel
+      * @var array
+      */
+     protected $middleware = [
++        // \App\Http\Middleware\TrustHosts::class,
+         \App\Http\Middleware\TrustProxies::class,
+         \Fruitcake\Cors\HandleCors::class,
+         \App\Http\Middleware\CheckForMaintenanceMode::class,
+diff --git a/app/Http/Middleware/TrustHosts.php b/app/Http/Middleware/TrustHosts.php
+new file mode 100644
+index 00000000..b0550cfc
+--- /dev/null
++++ b/app/Http/Middleware/TrustHosts.php
+@@ -0,0 +1,20 @@
++<?php
++
++namespace App\Http\Middleware;
++
++use Illuminate\Http\Middleware\TrustHosts as Middleware;
++
++class TrustHosts extends Middleware
++{
++    /**
++     * Get the host patterns that should be trusted.
++     *
++     * @return array
++     */
++    public function hosts()
++    {
++        return [
++            $this->allSubdomainsOfApplicationUrl(),
++        ];
++    }
++}
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index ee5b5958..14befceb 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -10,7 +10,7 @@ class TrustProxies extends Middleware
+     /**
+      * The trusted proxies for this application.
+      *
+-     * @var array|string
++     * @var array|string|null
+      */
+     protected $proxies;
+ 
+diff --git a/composer.json b/composer.json
+index 4e81d21a..7115b207 100644
+--- a/composer.json
++++ b/composer.json
+@@ -10,9 +10,9 @@
+     "require": {
+         "php": "^7.2.5",
+         "fideloper/proxy": "^4.2",
+-        "fruitcake/laravel-cors": "^1.0",
++        "fruitcake/laravel-cors": "^2.0",
+         "guzzlehttp/guzzle": "^6.3",
+-        "laravel/framework": "^7.0",
++        "laravel/framework": "^7.24",
+         "laravel/tinker": "^2.0"
+     },
+     "require-dev": {
+diff --git a/config/mail.php b/config/mail.php
+index 5201bb76..54299aab 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -42,6 +42,7 @@ return [
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+             'timeout' => null,
++            'auth_mode' => null,
+         ],
+ 
+         'ses' => [
+diff --git a/config/session.php b/config/session.php
+index da692f3b..4e0f66cd 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -92,10 +92,12 @@ return [
+     | Session Cache Store
+     |--------------------------------------------------------------------------
+     |
+-    | When using the "apc", "memcached", or "dynamodb" session drivers you may
++    | While using one of the framework's cache driven session backends you may
+     | list a cache store that should be used for these sessions. This value
+     | must match with one of the application's configured cache "stores".
+     |
++    | Affects: "apc", "dynamodb", "memcached", "redis"
++    |
+     */
+ 
+     'store' => env('SESSION_STORE', null),
+diff --git a/database/migrations/2014_10_12_100000_create_password_resets_table.php b/database/migrations/2014_10_12_100000_create_password_resets_table.php
+new file mode 100644
+index 00000000..0ee0a36a
+--- /dev/null
++++ b/database/migrations/2014_10_12_100000_create_password_resets_table.php
+@@ -0,0 +1,32 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++class CreatePasswordResetsTable extends Migration
++{
++    /**
++     * Run the migrations.
++     *
++     * @return void
++     */
++    public function up()
++    {
++        Schema::create('password_resets', function (Blueprint $table) {
++            $table->string('email')->index();
++            $table->string('token');
++            $table->timestamp('created_at')->nullable();
++        });
++    }
++
++    /**
++     * Reverse the migrations.
++     *
++     * @return void
++     */
++    public function down()
++    {
++        Schema::dropIfExists('password_resets');
++    }
++}
+diff --git a/package.json b/package.json
+index 3729fb78..420218d5 100644
+--- a/package.json
++++ b/package.json
+@@ -5,7 +5,7 @@
+         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "watch": "npm run development -- --watch",
+         "watch-poll": "npm run watch -- --watch-poll",
+-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "prod": "npm run production",
+         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },
+@@ -13,7 +13,7 @@
+         "axios": "^0.19",
+         "cross-env": "^7.0",
+         "laravel-mix": "^5.0.1",
+-        "lodash": "^4.17.13",
++        "lodash": "^4.17.19",
+         "resolve-url-loader": "^3.1.0",
+         "sass": "^1.15.2",
+         "sass-loader": "^8.0.0"
+diff --git a/phpunit.xml b/phpunit.xml
+index 964ff0c5..76f22462 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -21,8 +21,8 @@
+         <server name="APP_ENV" value="testing"/>
+         <server name="BCRYPT_ROUNDS" value="4"/>
+         <server name="CACHE_DRIVER" value="array"/>
+-        <server name="DB_CONNECTION" value="sqlite"/>
+-        <server name="DB_DATABASE" value=":memory:"/>
++        <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
++        <!-- <server name="DB_DATABASE" value=":memory:"/> -->
+         <server name="MAIL_MAILER" value="array"/>
+         <server name="QUEUE_CONNECTION" value="sync"/>
+         <server name="SESSION_DRIVER" value="array"/>

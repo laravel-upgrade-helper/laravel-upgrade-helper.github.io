@@ -1,0 +1,191 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 292f9078..6f989f14 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,9 +1,23 @@
+ # Release Notes
+ 
+-## [Unreleased]
++## v5.6.0 (2018-02-07)
++
++### Added
++- Added `filesystems.disks.s3.url` config parameter ([#4483](https://github.com/laravel/laravel/pull/4483))
++- Added `queue.connections.redis.block_for` config parameter ([d6d0013](https://github.com/laravel/laravel/commit/d6d001356232dac4549d152baf685373a6d6c8f8))
++- Added Collision package ([#4514](https://github.com/laravel/laravel/pull/4514))
++- Added `SetCacheHeaders` middleware to `Kernel::$routeMiddleware` ([#4515](https://github.com/laravel/laravel/pull/4515))
++- Added hashing configuration file ([bac7595](https://github.com/laravel/laravel/commit/bac7595f02835ae2d35953a2c9ba039592ed8a94))
+ 
+ ### Changed
+-- Updated Mix to 2.0 ([#4557](https://github.com/laravel/laravel/pull/4557))
++- Require PHP 7.1.3 or newer ([#4568](https://github.com/laravel/laravel/pull/4568))
++- Upgraded PHPUnit to v7 ([f771896](https://github.com/laravel/laravel/commit/f771896c285c73fa1a2ac83c1b2770011f8e49ef))
++- Upgraded Mix to v2 ([#4557](https://github.com/laravel/laravel/pull/4557))
++- Upgraded `fideloper/proxy` to v4 ([#4518](https://github.com/laravel/laravel/pull/4518))
++- Set hash driver in `CreatesApplication` ([7b138fe](https://github.com/laravel/laravel/commit/7b138fe39822e34e0c563462ffee6036b4bda226))
++- Upgraded to Bootstrap 4 ([#4519](https://github.com/laravel/laravel/pull/4519), [c0cda4f](https://github.com/laravel/laravel/commit/c0cda4f81fd7a25851ed8069f0aa70c2d21a941c), [cd53623](https://github.com/laravel/laravel/commit/cd53623249e8b2b2d7517b1585f68e7e31be1a8a), [3926520](https://github.com/laravel/laravel/commit/3926520f730ab681462dff3275e468b6ad3f061d))
++- Updated logging configuration ([acabdff](https://github.com/laravel/laravel/commit/acabdff2e3cde6bc98cc2d951a8fcadf22eb71f0), [bd5783b](https://github.com/laravel/laravel/commit/bd5783b5e9db18b353fe10f5ed8bd6f7ca7b8c6e), [ff0bec8](https://github.com/laravel/laravel/commit/ff0bec857ead9698b2783143b14b5332b96e23cc), [f6e0fd7](https://github.com/laravel/laravel/commit/f6e0fd7ac3e838985a249cd04f78b482d96f230a), [2eeca4e](https://github.com/laravel/laravel/commit/2eeca4e220254393341e25bc7e45e08480c9a683), [ebb0a2a](https://github.com/laravel/laravel/commit/ebb0a2a84fa431e30103c98cf4bed3fa3713ad59), [b78f5bd](https://github.com/laravel/laravel/commit/b78f5bd6e9f739f35383165798ad2022b8fb509c))
++- Use Mix environment variables ([224f994](https://github.com/laravel/laravel/commit/224f9949c74fcea2eeceae0a1f65d9c2e7498a27), [2db1e0c](https://github.com/laravel/laravel/commit/2db1e0c5e8525f3ee4b3850f0116c13224790dff))
+ 
+ 
+ ## v5.5.28 (2018-01-03)
+diff --git a/app/Http/Controllers/Auth/RegisterController.php b/app/Http/Controllers/Auth/RegisterController.php
+index f77265ab..e749c077 100644
+--- a/app/Http/Controllers/Auth/RegisterController.php
++++ b/app/Http/Controllers/Auth/RegisterController.php
+@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
+ 
+ use App\User;
+ use App\Http\Controllers\Controller;
++use Illuminate\Support\Facades\Hash;
+ use Illuminate\Support\Facades\Validator;
+ use Illuminate\Foundation\Auth\RegistersUsers;
+ 
+@@ -65,7 +66,7 @@ class RegisterController extends Controller
+         return User::create([
+             'name' => $data['name'],
+             'email' => $data['email'],
+-            'password' => bcrypt($data['password']),
++            'password' => Hash::make($data['password']),
+         ]);
+     }
+ }
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 74b1cbdd..3439540c 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -57,6 +57,7 @@ class Kernel extends HttpKernel
+         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
++        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+     ];
+ }
+diff --git a/composer.json b/composer.json
+index 27695dce..65bf8b4f 100644
+--- a/composer.json
++++ b/composer.json
+@@ -5,18 +5,17 @@
+     "license": "MIT",
+     "type": "project",
+     "require": {
+-        "php": ">=7.1.3",
+-        "fideloper/proxy": "~4.0",
++        "php": "^7.1.3",
++        "fideloper/proxy": "^4.0",
+         "laravel/framework": "5.6.*",
+-        "laravel/tinker": "~1.0"
++        "laravel/tinker": "^1.0"
+     },
+     "require-dev": {
+-        "filp/whoops": "~2.0",
+-        "nunomaduro/collision": "~1.1",
+-        "fzaninotto/faker": "~1.4",
+-        "mockery/mockery": "~1.0",
+-        "phpunit/phpunit": "~7.0",
+-        "symfony/thanks": "^1.0"
++        "filp/whoops": "^2.0",
++        "fzaninotto/faker": "^1.4",
++        "mockery/mockery": "^1.0",
++        "nunomaduro/collision": "^2.0",
++        "phpunit/phpunit": "^7.0"
+     },
+     "autoload": {
+         "classmap": [
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 67158a5d..77fa5ded 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -37,7 +37,7 @@ return [
+     | may even configure multiple disks of the same driver. Defaults have
+     | been setup for each driver as an example of the required options.
+     |
+-    | Supported Drivers: "local", "ftp", "s3", "rackspace"
++    | Supported Drivers: "local", "ftp", "sftp", "s3", "rackspace"
+     |
+     */
+ 
+diff --git a/config/queue.php b/config/queue.php
+index 87b1b1b7..391304f3 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -4,14 +4,12 @@ return [
+ 
+     /*
+     |--------------------------------------------------------------------------
+-    | Default Queue Driver
++    | Default Queue Connection Name
+     |--------------------------------------------------------------------------
+     |
+     | Laravel's queue API supports an assortment of back-ends via a single
+     | API, giving you convenient access to each back-end using the same
+-    | syntax for each one. Here you may set the default queue driver.
+-    |
+-    | Supported: "sync", "database", "beanstalkd", "sqs", "redis", "null"
++    | syntax for every one. Here you may define a default connection.
+     |
+     */
+ 
+@@ -26,6 +24,8 @@ return [
+     | is used by your application. A default configuration has been added
+     | for each back-end shipped with Laravel. You are free to add more.
+     |
++    | Drivers: "sync", "database", "beanstalkd", "sqs", "redis", "null"
++    |
+     */
+ 
+     'connections' => [
+diff --git a/package.json b/package.json
+index ecf0bcc4..3de8d8d1 100644
+--- a/package.json
++++ b/package.json
+@@ -10,7 +10,7 @@
+         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },
+     "devDependencies": {
+-        "axios": "^0.17",
++        "axios": "^0.18",
+         "bootstrap": "^4.0.0",
+         "popper.js": "^1.12",
+         "cross-env": "^5.1",
+diff --git a/phpunit.xml b/phpunit.xml
+index bb9c4a7e..9ee3e734 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -27,5 +27,6 @@
+         <env name="CACHE_DRIVER" value="array"/>
+         <env name="SESSION_DRIVER" value="array"/>
+         <env name="QUEUE_DRIVER" value="sync"/>
++        <env name="MAIL_DRIVER" value="array"/>
+     </php>
+ </phpunit>
+diff --git a/resources/assets/sass/_variables.scss b/resources/assets/sass/_variables.scss
+index 1c44aff9..70ecfdb3 100644
+--- a/resources/assets/sass/_variables.scss
++++ b/resources/assets/sass/_variables.scss
+@@ -6,13 +6,3 @@ $body-bg: #f5f8fa;
+ $font-family-sans-serif: "Raleway", sans-serif;
+ $font-size-base: 0.9rem;
+ $line-height-base: 1.6;
+-$text-color: #636b6f;
+-
+-// Navbar
+-$navbar-default-bg: #fff;
+-
+-// Buttons
+-$btn-default-color: $text-color;
+-
+-// Panels
+-$panel-default-heading-bg: #fff;
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index edc036dd..77d23022 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -65,6 +65,7 @@ return [
+         'array'   => 'The :attribute must have at least :min items.',
+     ],
+     'not_in'               => 'The selected :attribute is invalid.',
++    'not_regex'            => 'The :attribute format is invalid.',
+     'numeric'              => 'The :attribute must be a number.',
+     'present'              => 'The :attribute field must be present.',
+     'regex'                => 'The :attribute format is invalid.',

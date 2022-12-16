@@ -2,7 +2,7 @@
 
 ![image](https://user-images.githubusercontent.com/3058102/190493912-95aa862f-0428-4431-8143-cc80f593dace.png)
 
-This repository contains scripts that generates diff files for Laravel upgrade helper.
+This repository contains webpage files for Laravel upgrade helper.
 
 ## Start Using Now
 
@@ -10,7 +10,7 @@ This repository contains scripts that generates diff files for Laravel upgrade h
 
 ## Why This Project ?
 
-We know that Laravel has **release notes**, we have Laravel **docs** also we have **Laravel Shift.** We know all these but we wanted to quick look what we should update when we are upgrading our project. We build this tool for internal purposes and now decided to open source it. Hope that it will be useful for you too.
+We know that Laravel has **release notes**, we have Laravel **docs** also we have **Laravel Shift.** We know all these, but we wanted to quick look what we should update when we are upgrading our project. We build this tool for internal purposes and now decided to open source it. Hope that it will be useful for you too.
 
 ## Goals
 

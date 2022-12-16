@@ -1,0 +1,84 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 81f8bc53..9ef28ac0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.3...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.4...9.x)
++
++## [v9.3.4](https://github.com/laravel/laravel/compare/v9.3.3...v9.3.4) - 2022-08-15
++
++### Changed
++
++- Add ValidateSignature middleware for ignore params by @valorin in https://github.com/laravel/laravel/pull/5942
+ 
+ ## [v9.3.3](https://github.com/laravel/laravel/compare/v9.3.2...v9.3.3) - 2022-08-03
+ 
+diff --git a/README.md b/README.md
+index f171ecac..1378e855 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
++<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+diff --git a/app/Http/Middleware/ValidateSignature.php b/app/Http/Middleware/ValidateSignature.php
+index ee4045d8..093bf64a 100644
+--- a/app/Http/Middleware/ValidateSignature.php
++++ b/app/Http/Middleware/ValidateSignature.php
+@@ -7,11 +7,11 @@ use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
+ class ValidateSignature extends Middleware
+ {
+     /**
+-     * The names of the parameters that should be ignored.
++     * The names of the query string parameters that should be ignored.
+      *
+      * @var array<int, string>
+      */
+-    protected $ignore = [
++    protected $except = [
+         // 'fbclid',
+         // 'utm_campaign',
+         // 'utm_content',
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 20b35322..da6feabb 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -33,10 +33,8 @@ class UserFactory extends Factory
+      */
+     public function unverified()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'email_verified_at' => null,
+-            ];
+-        });
++        return $this->state(fn (array $attributes) => [
++            'email_verified_at' => null,
++        ]);
+     }
+ }
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index 6d9e6d54..d5490e5c 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -90,6 +90,7 @@ return [
+         'numeric' => 'The :attribute must not be greater than :max.',
+         'string' => 'The :attribute must not be greater than :max characters.',
+     ],
++    'max_digits' => 'The :attribute must not have more than :max digits.',
+     'mimes' => 'The :attribute must be a file of type: :values.',
+     'mimetypes' => 'The :attribute must be a file of type: :values.',
+     'min' => [
+@@ -98,6 +99,7 @@ return [
+         'numeric' => 'The :attribute must be at least :min.',
+         'string' => 'The :attribute must be at least :min characters.',
+     ],
++    'min_digits' => 'The :attribute must have at least :min digits.',
+     'multiple_of' => 'The :attribute must be a multiple of :value.',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',

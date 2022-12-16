@@ -1,0 +1,51 @@
+diff --git a/composer.json b/composer.json
+index 0ed2dc55..4ed8c09f 100644
+--- a/composer.json
++++ b/composer.json
+@@ -15,7 +15,7 @@
+     },
+     "require-dev": {
+         "facade/ignition": "^1.4",
+-        "fzaninotto/faker": "^1.4",
++        "fzaninotto/faker": "^1.9.1",
+         "mockery/mockery": "^1.0",
+         "nunomaduro/collision": "^3.0",
+         "phpunit/phpunit": "^8.0"
+diff --git a/package.json b/package.json
+index e822d86a..3729fb78 100644
+--- a/package.json
++++ b/package.json
+@@ -11,10 +11,10 @@
+     },
+     "devDependencies": {
+         "axios": "^0.19",
+-        "cross-env": "^5.1",
++        "cross-env": "^7.0",
+         "laravel-mix": "^5.0.1",
+         "lodash": "^4.17.13",
+-        "resolve-url-loader": "^2.3.1",
++        "resolve-url-loader": "^3.1.0",
+         "sass": "^1.15.2",
+         "sass-loader": "^8.0.0"
+     }
+diff --git a/phpunit.xml b/phpunit.xml
+index 7b127c31..0f4389f9 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -1,15 +1,8 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+-         backupGlobals="false"
+-         backupStaticAttributes="false"
+          bootstrap="vendor/autoload.php"
+-         colors="true"
+-         convertErrorsToExceptions="true"
+-         convertNoticesToExceptions="true"
+-         convertWarningsToExceptions="true"
+-         processIsolation="false"
+-         stopOnFailure="false">
++         colors="true">
+     <testsuites>
+         <testsuite name="Unit">
+             <directory suffix="Test.php">./tests/Unit</directory>

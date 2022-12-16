@@ -1,0 +1,93 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e39f93ab..74df6381 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,20 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.0.0...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.0.1...9.x)
++
++## [v9.0.1](https://github.com/laravel/laravel/compare/v9.0.0...v9.0.1) - 2022-02-15
++
++### Changed
++
++- Improve typing on user factory by @axlon in https://github.com/laravel/laravel/pull/5806
++- Align min PHP version with docs by @u01jmg3 in https://github.com/laravel/laravel/pull/5807
++- Remove redundant `null`s by @felixdorn in https://github.com/laravel/laravel/pull/5811
++- Remove default commented namespace by @driesvints in https://github.com/laravel/laravel/pull/5816
++- Add underscore to prefix in database cache key by @m4tlch in https://github.com/laravel/laravel/pull/5817
++
++### Fixed
++
++- Fix lang alphabetical order by @shuvroroy in https://github.com/laravel/laravel/pull/5812
+ 
+ ## [v9.0.0 (2022-02-08)](https://github.com/laravel/laravel/compare/v8.6.11...v9.0.0)
+ 
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index d3722c2d..4f18062a 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -16,7 +16,7 @@ class Kernel extends HttpKernel
+     protected $middleware = [
+         // \App\Http\Middleware\TrustHosts::class,
+         \App\Http\Middleware\TrustProxies::class,
+-        \Fruitcake\Cors\HandleCors::class,
++        \Illuminate\Http\Middleware\HandleCors::class,
+         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+         \App\Http\Middleware\TrimStrings::class,
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 457cb225..0ba5291f 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -31,11 +31,9 @@ class RouteServiceProvider extends ServiceProvider
+         $this->routes(function () {
+             Route::prefix('api')
+                 ->middleware('api')
+-                ->namespace($this->namespace)
+                 ->group(base_path('routes/api.php'));
+ 
+             Route::middleware('web')
+-                ->namespace($this->namespace)
+                 ->group(base_path('routes/web.php'));
+         });
+     }
+diff --git a/composer.json b/composer.json
+index 0aa742ea..438f4487 100644
+--- a/composer.json
++++ b/composer.json
+@@ -6,10 +6,9 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.0.2",
+-        "fruitcake/laravel-cors": "^2.0.5",
+         "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^9.0",
+-        "laravel/sanctum": "^2.14",
++        "laravel/framework": "^9.2",
++        "laravel/sanctum": "^2.14.1",
+         "laravel/tinker": "^2.7"
+     },
+     "require-dev": {
+diff --git a/config/sanctum.php b/config/sanctum.php
+index 9281c92d..529cfdc9 100644
+--- a/config/sanctum.php
++++ b/config/sanctum.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use Laravel\Sanctum\Sanctum;
++
+ return [
+ 
+     /*
+@@ -16,7 +18,7 @@ return [
+     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
+         '%s%s',
+         'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+-        env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
++        Sanctum::currentApplicationUrlWithPort()
+     ))),
+ 
+     /*

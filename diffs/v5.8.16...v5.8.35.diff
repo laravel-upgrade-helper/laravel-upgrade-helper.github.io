@@ -1,0 +1,278 @@
+diff --git a/.env.example b/.env.example
+index d058c34e..604b401f 100644
+--- a/.env.example
++++ b/.env.example
+@@ -9,9 +9,9 @@ LOG_CHANNEL=stack
+ DB_CONNECTION=mysql
+ DB_HOST=127.0.0.1
+ DB_PORT=3306
+-DB_DATABASE=homestead
+-DB_USERNAME=homestead
+-DB_PASSWORD=secret
++DB_DATABASE=laravel
++DB_USERNAME=root
++DB_PASSWORD=
+ 
+ BROADCAST_DRIVER=log
+ CACHE_DRIVER=file
+diff --git a/.gitignore b/.gitignore
+index 59e8f458..0f7df0fb 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -4,6 +4,7 @@
+ /storage/*.key
+ /vendor
+ .env
++.env.backup
+ .phpunit.result.cache
+ Homestead.json
+ Homestead.yaml
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8c33a856..e828c973 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,9 +1,37 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v5.8.3...master)
++## [v5.8.35 (2019-08-XX)](https://github.com/laravel/laravel/compare/v5.8.17...v5.8.35)
++
++### Added
++- Add DYNAMODB_ENDPOINT to the cache config ([#5034](https://github.com/laravel/laravel/pull/5034))
++- Added support for new redis URL property ([#5037](https://github.com/laravel/laravel/pull/5037))
++- Add .env.backup to gitignore ([#5046](https://github.com/laravel/laravel/pull/5046))
++- Using environment variable to set redis prefix ([#5062](https://github.com/laravel/laravel/pull/5062))
++
++### Changed
++- Update axios package ([#5038](https://github.com/laravel/laravel/pull/5038))
++- Use generic default db config ([6f3d68f](https://github.com/laravel/laravel/commit/6f3d68f67f3dab0e0d853719696ede8dfd9cc4e1))
++- Update deprecated pusher option ([#5058](https://github.com/laravel/laravel/pull/5058))
++- Move TrustProxies to highest priority ([#5055](https://github.com/laravel/laravel/pull/5055))
++
++### Fixed
++- Fixed lodash version ([#5060](https://github.com/laravel/laravel/pull/5060))
++
++### Removed
++- Remove Stripe config settings ([#5075](https://github.com/laravel/laravel/pull/5075), [bb43372](https://github.com/laravel/laravel/commit/bb433725483803a27f21d3b21317072610bc3e9c))
++- Remove unnecessary X-CSRF-TOKEN header from our Axios instance ([#5083](https://github.com/laravel/laravel/pull/5083))
++
++
++## [v5.8.17 (2019-05-14)](https://github.com/laravel/laravel/compare/v5.8.16...v5.8.17)
++
++### Added
++- Add ends_with validation message ([#5020](https://github.com/laravel/laravel/pull/5020))
++
++### Fixed
++- Fix type hint for case of trusting all proxies (string) ([#5025](https://github.com/laravel/laravel/pull/5025))
+ 
+ 
+-## [v5.8.16 (2019-05-07)](https://github.com/laravel/laravel/compare/v5.8.3...master)
++## [v5.8.16 (2019-05-07)](https://github.com/laravel/laravel/compare/v5.8.3...v5.8.16)
+ 
+ ### Added
+ - Add IDE type-hint to UserFactory ([#4990](https://github.com/laravel/laravel/pull/4990))
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index a3d8c48d..6ee2f77b 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -14,11 +14,11 @@ class Kernel extends HttpKernel
+      * @var array
+      */
+     protected $middleware = [
++        \App\Http\Middleware\TrustProxies::class,
+         \App\Http\Middleware\CheckForMaintenanceMode::class,
+         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+         \App\Http\Middleware\TrimStrings::class,
+         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+-        \App\Http\Middleware\TrustProxies::class,
+     ];
+ 
+     /**
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index 7daf51f1..12fdf8b5 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -10,7 +10,7 @@ class TrustProxies extends Middleware
+     /**
+      * The trusted proxies for this application.
+      *
+-     * @var array
++     * @var array|string
+      */
+     protected $proxies;
+ 
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index 3ca45eaa..3bba1103 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -37,7 +37,7 @@ return [
+             'app_id' => env('PUSHER_APP_ID'),
+             'options' => [
+                 'cluster' => env('PUSHER_APP_CLUSTER'),
+-                'encrypted' => true,
++                'useTLS' => true,
+             ],
+         ],
+ 
+diff --git a/config/cache.php b/config/cache.php
+index 30f0cae2..46751e62 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -82,6 +82,7 @@ return [
+             'secret' => env('AWS_SECRET_ACCESS_KEY'),
+             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+             'table' => env('DYNAMODB_CACHE_TABLE', 'cache'),
++            'endpoint' => env('DYNAMODB_ENDPOINT'),
+         ],
+ 
+     ],
+diff --git a/config/database.php b/config/database.php
+index 0cf54458..921769ca 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -123,10 +123,11 @@ return [
+ 
+         'options' => [
+             'cluster' => env('REDIS_CLUSTER', 'predis'),
+-            'prefix' => Str::slug(env('APP_NAME', 'laravel'), '_').'_database_',
++            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+         ],
+ 
+         'default' => [
++            'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+             'password' => env('REDIS_PASSWORD', null),
+             'port' => env('REDIS_PORT', 6379),
+@@ -134,6 +135,7 @@ return [
+         ],
+ 
+         'cache' => [
++            'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+             'password' => env('REDIS_PASSWORD', null),
+             'port' => env('REDIS_PORT', 6379),
+diff --git a/config/services.php b/config/services.php
+index f026b2c7..8ce6cc63 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -8,9 +8,9 @@ return [
+     |--------------------------------------------------------------------------
+     |
+     | This file is for storing the credentials for third party services such
+-    | as Stripe, Mailgun, SparkPost and others. This file provides a sane
+-    | default location for this type of information, allowing packages
+-    | to have a conventional place to find your various credentials.
++    | as Mailgun, SparkPost and others. This file provides a sane default
++    | location for this type of information, allowing packages to have
++    | a conventional file to locate the various service credentials.
+     |
+     */
+ 
+@@ -34,14 +34,4 @@ return [
+         'secret' => env('SPARKPOST_SECRET'),
+     ],
+ 
+-    'stripe' => [
+-        'model' => App\User::class,
+-        'key' => env('STRIPE_KEY'),
+-        'secret' => env('STRIPE_SECRET'),
+-        'webhook' => [
+-            'secret' => env('STRIPE_WEBHOOK_SECRET'),
+-            'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
+-        ],
+-    ],
+-
+ ];
+diff --git a/package.json b/package.json
+index 52311d25..bf85f38e 100644
+--- a/package.json
++++ b/package.json
+@@ -10,12 +10,12 @@
+         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },
+     "devDependencies": {
+-        "axios": "^0.18",
++        "axios": "^0.19",
+         "bootstrap": "^4.1.0",
+         "cross-env": "^5.1",
+         "jquery": "^3.2",
+         "laravel-mix": "^4.0.7",
+-        "lodash": "^4.17.5",
++        "lodash": "^4.17.13",
+         "popper.js": "^1.12",
+         "resolve-url-loader": "^2.3.1",
+         "sass": "^1.15.2",
+diff --git a/readme.md b/readme.md
+index 8b5717ed..f95b2ec9 100644
+--- a/readme.md
++++ b/readme.md
+@@ -1,4 +1,4 @@
+-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
++<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+@@ -25,7 +25,7 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
+ 
+ Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+ 
+-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1400 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
++If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+ 
+ ## Laravel Sponsors
+ 
+diff --git a/resources/js/bootstrap.js b/resources/js/bootstrap.js
+index f29bb81d..8eaba1b9 100644
+--- a/resources/js/bootstrap.js
++++ b/resources/js/bootstrap.js
+@@ -23,27 +23,13 @@ window.axios = require('axios');
+ 
+ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+ 
+-/**
+- * Next we will register the CSRF Token as a common header with Axios so that
+- * all outgoing HTTP requests automatically have it attached. This is just
+- * a simple convenience so we don't have to attach every token manually.
+- */
+-
+-let token = document.head.querySelector('meta[name="csrf-token"]');
+-
+-if (token) {
+-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+-} else {
+-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+-}
+-
+ /**
+  * Echo exposes an expressive API for subscribing to channels and listening
+  * for events that are broadcast by Laravel. Echo and event broadcasting
+  * allows your team to easily build robust real-time web applications.
+  */
+ 
+-// import Echo from 'laravel-echo'
++// import Echo from 'laravel-echo';
+ 
+ // window.Pusher = require('pusher-js');
+ 
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 8ab929cb..e1d879f3 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -40,6 +40,7 @@ return [
+     'dimensions' => 'The :attribute has invalid image dimensions.',
+     'distinct' => 'The :attribute field has a duplicate value.',
+     'email' => 'The :attribute must be a valid email address.',
++    'ends_with' => 'The :attribute must end with one of the following: :values',
+     'exists' => 'The selected :attribute is invalid.',
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 044b874c..af1c02a7 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -1,4 +1,4 @@
+-<!doctype html>
++<!DOCTYPE html>
+ <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+     <head>
+         <meta charset="utf-8">

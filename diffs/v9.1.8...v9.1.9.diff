@@ -1,0 +1,57 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5a221fb2..2da613ca 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,13 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.7...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.8...9.x)
++
++## [v9.1.8](https://github.com/laravel/laravel/compare/v9.1.7...v9.1.8) - 2022-05-05
++
++### Changed
++
++- Add local_domain option to smtp configuration by @bintzandt in https://github.com/laravel/laravel/pull/5877
++- Add specific test user in seeder by @driesvints in https://github.com/laravel/laravel/pull/5879
+ 
+ ## [v9.1.7](https://github.com/laravel/laravel/compare/v9.1.6...v9.1.7) - 2022-05-03
+ 
+diff --git a/resources/js/app.js b/resources/js/app.js
+index 40c55f65..e59d6a0a 100644
+--- a/resources/js/app.js
++++ b/resources/js/app.js
+@@ -1 +1 @@
+-require('./bootstrap');
++import './bootstrap';
+diff --git a/resources/js/bootstrap.js b/resources/js/bootstrap.js
+index 69225776..bbcdba42 100644
+--- a/resources/js/bootstrap.js
++++ b/resources/js/bootstrap.js
+@@ -1,4 +1,5 @@
+-window._ = require('lodash');
++import _ from 'lodash';
++window._ = _;
+ 
+ /**
+  * We'll load the axios HTTP library which allows us to easily issue requests
+@@ -6,7 +7,8 @@ window._ = require('lodash');
+  * CSRF token as a header based on the value of the "XSRF" token cookie.
+  */
+ 
+-window.axios = require('axios');
++import axios from 'axios';
++window.axios = axios;
+ 
+ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+ 
+@@ -18,7 +20,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+ 
+ // import Echo from 'laravel-echo';
+ 
+-// window.Pusher = require('pusher-js');
++// import Pusher from 'pusher-js';
++// window.Pusher = Pusher;
+ 
+ // window.Echo = new Echo({
+ //     broadcaster: 'pusher',

@@ -1,0 +1,437 @@
+diff --git a/.env.example b/.env.example
+index 604b401f..53d48bf3 100644
+--- a/.env.example
++++ b/.env.example
+@@ -29,6 +29,8 @@ MAIL_PORT=2525
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+ MAIL_ENCRYPTION=null
++MAIL_FROM_ADDRESS=null
++MAIL_FROM_NAME="${APP_NAME}"
+ 
+ AWS_ACCESS_KEY_ID=
+ AWS_SECRET_ACCESS_KEY=
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a74afff5..93cbf805 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,23 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v6.5.2...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v6.8.0...master)
++
++
++## [v6.8.0 (2019-12-16)](https://github.com/laravel/laravel/compare/v6.5.2...v6.8.0)
++
++### Added
++- Add "none" to supported same site options in session config ([#5174](https://github.com/laravel/laravel/pull/5174))
++
++### Changed
++- Rename `encrypted` to `forceTLS` for Pusher ([#5159](https://github.com/laravel/laravel/pull/5159))
++- Use laravel/tinker v2 ([#5161](https://github.com/laravel/laravel/pull/5161))
++- Use PHPUnit TestCase and in-memory DB ([#5169](https://github.com/laravel/laravel/pull/5169))
++- DRY up path to /home ([#5173](https://github.com/laravel/laravel/pull/5173))
++- Change some default settings ([f48e2d5](https://github.com/laravel/laravel/commit/f48e2d500cb53cc4a09dfcb40beb0abafd79de4f))
++
++### Fixed
++- Consistent alphabetical order ([#5167](https://github.com/laravel/laravel/pull/5167))
++- Update redirectTo return type PHPDoc ([#5175](https://github.com/laravel/laravel/pull/5175))
+ 
+ 
+ ## [v6.5.2 (2019-11-21)](https://github.com/laravel/laravel/compare/v6.4.0...v6.5.2)
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 043cad6b..364621e4 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -31,6 +31,8 @@ class Handler extends ExceptionHandler
+      *
+      * @param  \Exception  $exception
+      * @return void
++     *
++     * @throws \Exception
+      */
+     public function report(Exception $exception)
+     {
+@@ -42,7 +44,9 @@ class Handler extends ExceptionHandler
+      *
+      * @param  \Illuminate\Http\Request  $request
+      * @param  \Exception  $exception
+-     * @return \Illuminate\Http\Response
++     * @return \Symfony\Component\HttpFoundation\Response
++     *
++     * @throws \Exception
+      */
+     public function render($request, Exception $exception)
+     {
+diff --git a/app/Http/Controllers/Auth/ConfirmPasswordController.php b/app/Http/Controllers/Auth/ConfirmPasswordController.php
+index 3559954c..138c1f08 100644
+--- a/app/Http/Controllers/Auth/ConfirmPasswordController.php
++++ b/app/Http/Controllers/Auth/ConfirmPasswordController.php
+@@ -3,6 +3,7 @@
+ namespace App\Http\Controllers\Auth;
+ 
+ use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
+ use Illuminate\Foundation\Auth\ConfirmsPasswords;
+ 
+ class ConfirmPasswordController extends Controller
+@@ -25,7 +26,7 @@ class ConfirmPasswordController extends Controller
+      *
+      * @var string
+      */
+-    protected $redirectTo = '/home';
++    protected $redirectTo = RouteServiceProvider::HOME;
+ 
+     /**
+      * Create a new controller instance.
+diff --git a/app/Http/Controllers/Auth/LoginController.php b/app/Http/Controllers/Auth/LoginController.php
+index b2ea669a..18a0d088 100644
+--- a/app/Http/Controllers/Auth/LoginController.php
++++ b/app/Http/Controllers/Auth/LoginController.php
+@@ -3,6 +3,7 @@
+ namespace App\Http\Controllers\Auth;
+ 
+ use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
+ use Illuminate\Foundation\Auth\AuthenticatesUsers;
+ 
+ class LoginController extends Controller
+@@ -25,7 +26,7 @@ class LoginController extends Controller
+      *
+      * @var string
+      */
+-    protected $redirectTo = '/home';
++    protected $redirectTo = RouteServiceProvider::HOME;
+ 
+     /**
+      * Create a new controller instance.
+diff --git a/app/Http/Controllers/Auth/RegisterController.php b/app/Http/Controllers/Auth/RegisterController.php
+index 6fdcba0a..c6a6de67 100644
+--- a/app/Http/Controllers/Auth/RegisterController.php
++++ b/app/Http/Controllers/Auth/RegisterController.php
+@@ -3,6 +3,7 @@
+ namespace App\Http\Controllers\Auth;
+ 
+ use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
+ use App\User;
+ use Illuminate\Foundation\Auth\RegistersUsers;
+ use Illuminate\Support\Facades\Hash;
+@@ -28,7 +29,7 @@ class RegisterController extends Controller
+      *
+      * @var string
+      */
+-    protected $redirectTo = '/home';
++    protected $redirectTo = RouteServiceProvider::HOME;
+ 
+     /**
+      * Create a new controller instance.
+diff --git a/app/Http/Controllers/Auth/ResetPasswordController.php b/app/Http/Controllers/Auth/ResetPasswordController.php
+index fe965b24..b1726a36 100644
+--- a/app/Http/Controllers/Auth/ResetPasswordController.php
++++ b/app/Http/Controllers/Auth/ResetPasswordController.php
+@@ -3,6 +3,7 @@
+ namespace App\Http\Controllers\Auth;
+ 
+ use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
+ use Illuminate\Foundation\Auth\ResetsPasswords;
+ 
+ class ResetPasswordController extends Controller
+@@ -25,5 +26,5 @@ class ResetPasswordController extends Controller
+      *
+      * @var string
+      */
+-    protected $redirectTo = '/home';
++    protected $redirectTo = RouteServiceProvider::HOME;
+ }
+diff --git a/app/Http/Controllers/Auth/VerificationController.php b/app/Http/Controllers/Auth/VerificationController.php
+index 23a43a84..5e749af8 100644
+--- a/app/Http/Controllers/Auth/VerificationController.php
++++ b/app/Http/Controllers/Auth/VerificationController.php
+@@ -3,6 +3,7 @@
+ namespace App\Http\Controllers\Auth;
+ 
+ use App\Http\Controllers\Controller;
++use App\Providers\RouteServiceProvider;
+ use Illuminate\Foundation\Auth\VerifiesEmails;
+ 
+ class VerificationController extends Controller
+@@ -25,7 +26,7 @@ class VerificationController extends Controller
+      *
+      * @var string
+      */
+-    protected $redirectTo = '/home';
++    protected $redirectTo = RouteServiceProvider::HOME;
+ 
+     /**
+      * Create a new controller instance.
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 2741c0a3..deb65e86 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -39,7 +39,7 @@ class Kernel extends HttpKernel
+ 
+         'api' => [
+             'throttle:60,1',
+-            'bindings',
++            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+         ],
+     ];
+ 
+diff --git a/app/Http/Middleware/Authenticate.php b/app/Http/Middleware/Authenticate.php
+index a4be5c58..704089a7 100644
+--- a/app/Http/Middleware/Authenticate.php
++++ b/app/Http/Middleware/Authenticate.php
+@@ -10,7 +10,7 @@ class Authenticate extends Middleware
+      * Get the path the user should be redirected to when they are not authenticated.
+      *
+      * @param  \Illuminate\Http\Request  $request
+-     * @return string
++     * @return string|null
+      */
+     protected function redirectTo($request)
+     {
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+index e4cec9c8..2395ddcc 100644
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ b/app/Http/Middleware/RedirectIfAuthenticated.php
+@@ -2,6 +2,7 @@
+ 
+ namespace App\Http\Middleware;
+ 
++use App\Providers\RouteServiceProvider;
+ use Closure;
+ use Illuminate\Support\Facades\Auth;
+ 
+@@ -18,7 +19,7 @@ class RedirectIfAuthenticated
+     public function handle($request, Closure $next, $guard = null)
+     {
+         if (Auth::guard($guard)->check()) {
+-            return redirect('/home');
++            return redirect(RouteServiceProvider::HOME);
+         }
+ 
+         return $next($request);
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 548e4be7..527eee34 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -16,6 +16,13 @@ class RouteServiceProvider extends ServiceProvider
+      */
+     protected $namespace = 'App\Http\Controllers';
+ 
++    /**
++     * The path to the "home" route for your application.
++     *
++     * @var string
++     */
++    public const HOME = '/home';
++
+     /**
+      * Define your route model bindings, pattern filters, etc.
+      *
+diff --git a/composer.json b/composer.json
+index 288180d5..4ed8c09f 100644
+--- a/composer.json
++++ b/composer.json
+@@ -11,11 +11,11 @@
+         "php": "^7.2",
+         "fideloper/proxy": "^4.0",
+         "laravel/framework": "^6.2",
+-        "laravel/tinker": "^1.0"
++        "laravel/tinker": "^2.0"
+     },
+     "require-dev": {
+         "facade/ignition": "^1.4",
+-        "fzaninotto/faker": "^1.4",
++        "fzaninotto/faker": "^1.9.1",
+         "mockery/mockery": "^1.0",
+         "nunomaduro/collision": "^3.0",
+         "phpunit/phpunit": "^8.0"
+diff --git a/config/database.php b/config/database.php
+index 199382d0..b42d9b30 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -130,16 +130,16 @@ return [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+             'password' => env('REDIS_PASSWORD', null),
+-            'port' => env('REDIS_PORT', 6379),
+-            'database' => env('REDIS_DB', 0),
++            'port' => env('REDIS_PORT', '6379'),
++            'database' => env('REDIS_DB', '0'),
+         ],
+ 
+         'cache' => [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+             'password' => env('REDIS_PASSWORD', null),
+-            'port' => env('REDIS_PORT', 6379),
+-            'database' => env('REDIS_CACHE_DB', 1),
++            'port' => env('REDIS_PORT', '6379'),
++            'database' => env('REDIS_CACHE_DB', '1'),
+         ],
+ 
+     ],
+diff --git a/config/logging.php b/config/logging.php
+index 0df82129..088c204e 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -37,7 +37,7 @@ return [
+     'channels' => [
+         'stack' => [
+             'driver' => 'stack',
+-            'channels' => ['daily'],
++            'channels' => ['single'],
+             'ignore_exceptions' => false,
+         ],
+ 
+@@ -95,6 +95,10 @@ return [
+             'driver' => 'monolog',
+             'handler' => NullHandler::class,
+         ],
++
++        'emergency' => [
++            'path' => storage_path('logs/laravel.log'),
++        ],
+     ],
+ 
+ ];
+diff --git a/config/session.php b/config/session.php
+index fbb9b4d7..857ebc3e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -190,7 +190,7 @@ return [
+     | take place, and can be used to mitigate CSRF attacks. By default, we
+     | do not enable this as other CSRF protection services are in place.
+     |
+-    | Supported: "lax", "strict"
++    | Supported: "lax", "strict", "none"
+     |
+     */
+ 
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 084535f6..741edead 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -1,6 +1,7 @@
+ <?php
+ 
+ /** @var \Illuminate\Database\Eloquent\Factory $factory */
++
+ use App\User;
+ use Faker\Generator as Faker;
+ use Illuminate\Support\Str;
+diff --git a/package.json b/package.json
+index 9fcb8ee8..3729fb78 100644
+--- a/package.json
++++ b/package.json
+@@ -11,11 +11,11 @@
+     },
+     "devDependencies": {
+         "axios": "^0.19",
+-        "cross-env": "^5.1",
+-        "laravel-mix": "^4.0.7",
++        "cross-env": "^7.0",
++        "laravel-mix": "^5.0.1",
+         "lodash": "^4.17.13",
+-        "resolve-url-loader": "^2.3.1",
++        "resolve-url-loader": "^3.1.0",
+         "sass": "^1.15.2",
+-        "sass-loader": "^7.1.0"
++        "sass-loader": "^8.0.0"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index c1a4100a..0f4389f9 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -1,15 +1,8 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+-         backupGlobals="false"
+-         backupStaticAttributes="false"
+          bootstrap="vendor/autoload.php"
+-         colors="true"
+-         convertErrorsToExceptions="true"
+-         convertNoticesToExceptions="true"
+-         convertWarningsToExceptions="true"
+-         processIsolation="false"
+-         stopOnFailure="false">
++         colors="true">
+     <testsuites>
+         <testsuite name="Unit">
+             <directory suffix="Test.php">./tests/Unit</directory>
+@@ -28,6 +21,8 @@
+         <server name="APP_ENV" value="testing"/>
+         <server name="BCRYPT_ROUNDS" value="4"/>
+         <server name="CACHE_DRIVER" value="array"/>
++        <server name="DB_CONNECTION" value="sqlite"/>
++        <server name="DB_DATABASE" value=":memory:"/>
+         <server name="MAIL_DRIVER" value="array"/>
+         <server name="QUEUE_CONNECTION" value="sync"/>
+         <server name="SESSION_DRIVER" value="array"/>
+diff --git a/resources/js/bootstrap.js b/resources/js/bootstrap.js
+index d11586d6..69225776 100644
+--- a/resources/js/bootstrap.js
++++ b/resources/js/bootstrap.js
+@@ -24,5 +24,5 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+ //     broadcaster: 'pusher',
+ //     key: process.env.MIX_PUSHER_APP_KEY,
+ //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+-//     encrypted: true
++//     forceTLS: true
+ // });
+diff --git a/resources/lang/en/passwords.php b/resources/lang/en/passwords.php
+index 86f1082b..724de4b9 100644
+--- a/resources/lang/en/passwords.php
++++ b/resources/lang/en/passwords.php
+@@ -15,8 +15,8 @@ return [
+ 
+     'reset' => 'Your password has been reset!',
+     'sent' => 'We have e-mailed your password reset link!',
++    'throttled' => 'Please wait before retrying.',
+     'token' => 'This password reset token is invalid.',
+     'user' => "We can't find a user with that e-mail address.",
+-    'throttled' => 'Please wait before retrying.',
+ 
+ ];
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index ce1d80dd..a65914f9 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -40,7 +40,7 @@ return [
+     'dimensions' => 'The :attribute has invalid image dimensions.',
+     'distinct' => 'The :attribute field has a duplicate value.',
+     'email' => 'The :attribute must be a valid email address.',
+-    'ends_with' => 'The :attribute must end with one of the following: :values',
++    'ends_with' => 'The :attribute must end with one of the following: :values.',
+     'exists' => 'The selected :attribute is invalid.',
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',
+@@ -110,7 +110,7 @@ return [
+         'string' => 'The :attribute must be :size characters.',
+         'array' => 'The :attribute must contain :size items.',
+     ],
+-    'starts_with' => 'The :attribute must start with one of the following: :values',
++    'starts_with' => 'The :attribute must start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',
+     'timezone' => 'The :attribute must be a valid zone.',
+     'unique' => 'The :attribute has already been taken.',
+diff --git a/tests/Unit/ExampleTest.php b/tests/Unit/ExampleTest.php
+index 266ef352..358cfc88 100644
+--- a/tests/Unit/ExampleTest.php
++++ b/tests/Unit/ExampleTest.php
+@@ -2,8 +2,7 @@
+ 
+ namespace Tests\Unit;
+ 
+-use Illuminate\Foundation\Testing\RefreshDatabase;
+-use Tests\TestCase;
++use PHPUnit\Framework\TestCase;
+ 
+ class ExampleTest extends TestCase
+ {

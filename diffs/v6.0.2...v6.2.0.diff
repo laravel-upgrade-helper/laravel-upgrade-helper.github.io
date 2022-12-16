@@ -1,0 +1,251 @@
+diff --git a/app/Http/Controllers/Auth/ConfirmPasswordController.php b/app/Http/Controllers/Auth/ConfirmPasswordController.php
+new file mode 100644
+index 00000000..3559954c
+--- /dev/null
++++ b/app/Http/Controllers/Auth/ConfirmPasswordController.php
+@@ -0,0 +1,39 @@
++<?php
++
++namespace App\Http\Controllers\Auth;
++
++use App\Http\Controllers\Controller;
++use Illuminate\Foundation\Auth\ConfirmsPasswords;
++
++class ConfirmPasswordController extends Controller
++{
++    /*
++    |--------------------------------------------------------------------------
++    | Confirm Password Controller
++    |--------------------------------------------------------------------------
++    |
++    | This controller is responsible for handling password confirmations and
++    | uses a simple trait to include the behavior. You're free to explore
++    | this trait and override any functions that require customization.
++    |
++    */
++
++    use ConfirmsPasswords;
++
++    /**
++     * Where to redirect users when the intended url fails.
++     *
++     * @var string
++     */
++    protected $redirectTo = '/home';
++
++    /**
++     * Create a new controller instance.
++     *
++     * @return void
++     */
++    public function __construct()
++    {
++        $this->middleware('auth');
++    }
++}
+diff --git a/app/Http/Controllers/Auth/ForgotPasswordController.php b/app/Http/Controllers/Auth/ForgotPasswordController.php
+index 6a247fef..465c39cc 100644
+--- a/app/Http/Controllers/Auth/ForgotPasswordController.php
++++ b/app/Http/Controllers/Auth/ForgotPasswordController.php
+@@ -19,14 +19,4 @@ class ForgotPasswordController extends Controller
+     */
+ 
+     use SendsPasswordResetEmails;
+-
+-    /**
+-     * Create a new controller instance.
+-     *
+-     * @return void
+-     */
+-    public function __construct()
+-    {
+-        $this->middleware('guest');
+-    }
+ }
+diff --git a/app/Http/Controllers/Auth/ResetPasswordController.php b/app/Http/Controllers/Auth/ResetPasswordController.php
+index cf726eec..fe965b24 100644
+--- a/app/Http/Controllers/Auth/ResetPasswordController.php
++++ b/app/Http/Controllers/Auth/ResetPasswordController.php
+@@ -26,14 +26,4 @@ class ResetPasswordController extends Controller
+      * @var string
+      */
+     protected $redirectTo = '/home';
+-
+-    /**
+-     * Create a new controller instance.
+-     *
+-     * @return void
+-     */
+-    public function __construct()
+-    {
+-        $this->middleware('guest');
+-    }
+ }
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 0d7d8c15..2741c0a3 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -57,6 +57,7 @@ class Kernel extends HttpKernel
+         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
++        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+diff --git a/config/auth.php b/config/auth.php
+index 897dc826..f1e9b2da 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -100,4 +100,17 @@ return [
+         ],
+     ],
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Password Confirmation Timeout
++    |--------------------------------------------------------------------------
++    |
++    | Here you may define the amount of seconds before a password confirmation
++    | times out and the user is prompted to re-enter their password via the
++    | confirmation screen. By default, the timeout lasts for three hours.
++    |
++    */
++
++    'password_timeout' => 10800,
++
+ ];
+diff --git a/config/hashing.php b/config/hashing.php
+index 9146bfd9..84257708 100644
+--- a/config/hashing.php
++++ b/config/hashing.php
+@@ -44,7 +44,7 @@ return [
+     */
+ 
+     'argon' => [
+-        'memory' => 8192,
++        'memory' => 1024,
+         'threads' => 2,
+         'time' => 2,
+     ],
+diff --git a/config/logging.php b/config/logging.php
+index d09cd7d2..0df82129 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -1,5 +1,6 @@
+ <?php
+ 
++use Monolog\Handler\NullHandler;
+ use Monolog\Handler\StreamHandler;
+ use Monolog\Handler\SyslogUdpHandler;
+ 
+@@ -89,6 +90,11 @@ return [
+             'driver' => 'errorlog',
+             'level' => 'debug',
+         ],
++
++        'null' => [
++            'driver' => 'monolog',
++            'handler' => NullHandler::class,
++        ],
+     ],
+ 
+ ];
+diff --git a/phpunit.xml b/phpunit.xml
+index 61b6b64b..da4add30 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -22,9 +22,6 @@
+             <directory suffix=".php">./app</directory>
+         </whitelist>
+     </filter>
+-    <extensions>
+-        <extension class="Tests\Bootstrap"/>
+-    </extensions>
+     <php>
+         <server name="APP_ENV" value="testing"/>
+         <server name="BCRYPT_ROUNDS" value="4"/>
+@@ -32,10 +29,5 @@
+         <server name="MAIL_DRIVER" value="array"/>
+         <server name="QUEUE_CONNECTION" value="sync"/>
+         <server name="SESSION_DRIVER" value="array"/>
+-        <server name="APP_CONFIG_CACHE" value="bootstrap/cache/config.phpunit.php"/>
+-        <server name="APP_SERVICES_CACHE" value="bootstrap/cache/services.phpunit.php"/>
+-        <server name="APP_PACKAGES_CACHE" value="bootstrap/cache/packages.phpunit.php"/>
+-        <server name="APP_ROUTES_CACHE" value="bootstrap/cache/routes.phpunit.php"/>
+-        <server name="APP_EVENTS_CACHE" value="bootstrap/cache/events.phpunit.php"/>
+     </php>
+ </phpunit>
+diff --git a/readme.md b/readme.md
+index f95b2ec9..73dddea2 100644
+--- a/readme.md
++++ b/readme.md
+@@ -58,6 +58,8 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - [Understand.io](https://www.understand.io/)
+ - [Abdel Elrafa](https://abdelelrafa.com)
+ - [Hyper Host](https://hyper.host)
++- [Appoly](https://www.appoly.co.uk)
++- [OP.GG](https://op.gg)
+ 
+ ## Contributing
+ 
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index e1d879f3..ce1d80dd 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -93,6 +93,7 @@ return [
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',
++    'password' => 'The password is incorrect.',
+     'present' => 'The :attribute field must be present.',
+     'regex' => 'The :attribute format is invalid.',
+     'required' => 'The :attribute field is required.',
+diff --git a/tests/Bootstrap.php b/tests/Bootstrap.php
+deleted file mode 100644
+index 5fa7829c..00000000
+--- a/tests/Bootstrap.php
++++ /dev/null
+@@ -1,42 +0,0 @@
+-<?php
+-
+-namespace Tests;
+-
+-use Illuminate\Contracts\Console\Kernel;
+-use PHPUnit\Runner\AfterLastTestHook;
+-use PHPUnit\Runner\BeforeFirstTestHook;
+-
+-class Bootstrap implements BeforeFirstTestHook, AfterLastTestHook
+-{
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Bootstrap The Test Environment
+-    |--------------------------------------------------------------------------
+-    |
+-    | You may specify console commands that execute once before your test is
+-    | run. You are free to add your own additional commands or logic into
+-    | this file as needed in order to help your test suite run quicker.
+-    |
+-    */
+-
+-    use CreatesApplication;
+-
+-    public function executeBeforeFirstTest(): void
+-    {
+-        $console = $this->createApplication()->make(Kernel::class);
+-
+-        $commands = [
+-            'config:cache',
+-            'event:cache',
+-        ];
+-
+-        foreach ($commands as $command) {
+-            $console->call($command);
+-        }
+-    }
+-
+-    public function executeAfterLastTest(): void
+-    {
+-        array_map('unlink', glob('bootstrap/cache/*.phpunit.php'));
+-    }
+-}

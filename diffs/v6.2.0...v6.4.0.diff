@@ -1,0 +1,74 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 25493a4f..424c9ce9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,19 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v6.0.2...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v6.2.0...master)
++
++
++## [v6.2.0 (2019-10-08)](https://github.com/laravel/laravel/compare/v6.0.2...v6.2.0)
++
++### Added
++- Add 'null' logging channel ([#5106](https://github.com/laravel/laravel/pull/5106))
++- Add Password confirmation ([#5129](https://github.com/laravel/laravel/pull/5129), [d1f7a5a](https://github.com/laravel/laravel/commit/d1f7a5a886039e28a434905447865ca952032284), [9bc23ee](https://github.com/laravel/laravel/commit/9bc23ee468e1fb3e5b4efccdc35f1fcee5a8b6bc))
++
++### Removed
++- Remove testing bootstrap extension ([#5107](https://github.com/laravel/laravel/pull/5107))
++
++### Fixed
++- Revert "[6.x] According to PHP Bug 78516 Argon2 requires at least 8KB" ([#5102]()https://github.com/laravel/laravel/pull/5102)
+ 
+ 
+ ## [v6.0.2 (2019-09-10)](https://github.com/laravel/laravel/compare/v6.0.1...v6.0.2)
+diff --git a/composer.json b/composer.json
+index 7cd832e8..288180d5 100644
+--- a/composer.json
++++ b/composer.json
+@@ -10,7 +10,7 @@
+     "require": {
+         "php": "^7.2",
+         "fideloper/proxy": "^4.0",
+-        "laravel/framework": "^6.0",
++        "laravel/framework": "^6.2",
+         "laravel/tinker": "^1.0"
+     },
+     "require-dev": {
+diff --git a/config/auth.php b/config/auth.php
+index f1e9b2da..aaf982bc 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -97,6 +97,7 @@ return [
+             'provider' => 'users',
+             'table' => 'password_resets',
+             'expire' => 60,
++            'throttle' => 60,
+         ],
+     ],
+ 
+diff --git a/phpunit.xml b/phpunit.xml
+index da4add30..c1a4100a 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -1,5 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<phpunit backupGlobals="false"
++<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
++         backupGlobals="false"
+          backupStaticAttributes="false"
+          bootstrap="vendor/autoload.php"
+          colors="true"
+diff --git a/resources/lang/en/passwords.php b/resources/lang/en/passwords.php
+index f3b01a46..86f1082b 100644
+--- a/resources/lang/en/passwords.php
++++ b/resources/lang/en/passwords.php
+@@ -17,5 +17,6 @@ return [
+     'sent' => 'We have e-mailed your password reset link!',
+     'token' => 'This password reset token is invalid.',
+     'user' => "We can't find a user with that e-mail address.",
++    'throttled' => 'Please wait before retrying.',
+ 
+ ];

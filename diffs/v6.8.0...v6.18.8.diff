@@ -1,0 +1,294 @@
+diff --git a/.env.example b/.env.example
+index a09f5cb4..53d48bf3 100644
+--- a/.env.example
++++ b/.env.example
+@@ -16,7 +16,7 @@ DB_PASSWORD=
+ BROADCAST_DRIVER=log
+ CACHE_DRIVER=file
+ QUEUE_CONNECTION=sync
+-SESSION_DRIVER=cookie
++SESSION_DRIVER=file
+ SESSION_LIFETIME=120
+ 
+ REDIS_HOST=127.0.0.1
+@@ -29,6 +29,8 @@ MAIL_PORT=2525
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+ MAIL_ENCRYPTION=null
++MAIL_FROM_ADDRESS=null
++MAIL_FROM_NAME="${APP_NAME}"
+ 
+ AWS_ACCESS_KEY_ID=
+ AWS_SECRET_ACCESS_KEY=
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a74afff5..83942d56 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,63 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v6.5.2...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v6.18.8...6.x)
++
++
++## [v6.18.8 (2020-04-16)](https://github.com/laravel/laravel/compare/v6.18.3...v6.18.8)
++
++### Fixed
++- Add both endpoint and url env variables ([#5276](https://github.com/laravel/laravel/pull/5276))
++
++
++## [v6.18.3 (2020-03-24)](https://github.com/laravel/laravel/compare/v6.18.0...v6.18.3)
++
++### Fixed
++- Ensure that `app.debug` is a bool ([5ddbfb8](https://github.com/laravel/laravel/commit/5ddbfb845439fcd5a46c23530b8774421a931760))
++- Fix S3 endpoint url reference ([#5267](https://github.com/laravel/laravel/pull/5267))
++
++
++## [v6.18.0 (2020-02-24)](https://github.com/laravel/laravel/compare/v6.12.0...v6.18.0)
++
++### Changed
++- Update cross-env and resolve-url-loader to the latest ([#5210](https://github.com/laravel/laravel/pull/5210), [#5216](https://github.com/laravel/laravel/pull/5216))
++- Bump fzaninotto/faker version to support PHP 7.4 ([#5218](https://github.com/laravel/laravel/pull/5218))
++- Remove redundant default attributes from `phpunit.xml` ([#5233](https://github.com/laravel/laravel/pull/5233))
++
++
++## [v6.12.0 (2020-01-14)](https://github.com/laravel/laravel/compare/v6.8.0...v6.12.0)
++
++### Added
++- Allow configurable emergency logger ([#5179](https://github.com/laravel/laravel/pull/5179))
++- Add `MAIL_FROM_ADDRESS` & `MAIL_FROM_NAME` to `.env` file ([#5180](https://github.com/laravel/laravel/pull/5180))
++- Add missing full stop for some validation messages ([#5205](https://github.com/laravel/laravel/pull/5205))
++
++### Changed
++- Use class name to be consistent with web middleware ([140d4d9](https://github.com/laravel/laravel/commit/140d4d9b0a4581cec046875361e87c2981b3f9fe))
++- Use file session driver again ([#5201](https://github.com/laravel/laravel/pull/5201))
++
++### Fixed
++- Correct exception handler doc ([#5187](https://github.com/laravel/laravel/pull/5187))
++- Fix types consistency in Redis database config ([#5191](https://github.com/laravel/laravel/pull/5191))
++
++### Security
++- Update laravel mix and sass loader ([#5203](https://github.com/laravel/laravel/pull/5203))
++
++
++## [v6.8.0 (2019-12-16)](https://github.com/laravel/laravel/compare/v6.5.2...v6.8.0)
++
++### Added
++- Add "none" to supported same site options in session config ([#5174](https://github.com/laravel/laravel/pull/5174))
++
++### Changed
++- Rename `encrypted` to `forceTLS` for Pusher ([#5159](https://github.com/laravel/laravel/pull/5159))
++- Use laravel/tinker v2 ([#5161](https://github.com/laravel/laravel/pull/5161))
++- Use PHPUnit TestCase and in-memory DB ([#5169](https://github.com/laravel/laravel/pull/5169))
++- DRY up path to /home ([#5173](https://github.com/laravel/laravel/pull/5173))
++- Change some default settings ([f48e2d5](https://github.com/laravel/laravel/commit/f48e2d500cb53cc4a09dfcb40beb0abafd79de4f))
++
++### Fixed
++- Consistent alphabetical order ([#5167](https://github.com/laravel/laravel/pull/5167))
++- Update redirectTo return type PHPDoc ([#5175](https://github.com/laravel/laravel/pull/5175))
+ 
+ 
+ ## [v6.5.2 (2019-11-21)](https://github.com/laravel/laravel/compare/v6.4.0...v6.5.2)
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 043cad6b..364621e4 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -31,6 +31,8 @@ class Handler extends ExceptionHandler
+      *
+      * @param  \Exception  $exception
+      * @return void
++     *
++     * @throws \Exception
+      */
+     public function report(Exception $exception)
+     {
+@@ -42,7 +44,9 @@ class Handler extends ExceptionHandler
+      *
+      * @param  \Illuminate\Http\Request  $request
+      * @param  \Exception  $exception
+-     * @return \Illuminate\Http\Response
++     * @return \Symfony\Component\HttpFoundation\Response
++     *
++     * @throws \Exception
+      */
+     public function render($request, Exception $exception)
+     {
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 2741c0a3..deb65e86 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -39,7 +39,7 @@ class Kernel extends HttpKernel
+ 
+         'api' => [
+             'throttle:60,1',
+-            'bindings',
++            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+         ],
+     ];
+ 
+diff --git a/composer.json b/composer.json
+index 0ed2dc55..4ed8c09f 100644
+--- a/composer.json
++++ b/composer.json
+@@ -15,7 +15,7 @@
+     },
+     "require-dev": {
+         "facade/ignition": "^1.4",
+-        "fzaninotto/faker": "^1.4",
++        "fzaninotto/faker": "^1.9.1",
+         "mockery/mockery": "^1.0",
+         "nunomaduro/collision": "^3.0",
+         "phpunit/phpunit": "^8.0"
+diff --git a/config/app.php b/config/app.php
+index c9960cde..9e5b36cf 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -39,7 +39,7 @@ return [
+     |
+     */
+ 
+-    'debug' => env('APP_DEBUG', false),
++    'debug' => (bool) env('APP_DEBUG', false),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/config/database.php b/config/database.php
+index 199382d0..b42d9b30 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -130,16 +130,16 @@ return [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+             'password' => env('REDIS_PASSWORD', null),
+-            'port' => env('REDIS_PORT', 6379),
+-            'database' => env('REDIS_DB', 0),
++            'port' => env('REDIS_PORT', '6379'),
++            'database' => env('REDIS_DB', '0'),
+         ],
+ 
+         'cache' => [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+             'password' => env('REDIS_PASSWORD', null),
+-            'port' => env('REDIS_PORT', 6379),
+-            'database' => env('REDIS_CACHE_DB', 1),
++            'port' => env('REDIS_PORT', '6379'),
++            'database' => env('REDIS_CACHE_DB', '1'),
+         ],
+ 
+     ],
+diff --git a/config/filesystems.php b/config/filesystems.php
+index ec6a7cec..220c0104 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -62,6 +62,7 @@ return [
+             'region' => env('AWS_DEFAULT_REGION'),
+             'bucket' => env('AWS_BUCKET'),
+             'url' => env('AWS_URL'),
++            'endpoint' => env('AWS_ENDPOINT'),
+         ],
+ 
+     ],
+diff --git a/config/logging.php b/config/logging.php
+index ad0aba78..088c204e 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -95,6 +95,10 @@ return [
+             'driver' => 'monolog',
+             'handler' => NullHandler::class,
+         ],
++
++        'emergency' => [
++            'path' => storage_path('logs/laravel.log'),
++        ],
+     ],
+ 
+ ];
+diff --git a/config/session.php b/config/session.php
+index 97caf9a7..857ebc3e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -18,7 +18,7 @@ return [
+     |
+     */
+ 
+-    'driver' => env('SESSION_DRIVER', 'cookie'),
++    'driver' => env('SESSION_DRIVER', 'file'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 084535f6..741edead 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -1,6 +1,7 @@
+ <?php
+ 
+ /** @var \Illuminate\Database\Eloquent\Factory $factory */
++
+ use App\User;
+ use Faker\Generator as Faker;
+ use Illuminate\Support\Str;
+diff --git a/package.json b/package.json
+index 9fcb8ee8..3729fb78 100644
+--- a/package.json
++++ b/package.json
+@@ -11,11 +11,11 @@
+     },
+     "devDependencies": {
+         "axios": "^0.19",
+-        "cross-env": "^5.1",
+-        "laravel-mix": "^4.0.7",
++        "cross-env": "^7.0",
++        "laravel-mix": "^5.0.1",
+         "lodash": "^4.17.13",
+-        "resolve-url-loader": "^2.3.1",
++        "resolve-url-loader": "^3.1.0",
+         "sass": "^1.15.2",
+-        "sass-loader": "^7.1.0"
++        "sass-loader": "^8.0.0"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index 7b127c31..0f4389f9 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -1,15 +1,8 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+-         backupGlobals="false"
+-         backupStaticAttributes="false"
+          bootstrap="vendor/autoload.php"
+-         colors="true"
+-         convertErrorsToExceptions="true"
+-         convertNoticesToExceptions="true"
+-         convertWarningsToExceptions="true"
+-         processIsolation="false"
+-         stopOnFailure="false">
++         colors="true">
+     <testsuites>
+         <testsuite name="Unit">
+             <directory suffix="Test.php">./tests/Unit</directory>
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index ce1d80dd..a65914f9 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -40,7 +40,7 @@ return [
+     'dimensions' => 'The :attribute has invalid image dimensions.',
+     'distinct' => 'The :attribute field has a duplicate value.',
+     'email' => 'The :attribute must be a valid email address.',
+-    'ends_with' => 'The :attribute must end with one of the following: :values',
++    'ends_with' => 'The :attribute must end with one of the following: :values.',
+     'exists' => 'The selected :attribute is invalid.',
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',
+@@ -110,7 +110,7 @@ return [
+         'string' => 'The :attribute must be :size characters.',
+         'array' => 'The :attribute must contain :size items.',
+     ],
+-    'starts_with' => 'The :attribute must start with one of the following: :values',
++    'starts_with' => 'The :attribute must start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',
+     'timezone' => 'The :attribute must be a valid zone.',
+     'unique' => 'The :attribute has already been taken.',

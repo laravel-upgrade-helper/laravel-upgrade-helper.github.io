@@ -1,0 +1,43 @@
+diff --git a/.env.example b/.env.example
+index ac748637..7dc51e1f 100644
+--- a/.env.example
++++ b/.env.example
+@@ -5,6 +5,7 @@ APP_DEBUG=true
+ APP_URL=http://localhost
+ 
+ LOG_CHANNEL=stack
++LOG_LEVEL=debug
+ 
+ DB_CONNECTION=mysql
+ DB_HOST=127.0.0.1
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 658af6c0..5f642bbb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,13 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.1.0...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.2.0...master)
++
++
++## [v8.2.0 (2020-10-20)](https://github.com/laravel/laravel/compare/v8.1.0...v8.2.0)
++
++### Added
++- Added 'LOG_LEVEL' env variable in `.env.example` ([#5445](https://github.com/laravel/laravel/pull/5445))
++- Add 'multiple_of' translation ([#5449](https://github.com/laravel/laravel/pull/5449))
+ 
+ 
+ ## [v8.1.0 (2020-10-06)](https://github.com/laravel/laravel/compare/v8.0.3...v8.1.0)
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index a65914f9..2e2820b0 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -90,6 +90,7 @@ return [
+         'string' => 'The :attribute must be at least :min characters.',
+         'array' => 'The :attribute must have at least :min items.',
+     ],
++    'multiple_of' => 'The :attribute must be a multiple of :value',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',

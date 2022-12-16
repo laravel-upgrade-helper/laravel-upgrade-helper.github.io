@@ -1,0 +1,105 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4ebc0713..5a221fb2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.6...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.1.7...9.x)
++
++## [v9.1.7](https://github.com/laravel/laravel/compare/v9.1.6...v9.1.7) - 2022-05-03
++
++### Changed
++
++- Deprecation log stack trace option by @driesvints in https://github.com/laravel/laravel/pull/5874
+ 
+ ## [v9.1.6](https://github.com/laravel/laravel/compare/v9.1.5...v9.1.6) - 2022-04-20
+ 
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 008b40fa..82a37e40 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -26,7 +26,7 @@ class Handler extends ExceptionHandler
+     ];
+ 
+     /**
+-     * A list of the inputs that are never flashed for validation exceptions.
++     * A list of the inputs that are never flashed to the session on validation exceptions.
+      *
+      * @var array<int, string>
+      */
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index 22b77e6e..51b351b0 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Gate;
+ class AuthServiceProvider extends ServiceProvider
+ {
+     /**
+-     * The policy mappings for the application.
++     * The model to policy mappings for the application.
+      *
+      * @var array<class-string, class-string>
+      */
+diff --git a/app/Providers/EventServiceProvider.php b/app/Providers/EventServiceProvider.php
+index 45ca6685..ab8b2cf7 100644
+--- a/app/Providers/EventServiceProvider.php
++++ b/app/Providers/EventServiceProvider.php
+@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Event;
+ class EventServiceProvider extends ServiceProvider
+ {
+     /**
+-     * The event listener mappings for the application.
++     * The event to listener mappings for the application.
+      *
+      * @var array<class-string, array<int, class-string>>
+      */
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index f34af12a..ea87f2e5 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -13,14 +13,14 @@ class RouteServiceProvider extends ServiceProvider
+     /**
+      * The path to the "home" route for your application.
+      *
+-     * This is used by Laravel authentication to redirect users after login.
++     * Typically, users are redirected here after authentication.
+      *
+      * @var string
+      */
+     public const HOME = '/home';
+ 
+     /**
+-     * Define your route model bindings, pattern filters, etc.
++     * Define your route model bindings, pattern filters, and other route configuration.
+      *
+      * @return void
+      */
+diff --git a/config/mail.php b/config/mail.php
+index 11bfe7e1..534395a3 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -42,6 +42,7 @@ return [
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+             'timeout' => null,
++            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+         ],
+ 
+         'ses' => [
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index 71f673f0..c1c48a06 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -15,5 +15,10 @@ class DatabaseSeeder extends Seeder
+     public function run()
+     {
+         // \App\Models\User::factory(10)->create();
++
++        // \App\Models\User::factory()->create([
++        //     'name' => 'Test User',
++        //     'email' => 'test@example.com',
++        // ]);
+     }
+ }

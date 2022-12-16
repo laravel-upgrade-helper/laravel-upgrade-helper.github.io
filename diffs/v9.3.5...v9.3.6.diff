@@ -1,0 +1,33 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 9ef28ac0..6398cdaa 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,14 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.4...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.5...9.x)
++
++## [v9.3.5](https://github.com/laravel/laravel/compare/v9.3.4...v9.3.5) - 2022-08-22
++
++### Changed
++
++- `max_digits` and `min_digits` validation translations by @danharrin in https://github.com/laravel/laravel/pull/5975
++- Use short closure by @taylorotwell in https://github.com/laravel/laravel/commit/7b17f5f32623c2ee75f2bff57a42bb8f180ac779
++- Use except by @taylorotwell in https://github.com/laravel/laravel/commit/e2e25f607a894427d6545f611ad3c8d94d022e9d
+ 
+ ## [v9.3.4](https://github.com/laravel/laravel/compare/v9.3.3...v9.3.4) - 2022-08-15
+ 
+diff --git a/package.json b/package.json
+index 6267eac1..6d30231c 100644
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,7 @@
+     },
+     "devDependencies": {
+         "axios": "^0.27",
+-        "laravel-vite-plugin": "^0.5.0",
++        "laravel-vite-plugin": "^0.6.0",
+         "lodash": "^4.17.19",
+         "postcss": "^8.1.14",
+         "vite": "^3.0.0"

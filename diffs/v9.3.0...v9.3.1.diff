@@ -1,0 +1,66 @@
+diff --git a/.styleci.yml b/.styleci.yml
+index 4705a373..9daadf16 100644
+--- a/.styleci.yml
++++ b/.styleci.yml
+@@ -5,8 +5,5 @@ php:
+   finder:
+     not-name:
+       - index.php
+-js:
+-  finder:
+-    not-name:
+-      - vite.config.js
++js: true
+ css: true
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0f534dbd..3a94d1db 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,17 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.2.1...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.0...9.x)
++
++## [v9.3.0](https://github.com/laravel/laravel/compare/v9.2.1...v9.3.0) - 2022-07-20
++
++### Added
++
++- Uses `laravel/pint` for styling by @nunomaduro in https://github.com/laravel/laravel/pull/5945
++
++### Changed
++
++- Bump axios version by @ankurk91 in https://github.com/laravel/laravel/pull/5946
++- Vite 3 support by @timacdonald in https://github.com/laravel/laravel/pull/5944
+ 
+ ## [v9.2.1](https://github.com/laravel/laravel/compare/v9.2.0...v9.2.1) - 2022-07-13
+ 
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index dd6a45db..de233926 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -7,7 +7,7 @@
+         <title>Laravel</title>
+ 
+         <!-- Fonts -->
+-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
++        <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+ 
+         <!-- Styles -->
+         <style>
+diff --git a/vite.config.js b/vite.config.js
+index 89f26f5d..421b5695 100644
+--- a/vite.config.js
++++ b/vite.config.js
+@@ -4,10 +4,7 @@ import laravel from 'laravel-vite-plugin';
+ export default defineConfig({
+     plugins: [
+         laravel({
+-            input: [
+-                'resources/css/app.css',
+-                'resources/js/app.js',
+-            ],
++            input: ['resources/css/app.css', 'resources/js/app.js'],
+             refresh: true,
+         }),
+     ],

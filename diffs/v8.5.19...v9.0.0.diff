@@ -1,0 +1,1523 @@
+diff --git a/.editorconfig b/.editorconfig
+index 6537ca46..1671c9b9 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -13,3 +13,6 @@ trim_trailing_whitespace = false
+ 
+ [*.{yml,yaml}]
+ indent_size = 2
++
++[docker-compose.yml]
++indent_size = 4
+diff --git a/.env.example b/.env.example
+index 44853cd5..8510237c 100644
+--- a/.env.example
++++ b/.env.example
+@@ -5,6 +5,7 @@ APP_DEBUG=true
+ APP_URL=http://localhost
+ 
+ LOG_CHANNEL=stack
++LOG_DEPRECATIONS_CHANNEL=null
+ LOG_LEVEL=debug
+ 
+ DB_CONNECTION=mysql
+@@ -16,7 +17,7 @@ DB_PASSWORD=
+ 
+ BROADCAST_DRIVER=log
+ CACHE_DRIVER=file
+-FILESYSTEM_DRIVER=local
++FILESYSTEM_DISK=local
+ QUEUE_CONNECTION=sync
+ SESSION_DRIVER=file
+ SESSION_LIFETIME=120
+diff --git a/.gitattributes b/.gitattributes
+index 967315dd..510d9961 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -1,5 +1,10 @@
+ * text=auto
+-*.css linguist-vendored
+-*.scss linguist-vendored
+-*.js linguist-vendored
++
++*.blade.php diff=html
++*.css diff=css
++*.html diff=html
++*.md diff=markdown
++*.php diff=php
++
++/.github export-ignore
+ CHANGELOG.md export-ignore
+diff --git a/.github/workflows/update-changelog.yml b/.github/workflows/update-changelog.yml
+new file mode 100644
+index 00000000..0200e2b9
+--- /dev/null
++++ b/.github/workflows/update-changelog.yml
+@@ -0,0 +1,29 @@
++name: "Update Changelog"
++
++on:
++  release:
++    types: [released]
++
++jobs:
++  update:
++    runs-on: ubuntu-latest
++
++    steps:
++      - name: Checkout code
++        uses: actions/checkout@v2
++        with:
++          ref: ${{ github.ref_name }}
++
++      - name: Update Changelog
++        uses: stefanzweifel/changelog-updater-action@v1
++        with:
++          latest-version: ${{ github.event.release.tag_name }}
++          release-notes: ${{ github.event.release.body }}
++          compare-url-target-revision: ${{ github.event.release.target_commitish }}
++
++      - name: Commit updated CHANGELOG
++        uses: stefanzweifel/git-auto-commit-action@v4
++        with:
++          branch: ${{ github.event.release.target_commitish }}
++          commit_message: Update CHANGELOG.md
++          file_pattern: CHANGELOG.md
+diff --git a/.styleci.yml b/.styleci.yml
+index 9231873a..679a631e 100644
+--- a/.styleci.yml
++++ b/.styleci.yml
+@@ -1,11 +1,11 @@
+ php:
+   preset: laravel
++  version: 8
+   disabled:
+     - no_unused_imports
+   finder:
+     not-name:
+       - index.php
+-      - server.php
+ js:
+   finder:
+     not-name:
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index d83acbe0..4d3b1735 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,251 +1,3 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.5.19...8.x)
+-
+-
+-## [v8.5.19 (2021-06-01)](https://github.com/laravel/laravel/compare/v8.5.18...v8.5.19)
+-
+-### Changed
+-- Update skeleton for filesystem tweaks to make sail usage easier ([c5d38d4](https://github.com/laravel/laravel/commit/c5d38d469a447d6831c3cf56d193be7941d6586f))
+-
+-
+-## [v8.5.18 (2021-05-18)](https://github.com/laravel/laravel/compare/v8.5.17...v8.5.18)
+-
+-### Changed
+-- Add Octane cache store ([#5610](https://github.com/laravel/laravel/pull/5610), [637c85d](https://github.com/laravel/laravel/commit/637c85d624bf19355025b68aaa90e6cadf8a2881))
+-
+-
+-## [v8.5.17 (2021-05-11)](https://github.com/laravel/laravel/compare/v8.5.16...v8.5.17)
+-
+-### Security
+-- Bump framework version to include SQL server security fix ([#5601](https://github.com/laravel/laravel/pull/5601))
+-
+-
+-## [v8.5.16 (2021-04-20)](https://github.com/laravel/laravel/compare/v8.5.15...v8.5.16)
+-
+-### Changed
+-- Rename test methods ([#5574](https://github.com/laravel/laravel/pull/5574))
+-- Using faker method instead of properties ([#5583](https://github.com/laravel/laravel/pull/5583))
+-
+-### Fixed
+-- Ignore SQLite files generated on parallel testing ([#5593](https://github.com/laravel/laravel/pull/5593))
+-
+-
+-## [v8.5.15 (2021-03-23)](https://github.com/laravel/laravel/compare/v8.5.14...v8.5.15)
+-
+-### Changed
+-- Add prohibited validation rule ([#5569](https://github.com/laravel/laravel/pull/5569))
+-- Re-order composer.json ([#5570](https://github.com/laravel/laravel/pull/5570))
+-
+-
+-## [v8.5.14 (2021-03-16)](https://github.com/laravel/laravel/compare/v8.5.13...v8.5.14)
+-
+-### Changed
+-- Add language for prohibited_if and prohibited_unless validation rules ([#5557](https://github.com/laravel/laravel/pull/5557))
+-- Add date facade alias ([#5556](https://github.com/laravel/laravel/pull/5556))
+-
+-### Fixed
+-- Add log level config value to stderr channel ([#5558](https://github.com/laravel/laravel/pull/5558))
+-- Fix footer on mobile ([#5561](https://github.com/laravel/laravel/pull/5561))
+-
+-
+-## [v8.5.13 (2021-03-09)](https://github.com/laravel/laravel/compare/v8.5.12...v8.5.13)
+-
+-### Changed
+-- Use same default queue name for all drivers ([#5549](https://github.com/laravel/laravel/pull/5549))
+-- Standardise "must" and "may" language in validation ([#5552](https://github.com/laravel/laravel/pull/5552))
+-- Add missing 'after_commit' key to queue config ([#5554](https://github.com/laravel/laravel/pull/5554))
+-
+-
+-## [v8.5.12 (2021-03-02)](https://github.com/laravel/laravel/compare/v8.5.11...v8.5.12)
+-
+-### Fixed
+-- Added sans-serif as Fallback Font ([#5543](https://github.com/laravel/laravel/pull/5543))
+-- Don't trim `current_password` ([#5546](https://github.com/laravel/laravel/pull/5546))
+-
+-
+-## [v8.5.11 (2021-02-23)](https://github.com/laravel/laravel/compare/v8.5.10...v8.5.11)
+-
+-### Fixed
+-- Don't flash 'current_password' input ([#5541](https://github.com/laravel/laravel/pull/5541))
+-
+-
+-## [v8.5.10 (2021-02-16)](https://github.com/laravel/laravel/compare/v8.5.9...v8.5.10)
+-
+-### Changed
+-- Add "ably" in comment as a broadcast connection ([#5531](https://github.com/laravel/laravel/pull/5531))
+-- Add unverified state to UserFactory ([#5533](https://github.com/laravel/laravel/pull/5533))
+-- Update login wording ([9a56a60](https://github.com/laravel/laravel/commit/9a56a60cc9e3785683e256d511ee1fb533025a0a))
+-
+-### Fixed
+-- Fix dead link in web.config ([#5528](https://github.com/laravel/laravel/pull/5528))
+-
+-
+-## [v8.5.9 (2021-01-19)](https://github.com/laravel/laravel/compare/v8.5.8...v8.5.9)
+-
+-### Removed
+-- Delete `docker-compose.yml` ([#5522](https://github.com/laravel/laravel/pull/5522))
+-
+-
+-## [v8.5.8 (2021-01-12)](https://github.com/laravel/laravel/compare/v8.5.7...v8.5.8)
+-
+-### Fixed
+-- Update `TrustProxies.php` ([#5514](https://github.com/laravel/laravel/pull/5514))
+-
+-
+-## [v8.5.7 (2021-01-05)](https://github.com/laravel/laravel/compare/v8.5.6...v8.5.7)
+-
+-### Changed
+-- Update sail to the v1.0.1 ([#5507](https://github.com/laravel/laravel/pull/5507))
+-- Upgrade to Mix v6 ([#5505](https://github.com/laravel/laravel/pull/5505))
+-- Updated Axios ([4de728e](https://github.com/laravel/laravel/commit/4de728e78c91b496ce5de09983a56e229aa0ade1))
+-
+-
+-## [v8.5.6 (2020-12-22)](https://github.com/laravel/laravel/compare/v8.5.5...v8.5.6)
+-
+-### Added
+-- Add `lock_connection` ([bc339f7](https://github.com/laravel/laravel/commit/bc339f712389cf536ad7e340453f35d1dd865777), [e8788a7](https://github.com/laravel/laravel/commit/e8788a768899ff2a2ef1fe78e24b46e6e10175dc))
+-
+-
+-## [v8.5.5 (2020-12-12)](https://github.com/laravel/laravel/compare/v8.5.4...v8.5.5)
+-
+-### Changed
+-- Revert changes to env file ([3b2ed46](https://github.com/laravel/laravel/commit/3b2ed46e65c603ddc682753f1a9bb5472c4e12a8))
+-
+-
+-## [v8.5.4 (2020-12-10)](https://github.com/laravel/laravel/compare/v8.5.3...v8.5.4)
+-
+-### Changed
+-- Gitignore `docker-compose.override.yml` ([#5487](https://github.com/laravel/laravel/pull/5487)
+-- Update ENV vars to docker file ([ddb26fb](https://github.com/laravel/laravel/commit/ddb26fbc504cd64fb1b89511773aa8d03c758c6d))
+-
+-
+-## [v8.5.3 (2020-12-10)](https://github.com/laravel/laravel/compare/v8.5.2...v8.5.3)
+-
+-### Changed
+-- Disable `TrustHosts` middleware ([b7cde8b](https://github.com/laravel/laravel/commit/b7cde8b495e183f386da63ff7792e0dea9cfcf56))
+-
+-
+-## [v8.5.2 (2020-12-08)](https://github.com/laravel/laravel/compare/v8.5.1...v8.5.2)
+-
+-### Added
+-- Add Sail ([17668be](https://github.com/laravel/laravel/commit/17668beabe4cb489ad07abb8af0a9da01860601e))
+-
+-
+-## [v8.5.1 (2020-12-08)](https://github.com/laravel/laravel/compare/v8.5.0...v8.5.1)
+-
+-### Changed
+-- Revert change to `QUEUE_CONNECTION` ([34368a4](https://github.com/laravel/laravel/commit/34368a4fab61839c106efb1eea087cc270639619))
+-
+-
+-## [v8.5.0 (2020-12-08)](https://github.com/laravel/laravel/compare/v8.4.4...v8.5.0)
+-
+-### Added
+-- Add Sail file ([bcd87e8](https://github.com/laravel/laravel/commit/bcd87e80ac7fa6a5daf0e549059ad7cb0b41ce75))
+-
+-### Changed
+-- Update env file for Sail ([a895748](https://github.com/laravel/laravel/commit/a895748980b3e055ffcb68b6bc1c2e5fad6ecb08))
+-
+-
+-## [v8.4.4 (2020-12-01)](https://github.com/laravel/laravel/compare/v8.4.3...v8.4.4)
+-
+-### Changed
+-- Comment out `Redis` facade by default ([612d166](https://github.com/laravel/laravel/commit/612d16600419265566d01a19c852ddb13b5e9f4b))
+-- Uncomment `TrustHosts` middleware to enable it by default ([#5477](https://github.com/laravel/laravel/pull/5477))
+-
+-### Removed
+-- Remove cloud option ([82213fb](https://github.com/laravel/laravel/commit/82213fbf40fc4ec687781d0b93ff60a7de536913))
+-
+-
+-## [v8.4.3 (2020-11-24)](https://github.com/laravel/laravel/compare/v8.4.2...v8.4.3)
+-
+-### Added
+-- Add ably entry ([5182e9c](https://github.com/laravel/laravel/commit/5182e9c6de805e025fb4cfad63c210c3197002ab))
+-
+-### Fixed
+-- Add missing null cache driver in `config/cache.php` ([#5472](https://github.com/laravel/laravel/pull/5472))
+-
+-
+-## [v8.4.2 (2020-11-17)](https://github.com/laravel/laravel/compare/v8.4.1...v8.4.2)
+-
+-### Changed
+-- Add sanctum cookie endpoint to default cors paths ([aa6d3660](https://github.com/laravel/laravel/commit/aa6d3660114c93e537a52e0ba3c03071a7f3e67f))
+-- Modify the `cache.php` docblocks ([#5468](https://github.com/laravel/laravel/pull/5468))
+-- Add stub handler ([4931af1](https://github.com/laravel/laravel/commit/4931af14006610bf8fd1f860cea1117c68133e94))
+-
+-### Fixed
+-- Closed @auth correctly ([#5471](https://github.com/laravel/laravel/pull/5471))
+-
+-
+-## [v8.4.1 (2020-11-10)](https://github.com/laravel/laravel/compare/v8.4.0...v8.4.1)
+-
+-### Changed
+-- Add auth line ([b54ef29](https://github.com/laravel/laravel/commit/b54ef297b3c723c8438596c6e6afef93a7458b98))
+-
+-
+-## [v8.4.0 (2020-10-30)](https://github.com/laravel/laravel/compare/v8.3.0...v8.4.0)
+-
+-### Changed
+-- Bump several dependencies
+-
+-
+-## [v8.3.0 (2020-10-29)](https://github.com/laravel/laravel/compare/v8.2.0...v8.3.0)
+-
+-### Added
+-- PHP 8 Support ([4c25cb9](https://github.com/laravel/laravel/commit/4c25cb953a0bbd4812bf92af71a13920998def1e))
+-
+-### Changed
+-- Update Faker ([#5461](https://github.com/laravel/laravel/pull/5461))
+-- Update minimum Laravel version ([86d4ec0](https://github.com/laravel/laravel/commit/86d4ec095f1681df736d53206780d79f5857907c))
+-- Revert to per user API rate limit ([#5456](https://github.com/laravel/laravel/pull/5456), [bec982b](https://github.com/laravel/laravel/commit/bec982b0a3962c8a3e1f665e987360bb8c056298))
+-
+-### Fixed
+-- Delete removed webpack flag ([#5460](https://github.com/laravel/laravel/pull/5460))
+-
+-
+-## [v8.2.0 (2020-10-20)](https://github.com/laravel/laravel/compare/v8.1.0...v8.2.0)
+-
+-### Added
+-- Added 'LOG_LEVEL' env variable in `.env.example` ([#5445](https://github.com/laravel/laravel/pull/5445))
+-- Add 'multiple_of' translation ([#5449](https://github.com/laravel/laravel/pull/5449))
+-
+-
+-## [v8.1.0 (2020-10-06)](https://github.com/laravel/laravel/compare/v8.0.3...v8.1.0)
+-
+-### Added
+-- Added `LOG_LEVEL` env variable ([#5442](https://github.com/laravel/laravel/pull/5442))
+-
+-### Changed
+-- Type hint the middleware Request ([#5438](https://github.com/laravel/laravel/pull/5438))
+-
+-
+-## [v8.0.3 (2020-09-22)](https://github.com/laravel/laravel/compare/v8.0.2...v8.0.3)
+-
+-### Changed
+-- Add comment ([a6ca577](https://github.com/laravel/laravel/commit/a6ca5778391b150102637459ac3b2a42d78d495b))
+-
+-
+-## [v8.0.2 (2020-09-22)](https://github.com/laravel/laravel/compare/v8.0.1...v8.0.2)
+-
+-### Changed
+-- Fully qualified user model in seeder ([#5406](https://github.com/laravel/laravel/pull/5406))
+-- Update model path in `AuthServiceProvider`'s policies ([#5412](https://github.com/laravel/laravel/pull/5412))
+-- Add commented code ([69d0c50](https://github.com/laravel/laravel/commit/69d0c504e3ff01e0fd219e02ebac9b1c22151c2a))
+-
+-### Fixed
+-- Swap route order ([292a5b2](https://github.com/laravel/laravel/commit/292a5b26a9293d82ab5a7d0bb81bba02ea71758e))
+-- Fix route when uncomment $namespace ([#5424](https://github.com/laravel/laravel/pull/5424))
+-
+-### Removed
+-- Removed `$namespace` property ([b33852e](https://github.com/laravel/laravel/commit/b33852ecace72791f4bc28b8dd84c108166512bf))
+-
+-
+-## [v8.0.1 (2020-09-09)](https://github.com/laravel/laravel/compare/v8.0.0...v8.0.1)
+-
+-### Changed
+-- Re-add property to route service provider ([9cbc381](https://github.com/laravel/laravel/commit/9cbc3819f7b1c268447996d347a1733aa68e16d7))
+-
+-
+-## [v8.0.0 (2020-09-08)](https://github.com/laravel/laravel/compare/v7.30.1...v8.0.0)
+-
+-Laravel 8 comes with a lot of changes to the base skeleton. Please consult the diff to see what's changed.
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.10...9.x)
+diff --git a/README.md b/README.md
+index ceb6ac0a..f171ecac 100644
+--- a/README.md
++++ b/README.md
+@@ -25,7 +25,7 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
+ 
+ Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+ 
+-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
++If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+ 
+ ## Laravel Sponsors
+ 
+@@ -44,6 +44,8 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[DevSquad](https://devsquad.com)**
+ - **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+ - **[OP.GG](https://op.gg)**
++- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
++- **[Lendio](https://lendio.com)**
+ 
+ ## Contributing
+ 
+diff --git a/app/Console/Kernel.php b/app/Console/Kernel.php
+index 69914e99..d8bc1d29 100644
+--- a/app/Console/Kernel.php
++++ b/app/Console/Kernel.php
+@@ -7,15 +7,6 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+ 
+ class Kernel extends ConsoleKernel
+ {
+-    /**
+-     * The Artisan commands provided by your application.
+-     *
+-     * @var array
+-     */
+-    protected $commands = [
+-        //
+-    ];
+-
+     /**
+      * Define the application's command schedule.
+      *
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index c18c43cc..8e7fbd1b 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -10,7 +10,7 @@ class Handler extends ExceptionHandler
+     /**
+      * A list of the exception types that are not reported.
+      *
+-     * @var array
++     * @var array<int, class-string<Throwable>>
+      */
+     protected $dontReport = [
+         //
+@@ -19,7 +19,7 @@ class Handler extends ExceptionHandler
+     /**
+      * A list of the inputs that are never flashed for validation exceptions.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $dontFlash = [
+         'current_password',
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 30020a50..d3722c2d 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -11,7 +11,7 @@ class Kernel extends HttpKernel
+      *
+      * These middleware are run during every request to your application.
+      *
+-     * @var array
++     * @var array<int, class-string|string>
+      */
+     protected $middleware = [
+         // \App\Http\Middleware\TrustHosts::class,
+@@ -26,7 +26,7 @@ class Kernel extends HttpKernel
+     /**
+      * The application's route middleware groups.
+      *
+-     * @var array
++     * @var array<string, array<int, class-string|string>>
+      */
+     protected $middlewareGroups = [
+         'web' => [
+@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
+         ],
+ 
+         'api' => [
++            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+             'throttle:api',
+             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+         ],
+@@ -50,7 +51,7 @@ class Kernel extends HttpKernel
+      *
+      * These middleware may be assigned to groups or used individually.
+      *
+-     * @var array
++     * @var array<string, class-string|string>
+      */
+     protected $routeMiddleware = [
+         'auth' => \App\Http\Middleware\Authenticate::class,
+diff --git a/app/Http/Middleware/EncryptCookies.php b/app/Http/Middleware/EncryptCookies.php
+index 033136ad..867695bd 100644
+--- a/app/Http/Middleware/EncryptCookies.php
++++ b/app/Http/Middleware/EncryptCookies.php
+@@ -9,7 +9,7 @@ class EncryptCookies extends Middleware
+     /**
+      * The names of the cookies that should not be encrypted.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $except = [
+         //
+diff --git a/app/Http/Middleware/PreventRequestsDuringMaintenance.php b/app/Http/Middleware/PreventRequestsDuringMaintenance.php
+index e4956d0b..74cbd9a9 100644
+--- a/app/Http/Middleware/PreventRequestsDuringMaintenance.php
++++ b/app/Http/Middleware/PreventRequestsDuringMaintenance.php
+@@ -9,7 +9,7 @@ class PreventRequestsDuringMaintenance extends Middleware
+     /**
+      * The URIs that should be reachable while maintenance mode is enabled.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $except = [
+         //
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+index 362b48b0..a2813a06 100644
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ b/app/Http/Middleware/RedirectIfAuthenticated.php
+@@ -13,9 +13,9 @@ class RedirectIfAuthenticated
+      * Handle an incoming request.
+      *
+      * @param  \Illuminate\Http\Request  $request
+-     * @param  \Closure  $next
++     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+      * @param  string|null  ...$guards
+-     * @return mixed
++     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+      */
+     public function handle(Request $request, Closure $next, ...$guards)
+     {
+diff --git a/app/Http/Middleware/TrimStrings.php b/app/Http/Middleware/TrimStrings.php
+index a8a252df..88cadcaa 100644
+--- a/app/Http/Middleware/TrimStrings.php
++++ b/app/Http/Middleware/TrimStrings.php
+@@ -9,7 +9,7 @@ class TrimStrings extends Middleware
+     /**
+      * The names of the attributes that should not be trimmed.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $except = [
+         'current_password',
+diff --git a/app/Http/Middleware/TrustHosts.php b/app/Http/Middleware/TrustHosts.php
+index b0550cfc..7186414c 100644
+--- a/app/Http/Middleware/TrustHosts.php
++++ b/app/Http/Middleware/TrustHosts.php
+@@ -9,7 +9,7 @@ class TrustHosts extends Middleware
+     /**
+      * Get the host patterns that should be trusted.
+      *
+-     * @return array
++     * @return array<int, string|null>
+      */
+     public function hosts()
+     {
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+index a3b6aef9..3391630e 100644
+--- a/app/Http/Middleware/TrustProxies.php
++++ b/app/Http/Middleware/TrustProxies.php
+@@ -2,7 +2,7 @@
+ 
+ namespace App\Http\Middleware;
+ 
+-use Fideloper\Proxy\TrustProxies as Middleware;
++use Illuminate\Http\Middleware\TrustProxies as Middleware;
+ use Illuminate\Http\Request;
+ 
+ class TrustProxies extends Middleware
+@@ -10,7 +10,7 @@ class TrustProxies extends Middleware
+     /**
+      * The trusted proxies for this application.
+      *
+-     * @var array|string|null
++     * @var array<int, string>|string|null
+      */
+     protected $proxies;
+ 
+@@ -19,5 +19,10 @@ class TrustProxies extends Middleware
+      *
+      * @var int
+      */
+-    protected $headers = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_AWS_ELB;
++    protected $headers =
++        Request::HEADER_X_FORWARDED_FOR |
++        Request::HEADER_X_FORWARDED_HOST |
++        Request::HEADER_X_FORWARDED_PORT |
++        Request::HEADER_X_FORWARDED_PROTO |
++        Request::HEADER_X_FORWARDED_AWS_ELB;
+ }
+diff --git a/app/Http/Middleware/VerifyCsrfToken.php b/app/Http/Middleware/VerifyCsrfToken.php
+index 0c13b854..9e865217 100644
+--- a/app/Http/Middleware/VerifyCsrfToken.php
++++ b/app/Http/Middleware/VerifyCsrfToken.php
+@@ -9,7 +9,7 @@ class VerifyCsrfToken extends Middleware
+     /**
+      * The URIs that should be excluded from CSRF verification.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $except = [
+         //
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 804799ba..89963686 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -6,15 +6,16 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
+ use Illuminate\Notifications\Notifiable;
++use Laravel\Sanctum\HasApiTokens;
+ 
+ class User extends Authenticatable
+ {
+-    use HasFactory, Notifiable;
++    use HasApiTokens, HasFactory, Notifiable;
+ 
+     /**
+      * The attributes that are mass assignable.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $fillable = [
+         'name',
+@@ -23,9 +24,9 @@ class User extends Authenticatable
+     ];
+ 
+     /**
+-     * The attributes that should be hidden for arrays.
++     * The attributes that should be hidden for serialization.
+      *
+-     * @var array
++     * @var array<int, string>
+      */
+     protected $hidden = [
+         'password',
+@@ -33,9 +34,9 @@ class User extends Authenticatable
+     ];
+ 
+     /**
+-     * The attributes that should be cast to native types.
++     * The attributes that should be cast.
+      *
+-     * @var array
++     * @var array<string, string>
+      */
+     protected $casts = [
+         'email_verified_at' => 'datetime',
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index ce744916..22b77e6e 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -10,7 +10,7 @@ class AuthServiceProvider extends ServiceProvider
+     /**
+      * The policy mappings for the application.
+      *
+-     * @var array
++     * @var array<class-string, class-string>
+      */
+     protected $policies = [
+         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+diff --git a/app/Providers/EventServiceProvider.php b/app/Providers/EventServiceProvider.php
+index a9f10a63..23499eb8 100644
+--- a/app/Providers/EventServiceProvider.php
++++ b/app/Providers/EventServiceProvider.php
+@@ -12,7 +12,7 @@ class EventServiceProvider extends ServiceProvider
+     /**
+      * The event listener mappings for the application.
+      *
+-     * @var array
++     * @var array<class-string, array<int, class-string>>
+      */
+     protected $listen = [
+         Registered::class => [
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 3bd3c81e..7c17d1f0 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -57,7 +57,7 @@ class RouteServiceProvider extends ServiceProvider
+     protected function configureRateLimiting()
+     {
+         RateLimiter::for('api', function (Request $request) {
+-            return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
++            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+         });
+     }
+ }
+diff --git a/composer.json b/composer.json
+index d0635f15..69137367 100644
+--- a/composer.json
++++ b/composer.json
+@@ -5,20 +5,20 @@
+     "keywords": ["framework", "laravel"],
+     "license": "MIT",
+     "require": {
+-        "php": "^7.3|^8.0",
+-        "fideloper/proxy": "^4.4",
+-        "fruitcake/laravel-cors": "^2.0",
+-        "guzzlehttp/guzzle": "^7.0.1",
+-        "laravel/framework": "^8.40",
+-        "laravel/tinker": "^2.5"
++        "php": "^8.0",
++        "fruitcake/laravel-cors": "^2.0.5",
++        "guzzlehttp/guzzle": "^7.2",
++        "laravel/framework": "^9.0",
++        "laravel/sanctum": "^2.14",
++        "laravel/tinker": "^2.7"
+     },
+     "require-dev": {
+-        "facade/ignition": "^2.5",
+         "fakerphp/faker": "^1.9.1",
+         "laravel/sail": "^1.0.1",
+-        "mockery/mockery": "^1.4.2",
+-        "nunomaduro/collision": "^5.0",
+-        "phpunit/phpunit": "^9.3.3"
++        "mockery/mockery": "^1.4.4",
++        "nunomaduro/collision": "^6.1",
++        "phpunit/phpunit": "^9.5.10",
++        "spatie/laravel-ignition": "^1.0"
+     },
+     "autoload": {
+         "psr-4": {
+@@ -37,6 +37,9 @@
+             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+             "@php artisan package:discover --ansi"
+         ],
++        "post-update-cmd": [
++            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
++        ],
+         "post-root-package-install": [
+             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+         ],
+diff --git a/config/app.php b/config/app.php
+index f572b646..1941d7c7 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use Illuminate\Support\Facades\Facade;
++
+ return [
+ 
+     /*
+@@ -188,46 +190,8 @@ return [
+     |
+     */
+ 
+-    'aliases' => [
+-
+-        'App' => Illuminate\Support\Facades\App::class,
+-        'Arr' => Illuminate\Support\Arr::class,
+-        'Artisan' => Illuminate\Support\Facades\Artisan::class,
+-        'Auth' => Illuminate\Support\Facades\Auth::class,
+-        'Blade' => Illuminate\Support\Facades\Blade::class,
+-        'Broadcast' => Illuminate\Support\Facades\Broadcast::class,
+-        'Bus' => Illuminate\Support\Facades\Bus::class,
+-        'Cache' => Illuminate\Support\Facades\Cache::class,
+-        'Config' => Illuminate\Support\Facades\Config::class,
+-        'Cookie' => Illuminate\Support\Facades\Cookie::class,
+-        'Crypt' => Illuminate\Support\Facades\Crypt::class,
+-        'Date' => Illuminate\Support\Facades\Date::class,
+-        'DB' => Illuminate\Support\Facades\DB::class,
+-        'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+-        'Event' => Illuminate\Support\Facades\Event::class,
+-        'File' => Illuminate\Support\Facades\File::class,
+-        'Gate' => Illuminate\Support\Facades\Gate::class,
+-        'Hash' => Illuminate\Support\Facades\Hash::class,
+-        'Http' => Illuminate\Support\Facades\Http::class,
+-        'Lang' => Illuminate\Support\Facades\Lang::class,
+-        'Log' => Illuminate\Support\Facades\Log::class,
+-        'Mail' => Illuminate\Support\Facades\Mail::class,
+-        'Notification' => Illuminate\Support\Facades\Notification::class,
+-        'Password' => Illuminate\Support\Facades\Password::class,
+-        'Queue' => Illuminate\Support\Facades\Queue::class,
+-        'Redirect' => Illuminate\Support\Facades\Redirect::class,
+-        // 'Redis' => Illuminate\Support\Facades\Redis::class,
+-        'Request' => Illuminate\Support\Facades\Request::class,
+-        'Response' => Illuminate\Support\Facades\Response::class,
+-        'Route' => Illuminate\Support\Facades\Route::class,
+-        'Schema' => Illuminate\Support\Facades\Schema::class,
+-        'Session' => Illuminate\Support\Facades\Session::class,
+-        'Storage' => Illuminate\Support\Facades\Storage::class,
+-        'Str' => Illuminate\Support\Str::class,
+-        'URL' => Illuminate\Support\Facades\URL::class,
+-        'Validator' => Illuminate\Support\Facades\Validator::class,
+-        'View' => Illuminate\Support\Facades\View::class,
+-
+-    ],
++    'aliases' => Facade::defaultAliases()->merge([
++        // ...
++    ])->toArray(),
+ 
+ ];
+diff --git a/config/auth.php b/config/auth.php
+index ba1a4d8c..d8c6cee7 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -31,7 +31,7 @@ return [
+     | users are actually retrieved out of your database or other storage
+     | mechanisms used by this application to persist your user's data.
+     |
+-    | Supported: "session", "token"
++    | Supported: "session"
+     |
+     */
+ 
+@@ -40,12 +40,6 @@ return [
+             'driver' => 'session',
+             'provider' => 'users',
+         ],
+-
+-        'api' => [
+-            'driver' => 'token',
+-            'provider' => 'users',
+-            'hash' => false,
+-        ],
+     ],
+ 
+     /*
+@@ -86,7 +80,7 @@ return [
+     | than one user table or model in the application and you want to have
+     | separate password reset settings based on the specific user types.
+     |
+-    | The expire time is the number of minutes that the reset token should be
++    | The expire time is the number of minutes that each reset token will be
+     | considered valid. This security feature keeps tokens short-lived so
+     | they have less time to be guessed. You may change this as needed.
+     |
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index 2d529820..67fcbbd6 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -39,6 +39,9 @@ return [
+                 'cluster' => env('PUSHER_APP_CLUSTER'),
+                 'useTLS' => true,
+             ],
++            'client_options' => [
++                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
++            ],
+         ],
+ 
+         'ably' => [
+diff --git a/config/database.php b/config/database.php
+index b42d9b30..0faebaee 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -74,7 +74,7 @@ return [
+             'charset' => 'utf8',
+             'prefix' => '',
+             'prefix_indexes' => true,
+-            'schema' => 'public',
++            'search_path' => 'public',
+             'sslmode' => 'prefer',
+         ],
+ 
+@@ -129,7 +129,7 @@ return [
+         'default' => [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+-            'password' => env('REDIS_PASSWORD', null),
++            'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_DB', '0'),
+         ],
+@@ -137,7 +137,7 @@ return [
+         'cache' => [
+             'url' => env('REDIS_URL'),
+             'host' => env('REDIS_HOST', '127.0.0.1'),
+-            'password' => env('REDIS_PASSWORD', null),
++            'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_CACHE_DB', '1'),
+         ],
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 760ef972..cf5abce7 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -13,7 +13,7 @@ return [
+     |
+     */
+ 
+-    'default' => env('FILESYSTEM_DRIVER', 'local'),
++    'default' => env('FILESYSTEM_DISK', 'local'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/config/hashing.php b/config/hashing.php
+index 84257708..bcd3be4c 100644
+--- a/config/hashing.php
++++ b/config/hashing.php
+@@ -44,9 +44,9 @@ return [
+     */
+ 
+     'argon' => [
+-        'memory' => 1024,
+-        'threads' => 2,
+-        'time' => 2,
++        'memory' => 65536,
++        'threads' => 1,
++        'time' => 4,
+     ],
+ 
+ ];
+diff --git a/config/logging.php b/config/logging.php
+index 1aa06aa3..fefe0885 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -19,6 +19,19 @@ return [
+ 
+     'default' => env('LOG_CHANNEL', 'stack'),
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Deprecations Log Channel
++    |--------------------------------------------------------------------------
++    |
++    | This option controls the log channel that should be used to log warnings
++    | regarding deprecated PHP and library features. This allows you to get
++    | your application ready for upcoming major versions of dependencies.
++    |
++    */
++
++    'deprecations' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
++
+     /*
+     |--------------------------------------------------------------------------
+     | Log Channels
+@@ -65,10 +78,11 @@ return [
+         'papertrail' => [
+             'driver' => 'monolog',
+             'level' => env('LOG_LEVEL', 'debug'),
+-            'handler' => SyslogUdpHandler::class,
++            'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
+             'handler_with' => [
+                 'host' => env('PAPERTRAIL_URL'),
+                 'port' => env('PAPERTRAIL_PORT'),
++                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+             ],
+         ],
+ 
+diff --git a/config/mail.php b/config/mail.php
+index 54299aab..87b6fe3c 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -29,7 +29,7 @@ return [
+     | mailers below. You are free to add additional mailers as required.
+     |
+     | Supported: "smtp", "sendmail", "mailgun", "ses",
+-    |            "postmark", "log", "array"
++    |            "postmark", "log", "array", "failover"
+     |
+     */
+ 
+@@ -42,7 +42,6 @@ return [
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+             'timeout' => null,
+-            'auth_mode' => null,
+         ],
+ 
+         'ses' => [
+@@ -59,7 +58,7 @@ return [
+ 
+         'sendmail' => [
+             'transport' => 'sendmail',
+-            'path' => '/usr/sbin/sendmail -bs',
++            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -t -i'),
+         ],
+ 
+         'log' => [
+@@ -70,6 +69,14 @@ return [
+         'array' => [
+             'transport' => 'array',
+         ],
++
++        'failover' => [
++            'transport' => 'failover',
++            'mailers' => [
++                'smtp',
++                'log',
++            ],
++        ],
+     ],
+ 
+     /*
+diff --git a/config/sanctum.php b/config/sanctum.php
+new file mode 100644
+index 00000000..9281c92d
+--- /dev/null
++++ b/config/sanctum.php
+@@ -0,0 +1,65 @@
++<?php
++
++return [
++
++    /*
++    |--------------------------------------------------------------------------
++    | Stateful Domains
++    |--------------------------------------------------------------------------
++    |
++    | Requests from the following domains / hosts will receive stateful API
++    | authentication cookies. Typically, these should include your local
++    | and production domains which access your API via a frontend SPA.
++    |
++    */
++
++    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
++        '%s%s',
++        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
++        env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
++    ))),
++
++    /*
++    |--------------------------------------------------------------------------
++    | Sanctum Guards
++    |--------------------------------------------------------------------------
++    |
++    | This array contains the authentication guards that will be checked when
++    | Sanctum is trying to authenticate a request. If none of these guards
++    | are able to authenticate the request, Sanctum will use the bearer
++    | token that's present on an incoming request for authentication.
++    |
++    */
++
++    'guard' => ['web'],
++
++    /*
++    |--------------------------------------------------------------------------
++    | Expiration Minutes
++    |--------------------------------------------------------------------------
++    |
++    | This value controls the number of minutes until an issued token will be
++    | considered expired. If this value is null, personal access tokens do
++    | not expire. This won't tweak the lifetime of first-party sessions.
++    |
++    */
++
++    'expiration' => null,
++
++    /*
++    |--------------------------------------------------------------------------
++    | Sanctum Middleware
++    |--------------------------------------------------------------------------
++    |
++    | When authenticating your first-party SPA with Sanctum you may need to
++    | customize some of the middleware Sanctum uses while processing the
++    | request. You may change the middleware listed below as required.
++    |
++    */
++
++    'middleware' => [
++        'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
++        'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
++    ],
++
++];
+diff --git a/config/session.php b/config/session.php
+index ac0802b1..8fed97c0 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -72,7 +72,7 @@ return [
+     |
+     */
+ 
+-    'connection' => env('SESSION_CONNECTION', null),
++    'connection' => env('SESSION_CONNECTION'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -100,7 +100,7 @@ return [
+     |
+     */
+ 
+-    'store' => env('SESSION_STORE', null),
++    'store' => env('SESSION_STORE'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -155,7 +155,7 @@ return [
+     |
+     */
+ 
+-    'domain' => env('SESSION_DOMAIN', null),
++    'domain' => env('SESSION_DOMAIN'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index a24ce53f..d6ca9267 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -2,19 +2,14 @@
+ 
+ namespace Database\Factories;
+ 
+-use App\Models\User;
+ use Illuminate\Database\Eloquent\Factories\Factory;
+ use Illuminate\Support\Str;
+ 
++/**
++ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
++ */
+ class UserFactory extends Factory
+ {
+-    /**
+-     * The name of the factory's corresponding model.
+-     *
+-     * @var string
+-     */
+-    protected $model = User::class;
+-
+     /**
+      * Define the model's default state.
+      *
+diff --git a/database/migrations/2014_10_12_000000_create_users_table.php b/database/migrations/2014_10_12_000000_create_users_table.php
+index 621a24eb..cf6b7766 100644
+--- a/database/migrations/2014_10_12_000000_create_users_table.php
++++ b/database/migrations/2014_10_12_000000_create_users_table.php
+@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
+ use Illuminate\Database\Schema\Blueprint;
+ use Illuminate\Support\Facades\Schema;
+ 
+-class CreateUsersTable extends Migration
++return new class extends Migration
+ {
+     /**
+      * Run the migrations.
+@@ -33,4 +33,4 @@ class CreateUsersTable extends Migration
+     {
+         Schema::dropIfExists('users');
+     }
+-}
++};
+diff --git a/database/migrations/2014_10_12_100000_create_password_resets_table.php b/database/migrations/2014_10_12_100000_create_password_resets_table.php
+index 0ee0a36a..fcacb80b 100644
+--- a/database/migrations/2014_10_12_100000_create_password_resets_table.php
++++ b/database/migrations/2014_10_12_100000_create_password_resets_table.php
+@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
+ use Illuminate\Database\Schema\Blueprint;
+ use Illuminate\Support\Facades\Schema;
+ 
+-class CreatePasswordResetsTable extends Migration
++return new class extends Migration
+ {
+     /**
+      * Run the migrations.
+@@ -29,4 +29,4 @@ class CreatePasswordResetsTable extends Migration
+     {
+         Schema::dropIfExists('password_resets');
+     }
+-}
++};
+diff --git a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php b/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+index 6aa6d743..17191986 100644
+--- a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
++++ b/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
+ use Illuminate\Database\Schema\Blueprint;
+ use Illuminate\Support\Facades\Schema;
+ 
+-class CreateFailedJobsTable extends Migration
++return new class extends Migration
+ {
+     /**
+      * Run the migrations.
+@@ -33,4 +33,4 @@ class CreateFailedJobsTable extends Migration
+     {
+         Schema::dropIfExists('failed_jobs');
+     }
+-}
++};
+diff --git a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+new file mode 100644
+index 00000000..fd235f8c
+--- /dev/null
++++ b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+@@ -0,0 +1,36 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    /**
++     * Run the migrations.
++     *
++     * @return void
++     */
++    public function up()
++    {
++        Schema::create('personal_access_tokens', function (Blueprint $table) {
++            $table->id();
++            $table->morphs('tokenable');
++            $table->string('name');
++            $table->string('token', 64)->unique();
++            $table->text('abilities')->nullable();
++            $table->timestamp('last_used_at')->nullable();
++            $table->timestamps();
++        });
++    }
++
++    /**
++     * Reverse the migrations.
++     *
++     * @return void
++     */
++    public function down()
++    {
++        Schema::dropIfExists('personal_access_tokens');
++    }
++};
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index 57b73b54..71f673f0 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -2,6 +2,7 @@
+ 
+ namespace Database\Seeders;
+ 
++use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+ use Illuminate\Database\Seeder;
+ 
+ class DatabaseSeeder extends Seeder
+diff --git a/lang/en.json b/lang/en.json
+new file mode 100644
+index 00000000..577680dd
+--- /dev/null
++++ b/lang/en.json
+@@ -0,0 +1,7 @@
++{
++    "The :attribute must contain at least one letter.": "The :attribute must contain at least one letter.",
++    "The :attribute must contain at least one number.": "The :attribute must contain at least one number.",
++    "The :attribute must contain at least one symbol.": "The :attribute must contain at least one symbol.",
++    "The :attribute must contain at least one uppercase and one lowercase letter.": "The :attribute must contain at least one uppercase and one lowercase letter.",
++    "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "The given :attribute has appeared in a data leak. Please choose a different :attribute."
++}
+diff --git a/resources/lang/en/auth.php b/lang/en/auth.php
+similarity index 100%
+rename from resources/lang/en/auth.php
+rename to lang/en/auth.php
+diff --git a/resources/lang/en/pagination.php b/lang/en/pagination.php
+similarity index 100%
+rename from resources/lang/en/pagination.php
+rename to lang/en/pagination.php
+diff --git a/resources/lang/en/passwords.php b/lang/en/passwords.php
+similarity index 100%
+rename from resources/lang/en/passwords.php
+rename to lang/en/passwords.php
+diff --git a/resources/lang/en/validation.php b/lang/en/validation.php
+similarity index 89%
+rename from resources/lang/en/validation.php
+rename to lang/en/validation.php
+index 49e3388b..783003cf 100644
+--- a/resources/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -14,6 +14,7 @@ return [
+     */
+ 
+     'accepted' => 'The :attribute must be accepted.',
++    'accepted_if' => 'The :attribute must be accepted when :other is :value.',
+     'active_url' => 'The :attribute is not a valid URL.',
+     'after' => 'The :attribute must be a date after :date.',
+     'after_or_equal' => 'The :attribute must be a date after or equal to :date.',
+@@ -31,9 +32,12 @@ return [
+     ],
+     'boolean' => 'The :attribute field must be true or false.',
+     'confirmed' => 'The :attribute confirmation does not match.',
++    'current_password' => 'The password is incorrect.',
+     'date' => 'The :attribute is not a valid date.',
+     'date_equals' => 'The :attribute must be a date equal to :date.',
+     'date_format' => 'The :attribute does not match the format :format.',
++    'declined' => 'The :attribute must be declined.',
++    'declined_if' => 'The :attribute must be declined when :other is :value.',
+     'different' => 'The :attribute and :other must be different.',
+     'digits' => 'The :attribute must be :digits digits.',
+     'digits_between' => 'The :attribute must be between :min and :max digits.',
+@@ -41,6 +45,7 @@ return [
+     'distinct' => 'The :attribute field has a duplicate value.',
+     'email' => 'The :attribute must be a valid email address.',
+     'ends_with' => 'The :attribute must end with one of the following: :values.',
++    'enum' => 'The selected :attribute is invalid.',
+     'exists' => 'The selected :attribute is invalid.',
+     'file' => 'The :attribute must be a file.',
+     'filled' => 'The :attribute field must have a value.',
+@@ -51,9 +56,9 @@ return [
+         'array' => 'The :attribute must have more than :value items.',
+     ],
+     'gte' => [
+-        'numeric' => 'The :attribute must be greater than or equal :value.',
+-        'file' => 'The :attribute must be greater than or equal :value kilobytes.',
+-        'string' => 'The :attribute must be greater than or equal :value characters.',
++        'numeric' => 'The :attribute must be greater than or equal to :value.',
++        'file' => 'The :attribute must be greater than or equal to :value kilobytes.',
++        'string' => 'The :attribute must be greater than or equal to :value characters.',
+         'array' => 'The :attribute must have :value items or more.',
+     ],
+     'image' => 'The :attribute must be an image.',
+@@ -71,11 +76,12 @@ return [
+         'array' => 'The :attribute must have less than :value items.',
+     ],
+     'lte' => [
+-        'numeric' => 'The :attribute must be less than or equal :value.',
+-        'file' => 'The :attribute must be less than or equal :value kilobytes.',
+-        'string' => 'The :attribute must be less than or equal :value characters.',
++        'numeric' => 'The :attribute must be less than or equal to :value.',
++        'file' => 'The :attribute must be less than or equal to :value kilobytes.',
++        'string' => 'The :attribute must be less than or equal to :value characters.',
+         'array' => 'The :attribute must not have more than :value items.',
+     ],
++    'mac_address' => 'The :attribute must be a valid MAC address.',
+     'max' => [
+         'numeric' => 'The :attribute must not be greater than :max.',
+         'file' => 'The :attribute must not be greater than :max kilobytes.',
+@@ -96,17 +102,19 @@ return [
+     'numeric' => 'The :attribute must be a number.',
+     'password' => 'The password is incorrect.',
+     'present' => 'The :attribute field must be present.',
++    'prohibited' => 'The :attribute field is prohibited.',
++    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
++    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
++    'prohibits' => 'The :attribute field prohibits :other from being present.',
+     'regex' => 'The :attribute format is invalid.',
+     'required' => 'The :attribute field is required.',
++    'required_array_keys' => 'The :attribute field must contain entries for: :values.',
+     'required_if' => 'The :attribute field is required when :other is :value.',
+     'required_unless' => 'The :attribute field is required unless :other is in :values.',
+     'required_with' => 'The :attribute field is required when :values is present.',
+     'required_with_all' => 'The :attribute field is required when :values are present.',
+     'required_without' => 'The :attribute field is required when :values is not present.',
+     'required_without_all' => 'The :attribute field is required when none of :values are present.',
+-    'prohibited' => 'The :attribute field is prohibited.',
+-    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
+-    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
+     'same' => 'The :attribute and :other must match.',
+     'size' => [
+         'numeric' => 'The :attribute must be :size.',
+@@ -116,10 +124,10 @@ return [
+     ],
+     'starts_with' => 'The :attribute must start with one of the following: :values.',
+     'string' => 'The :attribute must be a string.',
+-    'timezone' => 'The :attribute must be a valid zone.',
++    'timezone' => 'The :attribute must be a valid timezone.',
+     'unique' => 'The :attribute has already been taken.',
+     'uploaded' => 'The :attribute failed to upload.',
+-    'url' => 'The :attribute format is invalid.',
++    'url' => 'The :attribute must be a valid URL.',
+     'uuid' => 'The :attribute must be a valid UUID.',
+ 
+     /*
+diff --git a/package.json b/package.json
+index 00c65067..7a9aecdf 100644
+--- a/package.json
++++ b/package.json
+@@ -10,7 +10,7 @@
+         "production": "mix --production"
+     },
+     "devDependencies": {
+-        "axios": "^0.21",
++        "axios": "^0.25",
+         "laravel-mix": "^6.0.6",
+         "lodash": "^4.17.19",
+         "postcss": "^8.1.14"
+diff --git a/phpunit.xml b/phpunit.xml
+index 4ae4d979..2ac86a18 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -18,14 +18,14 @@
+         </include>
+     </coverage>
+     <php>
+-        <server name="APP_ENV" value="testing"/>
+-        <server name="BCRYPT_ROUNDS" value="4"/>
+-        <server name="CACHE_DRIVER" value="array"/>
+-        <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
+-        <!-- <server name="DB_DATABASE" value=":memory:"/> -->
+-        <server name="MAIL_MAILER" value="array"/>
+-        <server name="QUEUE_CONNECTION" value="sync"/>
+-        <server name="SESSION_DRIVER" value="array"/>
+-        <server name="TELESCOPE_ENABLED" value="false"/>
++        <env name="APP_ENV" value="testing"/>
++        <env name="BCRYPT_ROUNDS" value="4"/>
++        <env name="CACHE_DRIVER" value="array"/>
++        <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
++        <!-- <env name="DB_DATABASE" value=":memory:"/> -->
++        <env name="MAIL_MAILER" value="array"/>
++        <env name="QUEUE_CONNECTION" value="sync"/>
++        <env name="SESSION_DRIVER" value="array"/>
++        <env name="TELESCOPE_ENABLED" value="false"/>
+     </php>
+ </phpunit>
+diff --git a/public/index.php b/public/index.php
+index 66ea93cd..1d69f3a2 100644
+--- a/public/index.php
++++ b/public/index.php
+@@ -16,8 +16,8 @@ define('LARAVEL_START', microtime(true));
+ |
+ */
+ 
+-if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
+-    require __DIR__.'/../storage/framework/maintenance.php';
++if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
++    require $maintenance;
+ }
+ 
+ /*
+@@ -48,8 +48,8 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
+ 
+ $kernel = $app->make(Kernel::class);
+ 
+-$response = tap($kernel->handle(
++$response = $kernel->handle(
+     $request = Request::capture()
+-))->send();
++)->send();
+ 
+ $kernel->terminate($request, $response);
+diff --git a/public/web.config b/public/web.config
+deleted file mode 100644
+index 323482f1..00000000
+--- a/public/web.config
++++ /dev/null
+@@ -1,28 +0,0 @@
+-<!--
+-    Rewrites requires Microsoft URL Rewrite Module for IIS
+-    Download: https://www.iis.net/downloads/microsoft/url-rewrite
+-    Debug Help: https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/using-failed-request-tracing-to-trace-rewrite-rules
+--->
+-<configuration>
+-  <system.webServer>
+-    <rewrite>
+-      <rules>
+-        <rule name="Imported Rule 1" stopProcessing="true">
+-          <match url="^(.*)/$" ignoreCase="false" />
+-          <conditions>
+-            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
+-          </conditions>
+-          <action type="Redirect" redirectType="Permanent" url="/{R:1}" />
+-        </rule>
+-        <rule name="Imported Rule 2" stopProcessing="true">
+-          <match url="^" ignoreCase="false" />
+-          <conditions>
+-            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
+-            <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" negate="true" />
+-          </conditions>
+-          <action type="Rewrite" url="index.php" />
+-        </rule>
+-      </rules>
+-    </rewrite>
+-  </system.webServer>
+-</configuration>
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index b1905c92..dd6a45db 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -11,7 +11,7 @@
+ 
+         <!-- Styles -->
+         <style>
+-            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--bg-opacity:1;background-color:#fff;background-color:rgba(255,255,255,var(--bg-opacity))}.bg-gray-100{--bg-opacity:1;background-color:#f7fafc;background-color:rgba(247,250,252,var(--bg-opacity))}.border-gray-200{--border-opacity:1;border-color:#edf2f7;border-color:rgba(237,242,247,var(--border-opacity))}.border-t{border-top-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.text-center{text-align:center}.text-gray-200{--text-opacity:1;color:#edf2f7;color:rgba(237,242,247,var(--text-opacity))}.text-gray-300{--text-opacity:1;color:#e2e8f0;color:rgba(226,232,240,var(--text-opacity))}.text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.text-gray-500{--text-opacity:1;color:#a0aec0;color:rgba(160,174,192,var(--text-opacity))}.text-gray-600{--text-opacity:1;color:#718096;color:rgba(113,128,150,var(--text-opacity))}.text-gray-700{--text-opacity:1;color:#4a5568;color:rgba(74,85,104,var(--text-opacity))}.text-gray-900{--text-opacity:1;color:#1a202c;color:rgba(26,32,44,var(--text-opacity))}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--bg-opacity:1;background-color:#2d3748;background-color:rgba(45,55,72,var(--bg-opacity))}.dark\:bg-gray-900{--bg-opacity:1;background-color:#1a202c;background-color:rgba(26,32,44,var(--bg-opacity))}.dark\:border-gray-700{--border-opacity:1;border-color:#4a5568;border-color:rgba(74,85,104,var(--border-opacity))}.dark\:text-white{--text-opacity:1;color:#fff;color:rgba(255,255,255,var(--text-opacity))}.dark\:text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}}
++            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--bg-opacity:1;background-color:#fff;background-color:rgba(255,255,255,var(--bg-opacity))}.bg-gray-100{--bg-opacity:1;background-color:#f7fafc;background-color:rgba(247,250,252,var(--bg-opacity))}.border-gray-200{--border-opacity:1;border-color:#edf2f7;border-color:rgba(237,242,247,var(--border-opacity))}.border-t{border-top-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.text-center{text-align:center}.text-gray-200{--text-opacity:1;color:#edf2f7;color:rgba(237,242,247,var(--text-opacity))}.text-gray-300{--text-opacity:1;color:#e2e8f0;color:rgba(226,232,240,var(--text-opacity))}.text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.text-gray-500{--text-opacity:1;color:#a0aec0;color:rgba(160,174,192,var(--text-opacity))}.text-gray-600{--text-opacity:1;color:#718096;color:rgba(113,128,150,var(--text-opacity))}.text-gray-700{--text-opacity:1;color:#4a5568;color:rgba(74,85,104,var(--text-opacity))}.text-gray-900{--text-opacity:1;color:#1a202c;color:rgba(26,32,44,var(--text-opacity))}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--bg-opacity:1;background-color:#2d3748;background-color:rgba(45,55,72,var(--bg-opacity))}.dark\:bg-gray-900{--bg-opacity:1;background-color:#1a202c;background-color:rgba(26,32,44,var(--bg-opacity))}.dark\:border-gray-700{--border-opacity:1;border-color:#4a5568;border-color:rgba(74,85,104,var(--border-opacity))}.dark\:text-white{--text-opacity:1;color:#fff;color:rgba(255,255,255,var(--text-opacity))}.dark\:text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.dark\:text-gray-500{--tw-text-opacity:1;color:#6b7280;color:rgba(107,114,128,var(--tw-text-opacity))}}
+         </style>
+ 
+         <style>
+@@ -25,12 +25,12 @@
+             @if (Route::has('login'))
+                 <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+                     @auth
+-                        <a href="{{ url('/home') }}" class="text-sm text-gray-700 underline">Home</a>
++                        <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Home</a>
+                     @else
+-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
++                        <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+ 
+                         @if (Route::has('register'))
+-                            <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>
++                            <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
+                         @endif
+                     @endauth
+                 </div>
+diff --git a/routes/api.php b/routes/api.php
+index bcb8b189..eb6fa48c 100644
+--- a/routes/api.php
++++ b/routes/api.php
+@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
+ |
+ */
+ 
+-Route::middleware('auth:api')->get('/user', function (Request $request) {
++Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+     return $request->user();
+ });
+diff --git a/server.php b/server.php
+deleted file mode 100644
+index 5fb6379e..00000000
+--- a/server.php
++++ /dev/null
+@@ -1,21 +0,0 @@
+-<?php
+-
+-/**
+- * Laravel - A PHP Framework For Web Artisans
+- *
+- * @package  Laravel
+- * @author   Taylor Otwell <taylor@laravel.com>
+- */
+-
+-$uri = urldecode(
+-    parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
+-);
+-
+-// This file allows us to emulate Apache's "mod_rewrite" functionality from the
+-// built-in PHP web server. This provides a convenient way to test a Laravel
+-// application without having installed a "real" web server software here.
+-if ($uri !== '/' && file_exists(__DIR__.'/public'.$uri)) {
+-    return false;
+-}
+-
+-require_once __DIR__.'/public/index.php';
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index 4ae02bc5..78ccc21f 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -12,7 +12,7 @@ class ExampleTest extends TestCase
+      *
+      * @return void
+      */
+-    public function test_example()
++    public function test_the_application_returns_a_successful_response()
+     {
+         $response = $this->get('/');
+ 
+diff --git a/tests/Unit/ExampleTest.php b/tests/Unit/ExampleTest.php
+index 62e8c3cd..e5c5fef7 100644
+--- a/tests/Unit/ExampleTest.php
++++ b/tests/Unit/ExampleTest.php
+@@ -11,7 +11,7 @@ class ExampleTest extends TestCase
+      *
+      * @return void
+      */
+-    public function test_example()
++    public function test_that_true_is_true()
+     {
+         $this->assertTrue(true);
+     }

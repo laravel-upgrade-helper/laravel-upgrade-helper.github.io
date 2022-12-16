@@ -1,0 +1,161 @@
+diff --git a/.env.example b/.env.example
+index ac748637..7dc51e1f 100644
+--- a/.env.example
++++ b/.env.example
+@@ -5,6 +5,7 @@ APP_DEBUG=true
+ APP_URL=http://localhost
+ 
+ LOG_CHANNEL=stack
++LOG_LEVEL=debug
+ 
+ DB_CONNECTION=mysql
+ DB_HOST=127.0.0.1
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 401dc26d..5f642bbb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,43 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v8.0.1...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v8.2.0...master)
++
++
++## [v8.2.0 (2020-10-20)](https://github.com/laravel/laravel/compare/v8.1.0...v8.2.0)
++
++### Added
++- Added 'LOG_LEVEL' env variable in `.env.example` ([#5445](https://github.com/laravel/laravel/pull/5445))
++- Add 'multiple_of' translation ([#5449](https://github.com/laravel/laravel/pull/5449))
++
++
++## [v8.1.0 (2020-10-06)](https://github.com/laravel/laravel/compare/v8.0.3...v8.1.0)
++
++### Added
++- Added `LOG_LEVEL` env variable ([#5442](https://github.com/laravel/laravel/pull/5442))
++
++### Changed
++- Type hint the middleware Request ([#5438](https://github.com/laravel/laravel/pull/5438))
++
++
++## [v8.0.3 (2020-09-22)](https://github.com/laravel/laravel/compare/v8.0.2...v8.0.3)
++
++### Changed
++- Add comment ([a6ca577](https://github.com/laravel/laravel/commit/a6ca5778391b150102637459ac3b2a42d78d495b))
++
++
++## [v8.0.2 (2020-09-22)](https://github.com/laravel/laravel/compare/v8.0.1...v8.0.2)
++
++### Changed
++- Fully qualified user model in seeder ([#5406](https://github.com/laravel/laravel/pull/5406))
++- Update model path in `AuthServiceProvider`'s policies ([#5412](https://github.com/laravel/laravel/pull/5412))
++- Add commented code ([69d0c50](https://github.com/laravel/laravel/commit/69d0c504e3ff01e0fd219e02ebac9b1c22151c2a))
++
++### Fixed
++- Swap route order ([292a5b2](https://github.com/laravel/laravel/commit/292a5b26a9293d82ab5a7d0bb81bba02ea71758e))
++- Fix route when uncomment $namespace ([#5424](https://github.com/laravel/laravel/pull/5424))
++
++### Removed
++- Removed `$namespace` property ([b33852e](https://github.com/laravel/laravel/commit/b33852ecace72791f4bc28b8dd84c108166512bf))
+ 
+ 
+ ## [v8.0.1 (2020-09-09)](https://github.com/laravel/laravel/compare/v8.0.0...v8.0.1)
+diff --git a/README.md b/README.md
+index f3decb12..2f7ddcc6 100644
+--- a/README.md
++++ b/README.md
+@@ -2,9 +2,9 @@
+ 
+ <p align="center">
+ <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
+-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
+-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
++<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
++<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
++<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+ </p>
+ 
+ ## About Laravel
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+index fead421a..362b48b0 100644
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ b/app/Http/Middleware/RedirectIfAuthenticated.php
+@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
+ 
+ use App\Providers\RouteServiceProvider;
+ use Closure;
++use Illuminate\Http\Request;
+ use Illuminate\Support\Facades\Auth;
+ 
+ class RedirectIfAuthenticated
+@@ -16,7 +17,7 @@ class RedirectIfAuthenticated
+      * @param  string|null  ...$guards
+      * @return mixed
+      */
+-    public function handle($request, Closure $next, ...$guards)
++    public function handle(Request $request, Closure $next, ...$guards)
+     {
+         $guards = empty($guards) ? [null] : $guards;
+ 
+diff --git a/config/logging.php b/config/logging.php
+index 088c204e..6aa77fe2 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -44,13 +44,13 @@ return [
+         'single' => [
+             'driver' => 'single',
+             'path' => storage_path('logs/laravel.log'),
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+         ],
+ 
+         'daily' => [
+             'driver' => 'daily',
+             'path' => storage_path('logs/laravel.log'),
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+             'days' => 14,
+         ],
+ 
+@@ -59,12 +59,12 @@ return [
+             'url' => env('LOG_SLACK_WEBHOOK_URL'),
+             'username' => 'Laravel Log',
+             'emoji' => ':boom:',
+-            'level' => 'critical',
++            'level' => env('LOG_LEVEL', 'critical'),
+         ],
+ 
+         'papertrail' => [
+             'driver' => 'monolog',
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+             'handler' => SyslogUdpHandler::class,
+             'handler_with' => [
+                 'host' => env('PAPERTRAIL_URL'),
+@@ -83,12 +83,12 @@ return [
+ 
+         'syslog' => [
+             'driver' => 'syslog',
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+         ],
+ 
+         'errorlog' => [
+             'driver' => 'errorlog',
+-            'level' => 'debug',
++            'level' => env('LOG_LEVEL', 'debug'),
+         ],
+ 
+         'null' => [
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index a65914f9..2e2820b0 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -90,6 +90,7 @@ return [
+         'string' => 'The :attribute must be at least :min characters.',
+         'array' => 'The :attribute must have at least :min items.',
+     ],
++    'multiple_of' => 'The :attribute must be a multiple of :value',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
+     'numeric' => 'The :attribute must be a number.',

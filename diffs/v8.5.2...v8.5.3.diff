@@ -1,0 +1,25 @@
+diff --git a/README.md b/README.md
+index 2f7ddcc6..e1dcd2e1 100644
+--- a/README.md
++++ b/README.md
+@@ -42,6 +42,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ - **[Many](https://www.many.co.uk)**
+ - **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+ - **[DevSquad](https://devsquad.com)**
++- **[Curotec](https://www.curotec.com/)**
+ - **[OP.GG](https://op.gg)**
+ 
+ ## Contributing
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 21a8754b..30020a50 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -14,7 +14,7 @@ class Kernel extends HttpKernel
+      * @var array
+      */
+     protected $middleware = [
+-        \App\Http\Middleware\TrustHosts::class,
++        // \App\Http\Middleware\TrustHosts::class,
+         \App\Http\Middleware\TrustProxies::class,
+         \Fruitcake\Cors\HandleCors::class,
+         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,

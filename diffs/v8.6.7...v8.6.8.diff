@@ -1,0 +1,64 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b4e03953..01a0a9c5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,13 @@
+ ## [Unreleased](https://github.com/laravel/laravel/compare/v8.6.7...8.x)
+ 
+ 
++## [v8.6.8 (2021-11-23)](https://github.com/laravel/laravel/compare/v8.6.7...v8.6.8)
++
++### Changed
++- Order validation rules alphabetically ([#5728](https://github.com/laravel/laravel/pull/5728))
++- Removes the Console\Kernel::$commands property ([#5727](https://github.com/laravel/laravel/pull/5727))
++
++
+ ## [v8.6.7 (2021-11-16)](https://github.com/laravel/laravel/compare/v8.6.6...v8.6.7)
+ 
+ ### Changed
+diff --git a/app/Console/Kernel.php b/app/Console/Kernel.php
+index 69914e99..d8bc1d29 100644
+--- a/app/Console/Kernel.php
++++ b/app/Console/Kernel.php
+@@ -7,15 +7,6 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+ 
+ class Kernel extends ConsoleKernel
+ {
+-    /**
+-     * The Artisan commands provided by your application.
+-     *
+-     * @var array
+-     */
+-    protected $commands = [
+-        //
+-    ];
+-
+     /**
+      * Define the application's command schedule.
+      *
+diff --git a/resources/lang/en/validation.php b/resources/lang/en/validation.php
+index 51735fee..ba42c8d9 100644
+--- a/resources/lang/en/validation.php
++++ b/resources/lang/en/validation.php
+@@ -100,6 +100,10 @@ return [
+     'numeric' => 'The :attribute must be a number.',
+     'password' => 'The password is incorrect.',
+     'present' => 'The :attribute field must be present.',
++    'prohibited' => 'The :attribute field is prohibited.',
++    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
++    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
++    'prohibits' => 'The :attribute field prohibits :other from being present.',
+     'regex' => 'The :attribute format is invalid.',
+     'required' => 'The :attribute field is required.',
+     'required_if' => 'The :attribute field is required when :other is :value.',
+@@ -108,10 +112,6 @@ return [
+     'required_with_all' => 'The :attribute field is required when :values are present.',
+     'required_without' => 'The :attribute field is required when :values is not present.',
+     'required_without_all' => 'The :attribute field is required when none of :values are present.',
+-    'prohibited' => 'The :attribute field is prohibited.',
+-    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
+-    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
+-    'prohibits' => 'The :attribute field prohibits :other from being present.',
+     'same' => 'The :attribute and :other must match.',
+     'size' => [
+         'numeric' => 'The :attribute must be :size.',

@@ -1,0 +1,55 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 83942d56..5738bf0a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,14 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v6.18.8...6.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v6.18.35...6.x)
++
++
++## [v6.18.35 (2020-08-11)](https://github.com/laravel/laravel/compare/v6.18.8...v6.18.35)
++
++### Changed
++- Set framework version to `^6.18.35` ([#5369](https://github.com/laravel/laravel/pull/5369))
++- Bump lodash from 4.17.15 to 4.17.19 ([f465c51](https://github.com/laravel/laravel/commit/f465c511c009235fc7bfa06bfcb41294e60e9b42))
++- Disable webpack-dev-server host check ([#5288](https://github.com/laravel/laravel/pull/5288))
+ 
+ 
+ ## [v6.18.8 (2020-04-16)](https://github.com/laravel/laravel/compare/v6.18.3...v6.18.8)
+diff --git a/composer.json b/composer.json
+index 4ed8c09f..cc85fb7d 100644
+--- a/composer.json
++++ b/composer.json
+@@ -10,7 +10,7 @@
+     "require": {
+         "php": "^7.2",
+         "fideloper/proxy": "^4.0",
+-        "laravel/framework": "^6.2",
++        "laravel/framework": "^6.18.35",
+         "laravel/tinker": "^2.0"
+     },
+     "require-dev": {
+diff --git a/package.json b/package.json
+index 3729fb78..420218d5 100644
+--- a/package.json
++++ b/package.json
+@@ -5,7 +5,7 @@
+         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "watch": "npm run development -- --watch",
+         "watch-poll": "npm run watch -- --watch-poll",
+-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
++        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+         "prod": "npm run production",
+         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+     },
+@@ -13,7 +13,7 @@
+         "axios": "^0.19",
+         "cross-env": "^7.0",
+         "laravel-mix": "^5.0.1",
+-        "lodash": "^4.17.13",
++        "lodash": "^4.17.19",
+         "resolve-url-loader": "^3.1.0",
+         "sass": "^1.15.2",
+         "sass-loader": "^8.0.0"
