@@ -25,7 +25,7 @@ jobs:
         php ./generate-diffs.php
         LATEST_VERSION=$(tail -n 1 tags.txt)
         LATEST_VERSION_ON_PROD=$(curl -s https://laravel-upgrade-helper.github.io/tags.txt | tail -n 1)
-        if [[ git diff ./tags.txt ]]; then
+        if [[ `git status --porcelain` ]]; then
           git add .
           git commit -m "[Version-Bot] Add Laravel Version"
           git push origin gh-pages
