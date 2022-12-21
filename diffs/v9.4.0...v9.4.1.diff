@@ -1,0 +1,34 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a32e0b4c..a62b64a5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,16 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.12...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.4.0...9.x)
++
++## [v9.4.0](https://github.com/laravel/laravel/compare/v9.3.12...v9.4.0) - 2022-12-15
++
++### Added
++
++- Vite 4 support by @timacdonald in https://github.com/laravel/laravel/pull/6043
++
++### Changed
++
++- Add ulid and ascii validation message by @nshiro in https://github.com/laravel/laravel/pull/6046
+ 
+ ## [v9.3.12](https://github.com/laravel/laravel/compare/v9.3.11...v9.3.12) - 2022-11-22
+ 
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index ae23a76e..af94bd42 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -37,6 +37,7 @@ return [
+     'date' => 'The :attribute is not a valid date.',
+     'date_equals' => 'The :attribute must be a date equal to :date.',
+     'date_format' => 'The :attribute does not match the format :format.',
++    'decimal' => 'The :attribute must have :decimal decimal places.',
+     'declined' => 'The :attribute must be declined.',
+     'declined_if' => 'The :attribute must be declined when :other is :value.',
+     'different' => 'The :attribute and :other must be different.',
