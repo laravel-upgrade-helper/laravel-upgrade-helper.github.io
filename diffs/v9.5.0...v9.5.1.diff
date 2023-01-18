@@ -1,0 +1,32 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1d960141..788f901a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,14 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.4.1...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.5.0...9.x)
++
++## [v9.5.0](https://github.com/laravel/laravel/compare/v9.4.1...v9.5.0) - 2023-01-02
++
++### Changed
++
++- Update to Heroicons v2 by @driesvints in https://github.com/laravel/laravel/pull/6051
++- Support pusher-js v8.0 by @balu-lt in https://github.com/laravel/laravel/pull/6059
++- Switch password reset email to a primary key by @browner12 in https://github.com/laravel/laravel/pull/6064
+ 
+ ## [v9.4.1](https://github.com/laravel/laravel/compare/v9.4.0...v9.4.1) - 2022-12-19
+ 
+diff --git a/composer.json b/composer.json
+index 299b7e8a..024809f1 100644
+--- a/composer.json
++++ b/composer.json
+@@ -60,6 +60,6 @@
+             "pestphp/pest-plugin": true
+         }
+     },
+-    "minimum-stability": "dev",
++    "minimum-stability": "stable",
+     "prefer-stable": true
+ }
