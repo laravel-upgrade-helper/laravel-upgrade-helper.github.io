@@ -1,0 +1,67 @@
+diff --git a/.env.example b/.env.example
+index 00b6110e..478972c2 100644
+--- a/.env.example
++++ b/.env.example
+@@ -29,7 +29,7 @@ REDIS_PASSWORD=null
+ REDIS_PORT=6379
+ 
+ MAIL_MAILER=smtp
+-MAIL_HOST=mailhog
++MAIL_HOST=mailpit
+ MAIL_PORT=1025
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1d960141..d7f8ef2d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,20 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.4.1...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.5.1...9.x)
++
++## [v9.5.1](https://github.com/laravel/laravel/compare/v9.5.0...v9.5.1) - 2023-01-11
++
++### Changed
++
++- Use minimum stability "stable" by @taylorotwell in https://github.com/laravel/laravel/commit/c1092ec084bb294a61b0f1c2149fddd662f1fc55
++
++## [v9.5.0](https://github.com/laravel/laravel/compare/v9.4.1...v9.5.0) - 2023-01-02
++
++### Changed
++
++- Update to Heroicons v2 by @driesvints in https://github.com/laravel/laravel/pull/6051
++- Support pusher-js v8.0 by @balu-lt in https://github.com/laravel/laravel/pull/6059
++- Switch password reset email to a primary key by @browner12 in https://github.com/laravel/laravel/pull/6064
+ 
+ ## [v9.4.1](https://github.com/laravel/laravel/compare/v9.4.0...v9.4.1) - 2022-12-19
+ 
+diff --git a/composer.json b/composer.json
+index 299b7e8a..024809f1 100644
+--- a/composer.json
++++ b/composer.json
+@@ -60,6 +60,6 @@
+             "pestphp/pest-plugin": true
+         }
+     },
+-    "minimum-stability": "dev",
++    "minimum-stability": "stable",
+     "prefer-stable": true
+ }
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+index af94bd42..70407c9d 100644
+--- a/lang/en/validation.php
++++ b/lang/en/validation.php
+@@ -103,6 +103,11 @@ return [
+         'string' => 'The :attribute must be at least :min characters.',
+     ],
+     'min_digits' => 'The :attribute must have at least :min digits.',
++    'missing' => 'The :attribute field must be missing.',
++    'missing_if' => 'The :attribute field must be missing when :other is :value.',
++    'missing_unless' => 'The :attribute field must be missing unless :other is :value.',
++    'missing_with' => 'The :attribute field must be missing when :values is present.',
++    'missing_with_all' => 'The :attribute field must be missing when :values are present.',
+     'multiple_of' => 'The :attribute must be a multiple of :value.',
+     'not_in' => 'The selected :attribute is invalid.',
+     'not_regex' => 'The :attribute format is invalid.',
