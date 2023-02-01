@@ -20,7 +20,7 @@ jobs:
     - name: "Generate diffs"
       run: |
         git config --global user.name 'Version Bot'
-        git config --global user.email 'version-bot@users.noreply.github.com'
+        git config --global user.email 'laravel-upgrade-helper@users.noreply.github.com'
         curl --output generate-diffs.php https://raw.githubusercontent.com/laravel-upgrade-helper/laravel-diff-generator/main/generate-diffs.php
         php ./generate-diffs.php
         LATEST_VERSION=$(tail -n 1 tags.txt)
