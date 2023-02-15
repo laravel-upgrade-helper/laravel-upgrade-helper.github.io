@@ -1,0 +1,1440 @@
+diff --git a/.env.example b/.env.example
+index 00b6110e..478972c2 100644
+--- a/.env.example
++++ b/.env.example
+@@ -29,7 +29,7 @@ REDIS_PASSWORD=null
+ REDIS_PORT=6379
+ 
+ MAIL_MAILER=smtp
+-MAIL_HOST=mailhog
++MAIL_HOST=mailpit
+ MAIL_PORT=1025
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+diff --git a/.gitattributes b/.gitattributes
+index 7dbbf41a..fcb21d39 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -1,4 +1,4 @@
+-* text=auto
++* text=auto eol=lf
+ 
+ *.blade.php diff=html
+ *.css diff=css
+diff --git a/.github/workflows/issues.yml b/.github/workflows/issues.yml
+new file mode 100644
+index 00000000..9634a0ed
+--- /dev/null
++++ b/.github/workflows/issues.yml
+@@ -0,0 +1,12 @@
++name: issues
++
++on:
++  issues:
++    types: [labeled]
++
++permissions:
++  issues: write
++
++jobs:
++  help-wanted:
++    uses: laravel/.github/.github/workflows/issues.yml@main
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index 77662031..8e6e9cd5 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -19,7 +19,7 @@ jobs:
+     strategy:
+       fail-fast: true
+       matrix:
+-        php: ['8.0', 8.1, 8.2]
++        php: [8.1, 8.2]
+ 
+     name: PHP ${{ matrix.php }}
+ 
+diff --git a/.gitignore b/.gitignore
+index f0d10af6..e6bbd7ae 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,4 @@
++/.phpunit.cache
+ /node_modules
+ /public/build
+ /public/hot
+@@ -7,7 +8,6 @@
+ .env
+ .env.backup
+ .env.production
+-.phpunit.result.cache
+ Homestead.json
+ Homestead.yaml
+ auth.json
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c96aa8f9..a08dfc8a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,207 +1,7 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v9.3.11...9.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v9.5.1...10.x)
+ 
+-## [v9.3.11](https://github.com/laravel/laravel/compare/v9.3.10...v9.3.11) - 2022-11-14
++## [v10.0.0 (2022-02-07)](https://github.com/laravel/laravel/compare/v9.5.1...10.x)
+ 
+-### Changed
+-
+-- Adds lowercase validation rule translation by @timacdonald in https://github.com/laravel/laravel/pull/6028
+-- Adds uppercase validation rule translation by @michaelnabil230 in https://github.com/laravel/laravel/pull/6029
+-
+-## [v9.3.10](https://github.com/laravel/laravel/compare/v9.3.9...v9.3.10) - 2022-10-28
+-
+-### Changed
+-
+-- Changing .env to make Pusher work without editing the commented out part in the bootstrap.js by @cveldman in https://github.com/laravel/laravel/pull/6021
+-
+-## [v9.3.9](https://github.com/laravel/laravel/compare/v9.3.8...v9.3.9) - 2022-10-17
+-
+-### Changed
+-
+-- Update welcome page colours by @timacdonald in https://github.com/laravel/laravel/pull/6002
+-- Ignore .env.production by @yasapurnama in https://github.com/laravel/laravel/pull/6004
+-- Upgrade axios to v1.x by @ankurk91 in https://github.com/laravel/laravel/pull/6008
+-- Shorten pusher host config by @buihanh2304 in https://github.com/laravel/laravel/pull/6009
+-
+-## [v9.3.8](https://github.com/laravel/laravel/compare/v9.3.7...v9.3.8) - 2022-09-20
+-
+-### Changed
+-
+-- Validation added `required_if_accepted` by @luisprmat in https://github.com/laravel/laravel/pull/5987
+-
+-## [v9.3.7](https://github.com/laravel/laravel/compare/v9.3.6...v9.3.7) - 2022-09-02
+-
+-### Changed
+-
+-- Make email unique by @martin-ro in https://github.com/laravel/laravel/pull/5978
+-
+-## [v9.3.6](https://github.com/laravel/laravel/compare/v9.3.5...v9.3.6) - 2022-08-29
+-
+-### Changed
+-
+-- Bump Vite plugin version by @timacdonald in https://github.com/laravel/laravel/pull/5977
+-
+-## [v9.3.5](https://github.com/laravel/laravel/compare/v9.3.4...v9.3.5) - 2022-08-22
+-
+-### Changed
+-
+-- `max_digits` and `min_digits` validation translations by @danharrin in https://github.com/laravel/laravel/pull/5975
+-- Use short closure by @taylorotwell in https://github.com/laravel/laravel/commit/7b17f5f32623c2ee75f2bff57a42bb8f180ac779
+-- Use except by @taylorotwell in https://github.com/laravel/laravel/commit/e2e25f607a894427d6545f611ad3c8d94d022e9d
+-
+-## [v9.3.4](https://github.com/laravel/laravel/compare/v9.3.3...v9.3.4) - 2022-08-15
+-
+-### Changed
+-
+-- Add ValidateSignature middleware for ignore params by @valorin in https://github.com/laravel/laravel/pull/5942
+-
+-## [v9.3.3](https://github.com/laravel/laravel/compare/v9.3.2...v9.3.3) - 2022-08-03
+-
+-### Changed
+-
+-- Validation added `doesnt_end_with` translation by @kichetof in https://github.com/laravel/laravel/pull/5962
+-
+-## [v9.3.2](https://github.com/laravel/laravel/compare/v9.3.1...v9.3.2) - 2022-08-01
+-
+-### Changed
+-
+-- Update Sanctum by @suyar in https://github.com/laravel/laravel/pull/5957
+-- Allow Pest plugin in Composer by @driesvints in https://github.com/laravel/laravel/pull/5959
+-
+-## [v9.3.1](https://github.com/laravel/laravel/compare/v9.3.0...v9.3.1) - 2022-07-26
+-
+-### Changed
+-
+-- Update font delivery by @abenerd in https://github.com/laravel/laravel/pull/5952
+-- Don't need to ignore vite config file by @GrahamCampbell in https://github.com/laravel/laravel/pull/5953
+-
+-## [v9.3.0](https://github.com/laravel/laravel/compare/v9.2.1...v9.3.0) - 2022-07-20
+-
+-### Added
+-
+-- Uses `laravel/pint` for styling by @nunomaduro in https://github.com/laravel/laravel/pull/5945
+-
+-### Changed
+-
+-- Bump axios version by @ankurk91 in https://github.com/laravel/laravel/pull/5946
+-- Vite 3 support by @timacdonald in https://github.com/laravel/laravel/pull/5944
+-
+-## [v9.2.1](https://github.com/laravel/laravel/compare/v9.2.0...v9.2.1) - 2022-07-13
+-
+-### Changed
+-
+-- Add auth.json to skeleton by @driesvints in https://github.com/laravel/laravel/pull/5924
+-- Update `bootstrap.js` by @irsyadadl in https://github.com/laravel/laravel/pull/5929
+-- Add default reloading to skeleton by @timacdonald in https://github.com/laravel/laravel/pull/5927
+-- Update to the latest version of laravel-vite-plugin by @jessarcher in https://github.com/laravel/laravel/pull/5943
+-
+-## [v9.2.0](https://github.com/laravel/laravel/compare/v9.1.10...v9.2.0) - 2022-06-28
+-
+-### Added
+-
+-- Vite by @jessarcher in https://github.com/laravel/laravel/pull/5904
+-- Added support for easy development configuration in bootstrap.js by @rennokki in https://github.com/laravel/laravel/pull/5900
+-
+-### Changed
+-
+-- Sorted entries in the `en` validation translations file by @FaridAghili in https://github.com/laravel/laravel/pull/5899
+-
+-## [v9.1.10](https://github.com/laravel/laravel/compare/v9.1.9...v9.1.10) - 2022-06-07
+-
+-### Changed
+-
+-- Add language line by @taylorotwell in https://github.com/laravel/laravel/commit/b084aacc5ad105e39c2b058e9523e73655be8d1f
+-- Improve Pusher configuration for easy development by @oanhnn in https://github.com/laravel/laravel/pull/5897
+-
+-## [v9.1.9](https://github.com/laravel/laravel/compare/v9.1.8...v9.1.9) - 2022-05-28
+-
+-### Changed
+-
+-- Switch to ESM imports by @jessarcher in https://github.com/laravel/laravel/pull/5895
+-
+-## [v9.1.8](https://github.com/laravel/laravel/compare/v9.1.7...v9.1.8) - 2022-05-05
+-
+-### Changed
+-
+-- Add local_domain option to smtp configuration by @bintzandt in https://github.com/laravel/laravel/pull/5877
+-- Add specific test user in seeder by @driesvints in https://github.com/laravel/laravel/pull/5879
+-
+-## [v9.1.7](https://github.com/laravel/laravel/compare/v9.1.6...v9.1.7) - 2022-05-03
+-
+-### Changed
+-
+-- Deprecation log stack trace option by @driesvints in https://github.com/laravel/laravel/pull/5874
+-
+-## [v9.1.6](https://github.com/laravel/laravel/compare/v9.1.5...v9.1.6) - 2022-04-20
+-
+-### Changed
+-
+-- Move password lines into main translation file by @taylorotwell in https://github.com/laravel/laravel/commit/db0d052ece1c17c506633f4c9f5604b65e1cc3a4
+-- Add missing maintenance to config by @ibrunotome in https://github.com/laravel/laravel/pull/5868
+-
+-## [v9.1.5](https://github.com/laravel/laravel/compare/v9.1.4...v9.1.5) - 2022-04-12
+-
+-### Changed
+-
+-- Rearrange route methods by @osbre in https://github.com/laravel/laravel/pull/5862
+-- Add levels to handler by @taylorotwell in https://github.com/laravel/laravel/commit/a507e1424339633ce423729ec0ac49b99f0e57d7
+-
+-## [v9.1.4](https://github.com/laravel/laravel/compare/v9.1.3...v9.1.4) - 2022-03-29
+-
+-### Changed
+-
+-- Add encryption configuration by @taylorotwell in https://github.com/laravel/laravel/commit/f7b982ebdf7bd31eda9f05f901bd92ed32446156
+-
+-## [v9.1.3](https://github.com/laravel/laravel/compare/v9.1.2...v9.1.3) - 2022-03-29
+-
+-### Changed
+-
+-- Add an example to the class aliases by @nshiro in https://github.com/laravel/laravel/pull/5846
+-- Add username in config to use with phpredis + ACL by @neoteknic in https://github.com/laravel/laravel/pull/5851
+-- Remove "password" from validation lang by @mnastalski in https://github.com/laravel/laravel/pull/5856
+-- Make authenticate session a route middleware by @taylorotwell in https://github.com/laravel/laravel/pull/5842
+-
+-## [v9.1.2](https://github.com/laravel/laravel/compare/v9.1.1...v9.1.2) - 2022-03-15
+-
+-### Changed
+-
+-- The docker-compose.override.yml should not be ignored by default by @dakira in https://github.com/laravel/laravel/pull/5838
+-
+-## [v9.1.1](https://github.com/laravel/laravel/compare/v9.1.0...v9.1.1) - 2022-03-08
+-
+-### Changed
+-
+-- Add option to configure Mailgun transporter scheme by @jnoordsij in https://github.com/laravel/laravel/pull/5831
+-- Add `throw` to filesystems config by @ankurk91 in https://github.com/laravel/laravel/pull/5835
+-
+-### Fixed
+-
+-- Small typo fix in filesystems.php by @tooshay in https://github.com/laravel/laravel/pull/5827
+-- Update sendmail default params by @driesvints in https://github.com/laravel/laravel/pull/5836
+-
+-## [v9.1.0](https://github.com/laravel/laravel/compare/v9.0.1...v9.1.0) - 2022-02-22
+-
+-### Changed
+-
+-- Remove namespace from Routes by @emargareten in https://github.com/laravel/laravel/pull/5818
+-- Update sanctum config file by @suyar in https://github.com/laravel/laravel/pull/5820
+-- Replace Laravel CORS package by @driesvints in https://github.com/laravel/laravel/pull/5825
+-
+-## [v9.0.1](https://github.com/laravel/laravel/compare/v9.0.0...v9.0.1) - 2022-02-15
+-
+-### Changed
+-
+-- Improve typing on user factory by @axlon in https://github.com/laravel/laravel/pull/5806
+-- Align min PHP version with docs by @u01jmg3 in https://github.com/laravel/laravel/pull/5807
+-- Remove redundant `null`s by @felixdorn in https://github.com/laravel/laravel/pull/5811
+-- Remove default commented namespace by @driesvints in https://github.com/laravel/laravel/pull/5816
+-- Add underscore to prefix in database cache key by @m4tlch in https://github.com/laravel/laravel/pull/5817
+-
+-### Fixed
+-
+-- Fix lang alphabetical order by @shuvroroy in https://github.com/laravel/laravel/pull/5812
+-
+-## [v9.0.0 (2022-02-08)](https://github.com/laravel/laravel/compare/v8.6.11...v9.0.0)
+-
+-Laravel 9 includes a variety of changes to the application skeleton. Please consult the diff to see what's new.
++Laravel 10 includes a variety of changes to the application skeleton. Please consult the diff to see what's new.
+diff --git a/README.md b/README.md
+index bf0ddd92..3ed385a7 100644
+--- a/README.md
++++ b/README.md
+@@ -1,7 +1,7 @@
+ <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+ 
+ <p align="center">
+-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
++<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+ <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+ <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+ <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+diff --git a/app/Console/Kernel.php b/app/Console/Kernel.php
+index d8bc1d29..e6b9960e 100644
+--- a/app/Console/Kernel.php
++++ b/app/Console/Kernel.php
+@@ -9,21 +9,16 @@ class Kernel extends ConsoleKernel
+ {
+     /**
+      * Define the application's command schedule.
+-     *
+-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+-     * @return void
+      */
+-    protected function schedule(Schedule $schedule)
++    protected function schedule(Schedule $schedule): void
+     {
+         // $schedule->command('inspire')->hourly();
+     }
+ 
+     /**
+      * Register the commands for the application.
+-     *
+-     * @return void
+      */
+-    protected function commands()
++    protected function commands(): void
+     {
+         $this->load(__DIR__.'/Commands');
+ 
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index 82a37e40..b1c262c6 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -38,10 +38,8 @@ class Handler extends ExceptionHandler
+ 
+     /**
+      * Register the exception handling callbacks for the application.
+-     *
+-     * @return void
+      */
+-    public function register()
++    public function register(): void
+     {
+         $this->reportable(function (Throwable $e) {
+             //
+diff --git a/app/Http/Controllers/Controller.php b/app/Http/Controllers/Controller.php
+index a0a2a8a3..77ec359a 100644
+--- a/app/Http/Controllers/Controller.php
++++ b/app/Http/Controllers/Controller.php
+@@ -3,11 +3,10 @@
+ namespace App\Http\Controllers;
+ 
+ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+-use Illuminate\Foundation\Bus\DispatchesJobs;
+ use Illuminate\Foundation\Validation\ValidatesRequests;
+ use Illuminate\Routing\Controller as BaseController;
+ 
+ class Controller extends BaseController
+ {
+-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
++    use AuthorizesRequests, ValidatesRequests;
+ }
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index 00796881..c34cdcf1 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -40,19 +40,19 @@ class Kernel extends HttpKernel
+ 
+         'api' => [
+             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+-            'throttle:api',
++            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+         ],
+     ];
+ 
+     /**
+-     * The application's route middleware.
++     * The application's middleware aliases.
+      *
+-     * These middleware may be assigned to groups or used individually.
++     * Aliases may be used to conveniently assign middleware to routes and groups.
+      *
+      * @var array<string, class-string|string>
+      */
+-    protected $routeMiddleware = [
++    protected $middlewareAliases = [
+         'auth' => \App\Http\Middleware\Authenticate::class,
+         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+diff --git a/app/Http/Middleware/Authenticate.php b/app/Http/Middleware/Authenticate.php
+index 704089a7..d4ef6447 100644
+--- a/app/Http/Middleware/Authenticate.php
++++ b/app/Http/Middleware/Authenticate.php
+@@ -3,19 +3,15 @@
+ namespace App\Http\Middleware;
+ 
+ use Illuminate\Auth\Middleware\Authenticate as Middleware;
++use Illuminate\Http\Request;
+ 
+ class Authenticate extends Middleware
+ {
+     /**
+      * Get the path the user should be redirected to when they are not authenticated.
+-     *
+-     * @param  \Illuminate\Http\Request  $request
+-     * @return string|null
+      */
+-    protected function redirectTo($request)
++    protected function redirectTo(Request $request): ?string
+     {
+-        if (! $request->expectsJson()) {
+-            return route('login');
+-        }
++        return $request->expectsJson() ? null : route('login');
+     }
+ }
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+index a2813a06..afc78c4e 100644
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ b/app/Http/Middleware/RedirectIfAuthenticated.php
+@@ -6,18 +6,16 @@ use App\Providers\RouteServiceProvider;
+ use Closure;
+ use Illuminate\Http\Request;
+ use Illuminate\Support\Facades\Auth;
++use Symfony\Component\HttpFoundation\Response;
+ 
+ class RedirectIfAuthenticated
+ {
+     /**
+      * Handle an incoming request.
+      *
+-     * @param  \Illuminate\Http\Request  $request
+-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+-     * @param  string|null  ...$guards
+-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
++     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+      */
+-    public function handle(Request $request, Closure $next, ...$guards)
++    public function handle(Request $request, Closure $next, string ...$guards): Response
+     {
+         $guards = empty($guards) ? [null] : $guards;
+ 
+diff --git a/app/Http/Middleware/TrustHosts.php b/app/Http/Middleware/TrustHosts.php
+index 7186414c..c9c58bdd 100644
+--- a/app/Http/Middleware/TrustHosts.php
++++ b/app/Http/Middleware/TrustHosts.php
+@@ -11,7 +11,7 @@ class TrustHosts extends Middleware
+      *
+      * @return array<int, string|null>
+      */
+-    public function hosts()
++    public function hosts(): array
+     {
+         return [
+             $this->allSubdomainsOfApplicationUrl(),
+diff --git a/app/Providers/AppServiceProvider.php b/app/Providers/AppServiceProvider.php
+index ee8ca5bc..452e6b65 100644
+--- a/app/Providers/AppServiceProvider.php
++++ b/app/Providers/AppServiceProvider.php
+@@ -8,20 +8,16 @@ class AppServiceProvider extends ServiceProvider
+ {
+     /**
+      * Register any application services.
+-     *
+-     * @return void
+      */
+-    public function register()
++    public function register(): void
+     {
+         //
+     }
+ 
+     /**
+      * Bootstrap any application services.
+-     *
+-     * @return void
+      */
+-    public function boot()
++    public function boot(): void
+     {
+         //
+     }
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index 33b83f56..5522aa2f 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -18,10 +18,8 @@ class AuthServiceProvider extends ServiceProvider
+ 
+     /**
+      * Register any authentication / authorization services.
+-     *
+-     * @return void
+      */
+-    public function boot()
++    public function boot(): void
+     {
+         $this->registerPolicies();
+ 
+diff --git a/app/Providers/BroadcastServiceProvider.php b/app/Providers/BroadcastServiceProvider.php
+index 395c518b..2be04f5d 100644
+--- a/app/Providers/BroadcastServiceProvider.php
++++ b/app/Providers/BroadcastServiceProvider.php
+@@ -9,10 +9,8 @@ class BroadcastServiceProvider extends ServiceProvider
+ {
+     /**
+      * Bootstrap any application services.
+-     *
+-     * @return void
+      */
+-    public function boot()
++    public function boot(): void
+     {
+         Broadcast::routes();
+ 
+diff --git a/app/Providers/EventServiceProvider.php b/app/Providers/EventServiceProvider.php
+index ab8b2cf7..2d65aac0 100644
+--- a/app/Providers/EventServiceProvider.php
++++ b/app/Providers/EventServiceProvider.php
+@@ -22,20 +22,16 @@ class EventServiceProvider extends ServiceProvider
+ 
+     /**
+      * Register any events for your application.
+-     *
+-     * @return void
+      */
+-    public function boot()
++    public function boot(): void
+     {
+         //
+     }
+ 
+     /**
+      * Determine if events and listeners should be automatically discovered.
+-     *
+-     * @return bool
+      */
+-    public function shouldDiscoverEvents()
++    public function shouldDiscoverEvents(): bool
+     {
+         return false;
+     }
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index ea87f2e5..bc491099 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -21,10 +21,8 @@ class RouteServiceProvider extends ServiceProvider
+ 
+     /**
+      * Define your route model bindings, pattern filters, and other route configuration.
+-     *
+-     * @return void
+      */
+-    public function boot()
++    public function boot(): void
+     {
+         $this->configureRateLimiting();
+ 
+@@ -40,10 +38,8 @@ class RouteServiceProvider extends ServiceProvider
+ 
+     /**
+      * Configure the rate limiters for the application.
+-     *
+-     * @return void
+      */
+-    protected function configureRateLimiting()
++    protected function configureRateLimiting(): void
+     {
+         RateLimiter::for('api', function (Request $request) {
+             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+diff --git a/composer.json b/composer.json
+index 299b7e8a..5b40f87c 100644
+--- a/composer.json
++++ b/composer.json
+@@ -5,20 +5,20 @@
+     "keywords": ["framework", "laravel"],
+     "license": "MIT",
+     "require": {
+-        "php": "^8.0.2",
++        "php": "^8.1",
+         "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^9.19",
+-        "laravel/sanctum": "^3.0",
+-        "laravel/tinker": "^2.7"
++        "laravel/framework": "^10.0",
++        "laravel/sanctum": "^3.2",
++        "laravel/tinker": "^2.8"
+     },
+     "require-dev": {
+         "fakerphp/faker": "^1.9.1",
+         "laravel/pint": "^1.0",
+-        "laravel/sail": "^1.0.1",
++        "laravel/sail": "^1.18",
+         "mockery/mockery": "^1.4.4",
+-        "nunomaduro/collision": "^6.1",
+-        "phpunit/phpunit": "^9.5.10",
+-        "spatie/laravel-ignition": "^1.0"
++        "nunomaduro/collision": "^7.0",
++        "phpunit/phpunit": "^10.0",
++        "spatie/laravel-ignition": "^2.0"
+     },
+     "autoload": {
+         "psr-4": {
+@@ -48,6 +48,9 @@
+         ]
+     },
+     "extra": {
++        "branch-alias": {
++            "dev-master": "10.x-dev"
++        },
+         "laravel": {
+             "dont-discover": []
+         }
+@@ -60,6 +63,6 @@
+             "pestphp/pest-plugin": true
+         }
+     },
+-    "minimum-stability": "dev",
++    "minimum-stability": "stable",
+     "prefer-stable": true
+ }
+diff --git a/config/app.php b/config/app.php
+index ef76a7ed..bca112fb 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -56,7 +56,7 @@ return [
+ 
+     'url' => env('APP_URL', 'http://localhost'),
+ 
+-    'asset_url' => env('ASSET_URL'),
++    'asset_url' => env('ASSET_URL', '/'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/config/auth.php b/config/auth.php
+index d8c6cee7..cae00280 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -84,12 +84,16 @@ return [
+     | considered valid. This security feature keeps tokens short-lived so
+     | they have less time to be guessed. You may change this as needed.
+     |
++    | The throttle setting is the number of seconds a user must wait before
++    | generating more password reset tokens. This prevents the user from
++    | quickly generating a very large amount of password reset tokens.
++    |
+     */
+ 
+     'passwords' => [
+         'users' => [
+             'provider' => 'users',
+-            'table' => 'password_resets',
++            'table' => 'password_reset_tokens',
+             'expire' => 60,
+             'throttle' => 60,
+         ],
+diff --git a/config/mail.php b/config/mail.php
+index 534395a3..049052ff 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -51,10 +51,16 @@ return [
+ 
+         'mailgun' => [
+             'transport' => 'mailgun',
++            // 'client' => [
++            //     'timeout' => 5,
++            // ],
+         ],
+ 
+         'postmark' => [
+             'transport' => 'postmark',
++            // 'client' => [
++            //     'timeout' => 5,
++            // ],
+         ],
+ 
+         'sendmail' => [
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 41f8ae89..d4e88356 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -15,7 +15,7 @@ class UserFactory extends Factory
+      *
+      * @return array<string, mixed>
+      */
+-    public function definition()
++    public function definition(): array
+     {
+         return [
+             'name' => fake()->name(),
+@@ -29,9 +29,9 @@ class UserFactory extends Factory
+     /**
+      * Indicate that the model's email address should be unverified.
+      *
+-     * @return static
++     * @return $this
+      */
+-    public function unverified()
++    public function unverified(): static
+     {
+         return $this->state(fn (array $attributes) => [
+             'email_verified_at' => null,
+diff --git a/database/migrations/2014_10_12_000000_create_users_table.php b/database/migrations/2014_10_12_000000_create_users_table.php
+index cf6b7766..444fafb7 100644
+--- a/database/migrations/2014_10_12_000000_create_users_table.php
++++ b/database/migrations/2014_10_12_000000_create_users_table.php
+@@ -8,10 +8,8 @@ return new class extends Migration
+ {
+     /**
+      * Run the migrations.
+-     *
+-     * @return void
+      */
+-    public function up()
++    public function up(): void
+     {
+         Schema::create('users', function (Blueprint $table) {
+             $table->id();
+@@ -26,10 +24,8 @@ return new class extends Migration
+ 
+     /**
+      * Reverse the migrations.
+-     *
+-     * @return void
+      */
+-    public function down()
++    public function down(): void
+     {
+         Schema::dropIfExists('users');
+     }
+diff --git a/database/migrations/2014_10_12_100000_create_password_resets_table.php b/database/migrations/2014_10_12_100000_create_password_reset_tokens_table.php
+similarity index 59%
+rename from database/migrations/2014_10_12_100000_create_password_resets_table.php
+rename to database/migrations/2014_10_12_100000_create_password_reset_tokens_table.php
+index fcacb80b..81a7229b 100644
+--- a/database/migrations/2014_10_12_100000_create_password_resets_table.php
++++ b/database/migrations/2014_10_12_100000_create_password_reset_tokens_table.php
+@@ -8,13 +8,11 @@ return new class extends Migration
+ {
+     /**
+      * Run the migrations.
+-     *
+-     * @return void
+      */
+-    public function up()
++    public function up(): void
+     {
+-        Schema::create('password_resets', function (Blueprint $table) {
+-            $table->string('email')->index();
++        Schema::create('password_reset_tokens', function (Blueprint $table) {
++            $table->string('email')->primary();
+             $table->string('token');
+             $table->timestamp('created_at')->nullable();
+         });
+@@ -22,11 +20,9 @@ return new class extends Migration
+ 
+     /**
+      * Reverse the migrations.
+-     *
+-     * @return void
+      */
+-    public function down()
++    public function down(): void
+     {
+-        Schema::dropIfExists('password_resets');
++        Schema::dropIfExists('password_reset_tokens');
+     }
+ };
+diff --git a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php b/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+index 17191986..249da817 100644
+--- a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
++++ b/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+@@ -8,10 +8,8 @@ return new class extends Migration
+ {
+     /**
+      * Run the migrations.
+-     *
+-     * @return void
+      */
+-    public function up()
++    public function up(): void
+     {
+         Schema::create('failed_jobs', function (Blueprint $table) {
+             $table->id();
+@@ -26,10 +24,8 @@ return new class extends Migration
+ 
+     /**
+      * Reverse the migrations.
+-     *
+-     * @return void
+      */
+-    public function down()
++    public function down(): void
+     {
+         Schema::dropIfExists('failed_jobs');
+     }
+diff --git a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+index 6c81fd22..e828ad81 100644
+--- a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
++++ b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+@@ -8,10 +8,8 @@ return new class extends Migration
+ {
+     /**
+      * Run the migrations.
+-     *
+-     * @return void
+      */
+-    public function up()
++    public function up(): void
+     {
+         Schema::create('personal_access_tokens', function (Blueprint $table) {
+             $table->id();
+@@ -27,10 +25,8 @@ return new class extends Migration
+ 
+     /**
+      * Reverse the migrations.
+-     *
+-     * @return void
+      */
+-    public function down()
++    public function down(): void
+     {
+         Schema::dropIfExists('personal_access_tokens');
+     }
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index 76d96dc7..a9f4519f 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -9,10 +9,8 @@ class DatabaseSeeder extends Seeder
+ {
+     /**
+      * Seed the application's database.
+-     *
+-     * @return void
+      */
+-    public function run()
++    public function run(): void
+     {
+         // \App\Models\User::factory(10)->create();
+ 
+diff --git a/lang/en/auth.php b/lang/en/auth.php
+deleted file mode 100644
+index 6598e2c0..00000000
+--- a/lang/en/auth.php
++++ /dev/null
+@@ -1,20 +0,0 @@
+-<?php
+-
+-return [
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Authentication Language Lines
+-    |--------------------------------------------------------------------------
+-    |
+-    | The following language lines are used during authentication for various
+-    | messages that we need to display to the user. You are free to modify
+-    | these language lines according to your application's requirements.
+-    |
+-    */
+-
+-    'failed' => 'These credentials do not match our records.',
+-    'password' => 'The provided password is incorrect.',
+-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+-
+-];
+diff --git a/lang/en/pagination.php b/lang/en/pagination.php
+deleted file mode 100644
+index d4814118..00000000
+--- a/lang/en/pagination.php
++++ /dev/null
+@@ -1,19 +0,0 @@
+-<?php
+-
+-return [
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Pagination Language Lines
+-    |--------------------------------------------------------------------------
+-    |
+-    | The following language lines are used by the paginator library to build
+-    | the simple pagination links. You are free to change them to anything
+-    | you want to customize your views to better match your application.
+-    |
+-    */
+-
+-    'previous' => '&laquo; Previous',
+-    'next' => 'Next &raquo;',
+-
+-];
+diff --git a/lang/en/passwords.php b/lang/en/passwords.php
+deleted file mode 100644
+index 2345a56b..00000000
+--- a/lang/en/passwords.php
++++ /dev/null
+@@ -1,22 +0,0 @@
+-<?php
+-
+-return [
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Password Reset Language Lines
+-    |--------------------------------------------------------------------------
+-    |
+-    | The following language lines are the default lines which match reasons
+-    | that are given by the password broker for a password update attempt
+-    | has failed, such as for an invalid token or invalid new password.
+-    |
+-    */
+-
+-    'reset' => 'Your password has been reset!',
+-    'sent' => 'We have emailed your password reset link!',
+-    'throttled' => 'Please wait before retrying.',
+-    'token' => 'This password reset token is invalid.',
+-    'user' => "We can't find a user with that email address.",
+-
+-];
+diff --git a/lang/en/validation.php b/lang/en/validation.php
+deleted file mode 100644
+index f3d8cc5f..00000000
+--- a/lang/en/validation.php
++++ /dev/null
+@@ -1,176 +0,0 @@
+-<?php
+-
+-return [
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Validation Language Lines
+-    |--------------------------------------------------------------------------
+-    |
+-    | The following language lines contain the default error messages used by
+-    | the validator class. Some of these rules have multiple versions such
+-    | as the size rules. Feel free to tweak each of these messages here.
+-    |
+-    */
+-
+-    'accepted' => 'The :attribute must be accepted.',
+-    'accepted_if' => 'The :attribute must be accepted when :other is :value.',
+-    'active_url' => 'The :attribute is not a valid URL.',
+-    'after' => 'The :attribute must be a date after :date.',
+-    'after_or_equal' => 'The :attribute must be a date after or equal to :date.',
+-    'alpha' => 'The :attribute must only contain letters.',
+-    'alpha_dash' => 'The :attribute must only contain letters, numbers, dashes and underscores.',
+-    'alpha_num' => 'The :attribute must only contain letters and numbers.',
+-    'array' => 'The :attribute must be an array.',
+-    'before' => 'The :attribute must be a date before :date.',
+-    'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
+-    'between' => [
+-        'array' => 'The :attribute must have between :min and :max items.',
+-        'file' => 'The :attribute must be between :min and :max kilobytes.',
+-        'numeric' => 'The :attribute must be between :min and :max.',
+-        'string' => 'The :attribute must be between :min and :max characters.',
+-    ],
+-    'boolean' => 'The :attribute field must be true or false.',
+-    'confirmed' => 'The :attribute confirmation does not match.',
+-    'current_password' => 'The password is incorrect.',
+-    'date' => 'The :attribute is not a valid date.',
+-    'date_equals' => 'The :attribute must be a date equal to :date.',
+-    'date_format' => 'The :attribute does not match the format :format.',
+-    'declined' => 'The :attribute must be declined.',
+-    'declined_if' => 'The :attribute must be declined when :other is :value.',
+-    'different' => 'The :attribute and :other must be different.',
+-    'digits' => 'The :attribute must be :digits digits.',
+-    'digits_between' => 'The :attribute must be between :min and :max digits.',
+-    'dimensions' => 'The :attribute has invalid image dimensions.',
+-    'distinct' => 'The :attribute field has a duplicate value.',
+-    'doesnt_end_with' => 'The :attribute may not end with one of the following: :values.',
+-    'doesnt_start_with' => 'The :attribute may not start with one of the following: :values.',
+-    'email' => 'The :attribute must be a valid email address.',
+-    'ends_with' => 'The :attribute must end with one of the following: :values.',
+-    'enum' => 'The selected :attribute is invalid.',
+-    'exists' => 'The selected :attribute is invalid.',
+-    'file' => 'The :attribute must be a file.',
+-    'filled' => 'The :attribute field must have a value.',
+-    'gt' => [
+-        'array' => 'The :attribute must have more than :value items.',
+-        'file' => 'The :attribute must be greater than :value kilobytes.',
+-        'numeric' => 'The :attribute must be greater than :value.',
+-        'string' => 'The :attribute must be greater than :value characters.',
+-    ],
+-    'gte' => [
+-        'array' => 'The :attribute must have :value items or more.',
+-        'file' => 'The :attribute must be greater than or equal to :value kilobytes.',
+-        'numeric' => 'The :attribute must be greater than or equal to :value.',
+-        'string' => 'The :attribute must be greater than or equal to :value characters.',
+-    ],
+-    'image' => 'The :attribute must be an image.',
+-    'in' => 'The selected :attribute is invalid.',
+-    'in_array' => 'The :attribute field does not exist in :other.',
+-    'integer' => 'The :attribute must be an integer.',
+-    'ip' => 'The :attribute must be a valid IP address.',
+-    'ipv4' => 'The :attribute must be a valid IPv4 address.',
+-    'ipv6' => 'The :attribute must be a valid IPv6 address.',
+-    'json' => 'The :attribute must be a valid JSON string.',
+-    'lowercase' => 'The :attribute must be lowercase.',
+-    'lt' => [
+-        'array' => 'The :attribute must have less than :value items.',
+-        'file' => 'The :attribute must be less than :value kilobytes.',
+-        'numeric' => 'The :attribute must be less than :value.',
+-        'string' => 'The :attribute must be less than :value characters.',
+-    ],
+-    'lte' => [
+-        'array' => 'The :attribute must not have more than :value items.',
+-        'file' => 'The :attribute must be less than or equal to :value kilobytes.',
+-        'numeric' => 'The :attribute must be less than or equal to :value.',
+-        'string' => 'The :attribute must be less than or equal to :value characters.',
+-    ],
+-    'mac_address' => 'The :attribute must be a valid MAC address.',
+-    'max' => [
+-        'array' => 'The :attribute must not have more than :max items.',
+-        'file' => 'The :attribute must not be greater than :max kilobytes.',
+-        'numeric' => 'The :attribute must not be greater than :max.',
+-        'string' => 'The :attribute must not be greater than :max characters.',
+-    ],
+-    'max_digits' => 'The :attribute must not have more than :max digits.',
+-    'mimes' => 'The :attribute must be a file of type: :values.',
+-    'mimetypes' => 'The :attribute must be a file of type: :values.',
+-    'min' => [
+-        'array' => 'The :attribute must have at least :min items.',
+-        'file' => 'The :attribute must be at least :min kilobytes.',
+-        'numeric' => 'The :attribute must be at least :min.',
+-        'string' => 'The :attribute must be at least :min characters.',
+-    ],
+-    'min_digits' => 'The :attribute must have at least :min digits.',
+-    'multiple_of' => 'The :attribute must be a multiple of :value.',
+-    'not_in' => 'The selected :attribute is invalid.',
+-    'not_regex' => 'The :attribute format is invalid.',
+-    'numeric' => 'The :attribute must be a number.',
+-    'password' => [
+-        'letters' => 'The :attribute must contain at least one letter.',
+-        'mixed' => 'The :attribute must contain at least one uppercase and one lowercase letter.',
+-        'numbers' => 'The :attribute must contain at least one number.',
+-        'symbols' => 'The :attribute must contain at least one symbol.',
+-        'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
+-    ],
+-    'present' => 'The :attribute field must be present.',
+-    'prohibited' => 'The :attribute field is prohibited.',
+-    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
+-    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
+-    'prohibits' => 'The :attribute field prohibits :other from being present.',
+-    'regex' => 'The :attribute format is invalid.',
+-    'required' => 'The :attribute field is required.',
+-    'required_array_keys' => 'The :attribute field must contain entries for: :values.',
+-    'required_if' => 'The :attribute field is required when :other is :value.',
+-    'required_if_accepted' => 'The :attribute field is required when :other is accepted.',
+-    'required_unless' => 'The :attribute field is required unless :other is in :values.',
+-    'required_with' => 'The :attribute field is required when :values is present.',
+-    'required_with_all' => 'The :attribute field is required when :values are present.',
+-    'required_without' => 'The :attribute field is required when :values is not present.',
+-    'required_without_all' => 'The :attribute field is required when none of :values are present.',
+-    'same' => 'The :attribute and :other must match.',
+-    'size' => [
+-        'array' => 'The :attribute must contain :size items.',
+-        'file' => 'The :attribute must be :size kilobytes.',
+-        'numeric' => 'The :attribute must be :size.',
+-        'string' => 'The :attribute must be :size characters.',
+-    ],
+-    'starts_with' => 'The :attribute must start with one of the following: :values.',
+-    'string' => 'The :attribute must be a string.',
+-    'timezone' => 'The :attribute must be a valid timezone.',
+-    'unique' => 'The :attribute has already been taken.',
+-    'uploaded' => 'The :attribute failed to upload.',
+-    'uppercase' => 'The :attribute must be uppercase.',
+-    'url' => 'The :attribute must be a valid URL.',
+-    'uuid' => 'The :attribute must be a valid UUID.',
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Custom Validation Language Lines
+-    |--------------------------------------------------------------------------
+-    |
+-    | Here you may specify custom validation messages for attributes using the
+-    | convention "attribute.rule" to name the lines. This makes it quick to
+-    | specify a specific custom language line for a given attribute rule.
+-    |
+-    */
+-
+-    'custom' => [
+-        'attribute-name' => [
+-            'rule-name' => 'custom-message',
+-        ],
+-    ],
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Custom Validation Attributes
+-    |--------------------------------------------------------------------------
+-    |
+-    | The following language lines are used to swap our attribute placeholder
+-    | with something more reader friendly such as "E-Mail Address" instead
+-    | of "email". This simply helps us make our message more expressive.
+-    |
+-    */
+-
+-    'attributes' => [],
+-
+-];
+diff --git a/package.json b/package.json
+index a11c53af..3a76ed03 100644
+--- a/package.json
++++ b/package.json
+@@ -6,9 +6,7 @@
+     },
+     "devDependencies": {
+         "axios": "^1.1.2",
+-        "laravel-vite-plugin": "^0.7.0",
+-        "lodash": "^4.17.19",
+-        "postcss": "^8.1.14",
+-        "vite": "^3.0.0"
++        "laravel-vite-plugin": "^0.7.2",
++        "vite": "^4.0.0"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index 2ac86a18..eb13aff1 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -12,7 +12,7 @@
+             <directory suffix="Test.php">./tests/Feature</directory>
+         </testsuite>
+     </testsuites>
+-    <coverage processUncoveredFiles="true">
++    <coverage>
+         <include>
+             <directory suffix=".php">./app</directory>
+         </include>
+diff --git a/resources/js/bootstrap.js b/resources/js/bootstrap.js
+index 366c49d0..846d3505 100644
+--- a/resources/js/bootstrap.js
++++ b/resources/js/bootstrap.js
+@@ -1,6 +1,3 @@
+-import _ from 'lodash';
+-window._ = _;
+-
+ /**
+  * We'll load the axios HTTP library which allows us to easily issue requests
+  * to our Laravel back-end. This library automatically handles sending the
+@@ -26,6 +23,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+ // window.Echo = new Echo({
+ //     broadcaster: 'pusher',
+ //     key: import.meta.env.VITE_PUSHER_APP_KEY,
++//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+ //     wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+ //     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+ //     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 0ad6097c..0406510b 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -7,122 +7,130 @@
+         <title>Laravel</title>
+ 
+         <!-- Fonts -->
+-        <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
++        <link rel="preconnect" href="https://fonts.bunny.net">
++        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+ 
+         <!-- Styles -->
+         <style>
+-            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-gray-100{--tw-bg-opacity: 1;background-color:rgb(243 244 246 / var(--tw-bg-opacity))}.border-gray-200{--tw-border-opacity: 1;border-color:rgb(229 231 235 / var(--tw-border-opacity))}.border-t{border-top-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{--tw-shadow: 0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);--tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.text-center{text-align:center}.text-gray-200{--tw-text-opacity: 1;color:rgb(229 231 235 / var(--tw-text-opacity))}.text-gray-300{--tw-text-opacity: 1;color:rgb(209 213 219 / var(--tw-text-opacity))}.text-gray-400{--tw-text-opacity: 1;color:rgb(156 163 175 / var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity: 1;color:rgb(107 114 128 / var(--tw-text-opacity))}.text-gray-600{--tw-text-opacity: 1;color:rgb(75 85 99 / var(--tw-text-opacity))}.text-gray-700{--tw-text-opacity: 1;color:rgb(55 65 81 / var(--tw-text-opacity))}.text-gray-900{--tw-text-opacity: 1;color:rgb(17 24 39 / var(--tw-text-opacity))}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--tw-bg-opacity: 1;background-color:rgb(31 41 55 / var(--tw-bg-opacity))}.dark\:bg-gray-900{--tw-bg-opacity: 1;background-color:rgb(17 24 39 / var(--tw-bg-opacity))}.dark\:border-gray-700{--tw-border-opacity: 1;border-color:rgb(55 65 81 / var(--tw-border-opacity))}.dark\:text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:text-gray-400{--tw-text-opacity: 1;color:rgb(156 163 175 / var(--tw-text-opacity))}.dark\:text-gray-500{--tw-text-opacity: 1;color:rgb(107 114 128 / var(--tw-text-opacity))}}
+-        </style>
+-
+-        <style>
+-            body {
+-                font-family: 'Nunito', sans-serif;
+-            }
++            /* ! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Figtree, sans-serif;font-feature-settings:normal}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::-webkit-backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mx-6{margin-left:1.5rem;margin-right:1.5rem}.ml-4{margin-left:1rem}.mt-16{margin-top:4rem}.mt-6{margin-top:1.5rem}.mt-4{margin-top:1rem}.-mt-px{margin-top:-1px}.mr-1{margin-right:0.25rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-16{height:4rem}.h-7{height:1.75rem}.h-6{height:1.5rem}.h-5{height:1.25rem}.min-h-screen{min-height:100vh}.w-auto{width:auto}.w-16{width:4rem}.w-7{width:1.75rem}.w-6{width:1.5rem}.w-5{width:1.25rem}.max-w-7xl{max-width:80rem}.shrink-0{flex-shrink:0}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.items-center{align-items:center}.justify-center{justify-content:center}.gap-6{gap:1.5rem}.gap-4{gap:1rem}.self-center{align-self:center}.rounded-lg{border-radius:0.5rem}.rounded-full{border-radius:9999px}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity))}.bg-dots-darker{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E")}.from-gray-700\/50{--tw-gradient-from:rgb(55 65 81 / 0.5);--tw-gradient-to:rgb(55 65 81 / 0);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-transparent{--tw-gradient-to:rgb(0 0 0 / 0);--tw-gradient-stops:var(--tw-gradient-from), transparent, var(--tw-gradient-to)}.bg-center{background-position:center}.stroke-red-500{stroke:#ef4444}.stroke-gray-400{stroke:#9ca3af}.p-6{padding:1.5rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.text-center{text-align:center}.text-right{text-align:right}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-gray-500\/20{--tw-shadow-color:rgb(107 114 128 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-red-500 *::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.selection\:bg-red-500::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.hover\:text-gray-900:hover{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.hover\:text-gray-700:hover{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity))}.focus\:rounded-sm:focus{border-radius:0.125rem}.focus\:outline:focus{outline-style:solid}.focus\:outline-2:focus{outline-width:2px}.focus\:outline-red-500:focus{outline-color:#ef4444}.group:hover .group-hover\:stroke-gray-600{stroke:#4b5563}@media (prefers-reduced-motion: no-preference){.motion-safe\:hover\:scale-\[1\.01\]:hover{--tw-scale-x:1.01;--tw-scale-y:1.01;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}}@media (prefers-color-scheme: dark){.dark\:bg-gray-900{--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity))}.dark\:bg-gray-800\/50{background-color:rgb(31 41 55 / 0.5)}.dark\:bg-red-800\/20{background-color:rgb(153 27 27 / 0.2)}.dark\:bg-dots-lighter{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E")}.dark\:bg-gradient-to-bl{background-image:linear-gradient(to bottom left, var(--tw-gradient-stops))}.dark\:stroke-gray-600{stroke:#4b5563}.dark\:text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity))}.dark\:text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:shadow-none{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.dark\:ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.dark\:ring-inset{--tw-ring-inset:inset}.dark\:ring-white\/5{--tw-ring-color:rgb(255 255 255 / 0.05)}.dark\:hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.group:hover .dark\:group-hover\:stroke-gray-400{stroke:#9ca3af}}@media (min-width: 640px){.sm\:fixed{position:fixed}.sm\:top-0{top:0px}.sm\:right-0{right:0px}.sm\:ml-0{margin-left:0px}.sm\:flex{display:flex}.sm\:items-center{align-items:center}.sm\:justify-center{justify-content:center}.sm\:justify-between{justify-content:space-between}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:gap-8{gap:2rem}.lg\:p-8{padding:2rem}}
+         </style>
+     </head>
+     <body class="antialiased">
+-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
++        <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
+             @if (Route::has('login'))
+-                <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
++                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right">
+                     @auth
+-                        <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Home</a>
++                        <a href="{{ url('/home') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Home</a>
+                     @else
+-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
++                        <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
+ 
+                         @if (Route::has('register'))
+-                            <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
++                            <a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
+                         @endif
+                     @endauth
+                 </div>
+             @endif
+ 
+-            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+-                <div class="flex justify-center pt-8 sm:justify-start sm:pt-0">
+-                    <svg viewBox="0 0 651 192" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-16 w-auto text-gray-700 sm:h-20">
+-                        <g clip-path="url(#clip0)" fill="#EF3B2D">
+-                            <path d="M248.032 44.676h-16.466v100.23h47.394v-14.748h-30.928V44.676zM337.091 87.202c-2.101-3.341-5.083-5.965-8.949-7.875-3.865-1.909-7.756-2.864-11.669-2.864-5.062 0-9.69.931-13.89 2.792-4.201 1.861-7.804 4.417-10.811 7.661-3.007 3.246-5.347 6.993-7.016 11.239-1.672 4.249-2.506 8.713-2.506 13.389 0 4.774.834 9.26 2.506 13.459 1.669 4.202 4.009 7.925 7.016 11.169 3.007 3.246 6.609 5.799 10.811 7.66 4.199 1.861 8.828 2.792 13.89 2.792 3.913 0 7.804-.955 11.669-2.863 3.866-1.908 6.849-4.533 8.949-7.875v9.021h15.607V78.182h-15.607v9.02zm-1.431 32.503c-.955 2.578-2.291 4.821-4.009 6.73-1.719 1.91-3.795 3.437-6.229 4.582-2.435 1.146-5.133 1.718-8.091 1.718-2.96 0-5.633-.572-8.019-1.718-2.387-1.146-4.438-2.672-6.156-4.582-1.719-1.909-3.032-4.152-3.938-6.73-.909-2.577-1.36-5.298-1.36-8.161 0-2.864.451-5.585 1.36-8.162.905-2.577 2.219-4.819 3.938-6.729 1.718-1.908 3.77-3.437 6.156-4.582 2.386-1.146 5.059-1.718 8.019-1.718 2.958 0 5.656.572 8.091 1.718 2.434 1.146 4.51 2.674 6.229 4.582 1.718 1.91 3.054 4.152 4.009 6.729.953 2.577 1.432 5.298 1.432 8.162-.001 2.863-.479 5.584-1.432 8.161zM463.954 87.202c-2.101-3.341-5.083-5.965-8.949-7.875-3.865-1.909-7.756-2.864-11.669-2.864-5.062 0-9.69.931-13.89 2.792-4.201 1.861-7.804 4.417-10.811 7.661-3.007 3.246-5.347 6.993-7.016 11.239-1.672 4.249-2.506 8.713-2.506 13.389 0 4.774.834 9.26 2.506 13.459 1.669 4.202 4.009 7.925 7.016 11.169 3.007 3.246 6.609 5.799 10.811 7.66 4.199 1.861 8.828 2.792 13.89 2.792 3.913 0 7.804-.955 11.669-2.863 3.866-1.908 6.849-4.533 8.949-7.875v9.021h15.607V78.182h-15.607v9.02zm-1.432 32.503c-.955 2.578-2.291 4.821-4.009 6.73-1.719 1.91-3.795 3.437-6.229 4.582-2.435 1.146-5.133 1.718-8.091 1.718-2.96 0-5.633-.572-8.019-1.718-2.387-1.146-4.438-2.672-6.156-4.582-1.719-1.909-3.032-4.152-3.938-6.73-.909-2.577-1.36-5.298-1.36-8.161 0-2.864.451-5.585 1.36-8.162.905-2.577 2.219-4.819 3.938-6.729 1.718-1.908 3.77-3.437 6.156-4.582 2.386-1.146 5.059-1.718 8.019-1.718 2.958 0 5.656.572 8.091 1.718 2.434 1.146 4.51 2.674 6.229 4.582 1.718 1.91 3.054 4.152 4.009 6.729.953 2.577 1.432 5.298 1.432 8.162 0 2.863-.479 5.584-1.432 8.161zM650.772 44.676h-15.606v100.23h15.606V44.676zM365.013 144.906h15.607V93.538h26.776V78.182h-42.383v66.724zM542.133 78.182l-19.616 51.096-19.616-51.096h-15.808l25.617 66.724h19.614l25.617-66.724h-15.808zM591.98 76.466c-19.112 0-34.239 15.706-34.239 35.079 0 21.416 14.641 35.079 36.239 35.079 12.088 0 19.806-4.622 29.234-14.688l-10.544-8.158c-.006.008-7.958 10.449-19.832 10.449-13.802 0-19.612-11.127-19.612-16.884h51.777c2.72-22.043-11.772-40.877-33.023-40.877zm-18.713 29.28c.12-1.284 1.917-16.884 18.589-16.884 16.671 0 18.697 15.598 18.813 16.884h-37.402zM184.068 43.892c-.024-.088-.073-.165-.104-.25-.058-.157-.108-.316-.191-.46-.056-.097-.137-.176-.203-.265-.087-.117-.161-.242-.265-.345-.085-.086-.194-.148-.29-.223-.109-.085-.206-.182-.327-.252l-.002-.001-.002-.002-35.648-20.524a2.971 2.971 0 00-2.964 0l-35.647 20.522-.002.002-.002.001c-.121.07-.219.167-.327.252-.096.075-.205.138-.29.223-.103.103-.178.228-.265.345-.066.089-.147.169-.203.265-.083.144-.133.304-.191.46-.031.085-.08.162-.104.25-.067.249-.103.51-.103.776v38.979l-29.706 17.103V24.493a3 3 0 00-.103-.776c-.024-.088-.073-.165-.104-.25-.058-.157-.108-.316-.191-.46-.056-.097-.137-.176-.203-.265-.087-.117-.161-.242-.265-.345-.085-.086-.194-.148-.29-.223-.109-.085-.206-.182-.327-.252l-.002-.001-.002-.002L40.098 1.396a2.971 2.971 0 00-2.964 0L1.487 21.919l-.002.002-.002.001c-.121.07-.219.167-.327.252-.096.075-.205.138-.29.223-.103.103-.178.228-.265.345-.066.089-.147.169-.203.265-.083.144-.133.304-.191.46-.031.085-.08.162-.104.25-.067.249-.103.51-.103.776v122.09c0 1.063.568 2.044 1.489 2.575l71.293 41.045c.156.089.324.143.49.202.078.028.15.074.23.095a2.98 2.98 0 001.524 0c.069-.018.132-.059.2-.083.176-.061.354-.119.519-.214l71.293-41.045a2.971 2.971 0 001.489-2.575v-38.979l34.158-19.666a2.971 2.971 0 001.489-2.575V44.666a3.075 3.075 0 00-.106-.774zM74.255 143.167l-29.648-16.779 31.136-17.926.001-.001 34.164-19.669 29.674 17.084-21.772 12.428-43.555 24.863zm68.329-76.259v33.841l-12.475-7.182-17.231-9.92V49.806l12.475 7.182 17.231 9.92zm2.97-39.335l29.693 17.095-29.693 17.095-29.693-17.095 29.693-17.095zM54.06 114.089l-12.475 7.182V46.733l17.231-9.92 12.475-7.182v74.537l-17.231 9.921zM38.614 7.398l29.693 17.095-29.693 17.095L8.921 24.493 38.614 7.398zM5.938 29.632l12.475 7.182 17.231 9.92v79.676l.001.005-.001.006c0 .114.032.221.045.333.017.146.021.294.059.434l.002.007c.032.117.094.222.14.334.051.124.088.255.156.371a.036.036 0 00.004.009c.061.105.149.191.222.288.081.105.149.22.244.314l.008.01c.084.083.19.142.284.215.106.083.202.178.32.247l.013.005.011.008 34.139 19.321v34.175L5.939 144.867V29.632h-.001zm136.646 115.235l-65.352 37.625V148.31l48.399-27.628 16.953-9.677v33.862zm35.646-61.22l-29.706 17.102V66.908l17.231-9.92 12.475-7.182v33.841z"/>
+-                        </g>
++            <div class="max-w-7xl mx-auto p-6 lg:p-8">
++                <div class="flex justify-center">
++                    <svg viewBox="0 0 62 65" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-16 w-auto bg-gray-100 dark:bg-gray-900">
++                        <path d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z" fill="#FF2D20"/>
+                     </svg>
+                 </div>
+ 
+-                <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
+-                    <div class="grid grid-cols-1 md:grid-cols-2">
+-                        <div class="p-6">
+-                            <div class="flex items-center">
+-                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-8 h-8 text-gray-500"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+-                                <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://laravel.com/docs" class="underline text-gray-900 dark:text-white">Documentation</a></div>
+-                            </div>
+-
+-                            <div class="ml-12">
+-                                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+-                                    Laravel has wonderful, thorough documentation covering every aspect of the framework. Whether you are new to the framework or have previous experience with Laravel, we recommend reading all of the documentation from beginning to end.
++                <div class="mt-16">
++                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
++                        <a href="https://laravel.com/docs" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
++                            <div>
++                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
++                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
++                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
++                                    </svg>
+                                 </div>
+-                            </div>
+-                        </div>
+ 
+-                        <div class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-t-0 md:border-l">
+-                            <div class="flex items-center">
+-                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-8 h-8 text-gray-500"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+-                                <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://laracasts.com" class="underline text-gray-900 dark:text-white">Laracasts</a></div>
++                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Documentation</h2>
++
++                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
++                                    Laravel has wonderful documentation covering every aspect of the framework. Whether you are a newcomer or have prior experience with Laravel, we recommend reading our documentation from beginning to end.
++                                </p>
+                             </div>
+ 
+-                            <div class="ml-12">
+-                                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+-                                    Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
++                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
++                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
++                            </svg>
++                        </a>
++
++                        <a href="https://laracasts.com" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
++                            <div>
++                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
++                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
++                                        <path stroke-linecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
++                                    </svg>
+                                 </div>
+-                            </div>
+-                        </div>
+ 
+-                        <div class="p-6 border-t border-gray-200 dark:border-gray-700">
+-                            <div class="flex items-center">
+-                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-8 h-8 text-gray-500"><path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+-                                <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://laravel-news.com/" class="underline text-gray-900 dark:text-white">Laravel News</a></div>
++                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laracasts</h2>
++
++                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
++                                    Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
++                                </p>
+                             </div>
+ 
+-                            <div class="ml-12">
+-                                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+-                                    Laravel News is a community driven portal and newsletter aggregating all of the latest and most important news in the Laravel ecosystem, including new package releases and tutorials.
++                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
++                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
++                            </svg>
++                        </a>
++
++                        <a href="https://laravel-news.com" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
++                            <div>
++                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
++                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
++                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" />
++                                    </svg>
+                                 </div>
+-                            </div>
+-                        </div>
+ 
+-                        <div class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-l">
+-                            <div class="flex items-center">
+-                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-8 h-8 text-gray-500"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+-                                <div class="ml-4 text-lg leading-7 font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</div>
++                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laravel News</h2>
++
++                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
++                                    Laravel News is a community driven portal and newsletter aggregating all of the latest and most important news in the Laravel ecosystem, including new package releases and tutorials.
++                                </p>
+                             </div>
+ 
+-                            <div class="ml-12">
+-                                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+-                                    Laravel's robust library of first-party tools and libraries, such as <a href="https://forge.laravel.com" class="underline">Forge</a>, <a href="https://vapor.laravel.com" class="underline">Vapor</a>, <a href="https://nova.laravel.com" class="underline">Nova</a>, and <a href="https://envoyer.io" class="underline">Envoyer</a> help you take your projects to the next level. Pair them with powerful open source libraries like <a href="https://laravel.com/docs/billing" class="underline">Cashier</a>, <a href="https://laravel.com/docs/dusk" class="underline">Dusk</a>, <a href="https://laravel.com/docs/broadcasting" class="underline">Echo</a>, <a href="https://laravel.com/docs/horizon" class="underline">Horizon</a>, <a href="https://laravel.com/docs/sanctum" class="underline">Sanctum</a>, <a href="https://laravel.com/docs/telescope" class="underline">Telescope</a>, and more.
++                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
++                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
++                            </svg>
++                        </a>
++
++                        <div class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
++                            <div>
++                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
++                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
++                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64" />
++                                    </svg>
+                                 </div>
++
++                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</h2>
++
++                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
++                                    Laravel's robust library of first-party tools and libraries, such as <a href="https://forge.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Forge</a>, <a href="https://vapor.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Vapor</a>, <a href="https://nova.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Nova</a>, and <a href="https://envoyer.io" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Envoyer</a> help you take your projects to the next level. Pair them with powerful open source libraries like <a href="https://laravel.com/docs/billing" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Cashier</a>, <a href="https://laravel.com/docs/dusk" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dusk</a>, <a href="https://laravel.com/docs/broadcasting" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Echo</a>, <a href="https://laravel.com/docs/horizon" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Horizon</a>, <a href="https://laravel.com/docs/sanctum" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Sanctum</a>, <a href="https://laravel.com/docs/telescope" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Telescope</a>, and more.
++                                </p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+ 
+-                <div class="flex justify-center mt-4 sm:items-center sm:justify-between">
+-                    <div class="text-center text-sm text-gray-500 sm:text-left">
+-                        <div class="flex items-center">
+-                            <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor" class="-mt-px w-5 h-5 text-gray-400">
+-                                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+-                            </svg>
+-
+-                            <a href="https://laravel.bigcartel.com" class="ml-1 underline">
+-                                Shop
+-                            </a>
+-
+-                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="ml-4 -mt-px w-5 h-5 text-gray-400">
+-                                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+-                            </svg>
+-
+-                            <a href="https://github.com/sponsors/taylorotwell" class="ml-1 underline">
++                <div class="flex justify-center mt-16 px-0 sm:items-center sm:justify-between">
++                    <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-left">
++                        <div class="flex items-center gap-4">
++                            <a href="https://github.com/sponsors/taylorotwell" class="group inline-flex items-center hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
++                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="-mt-px mr-1 w-5 h-5 stroke-gray-400 dark:stroke-gray-600 group-hover:stroke-gray-600 dark:group-hover:stroke-gray-400">
++                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
++                                </svg>
+                                 Sponsor
+                             </a>
+                         </div>
+                     </div>
+ 
+-                    <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
++                    <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
+                         Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                     </div>
+                 </div>
+diff --git a/routes/api.php b/routes/api.php
+index eb6fa48c..889937e1 100644
+--- a/routes/api.php
++++ b/routes/api.php
+@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Route;
+ |--------------------------------------------------------------------------
+ |
+ | Here is where you can register API routes for your application. These
+-| routes are loaded by the RouteServiceProvider within a group which
+-| is assigned the "api" middleware group. Enjoy building your API!
++| routes are loaded by the RouteServiceProvider and all of them will
++| be assigned to the "api" middleware group. Make something great!
+ |
+ */
+ 
+diff --git a/routes/web.php b/routes/web.php
+index b1303973..d259f33e 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Route;
+ |--------------------------------------------------------------------------
+ |
+ | Here is where you can register web routes for your application. These
+-| routes are loaded by the RouteServiceProvider within a group which
+-| contains the "web" middleware group. Now create something great!
++| routes are loaded by the RouteServiceProvider and all of them will
++| be assigned to the "web" middleware group. Make something great!
+ |
+ */
+ 
+diff --git a/tests/CreatesApplication.php b/tests/CreatesApplication.php
+index 547152f6..cc683011 100644
+--- a/tests/CreatesApplication.php
++++ b/tests/CreatesApplication.php
+@@ -3,15 +3,14 @@
+ namespace Tests;
+ 
+ use Illuminate\Contracts\Console\Kernel;
++use Illuminate\Foundation\Application;
+ 
+ trait CreatesApplication
+ {
+     /**
+      * Creates the application.
+-     *
+-     * @return \Illuminate\Foundation\Application
+      */
+-    public function createApplication()
++    public function createApplication(): Application
+     {
+         $app = require __DIR__.'/../bootstrap/app.php';
+ 
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index 1eafba61..8364a84e 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -9,10 +9,8 @@ class ExampleTest extends TestCase
+ {
+     /**
+      * A basic test example.
+-     *
+-     * @return void
+      */
+-    public function test_the_application_returns_a_successful_response()
++    public function test_the_application_returns_a_successful_response(): void
+     {
+         $response = $this->get('/');
+ 
+diff --git a/tests/Unit/ExampleTest.php b/tests/Unit/ExampleTest.php
+index e5c5fef7..5773b0ce 100644
+--- a/tests/Unit/ExampleTest.php
++++ b/tests/Unit/ExampleTest.php
+@@ -8,10 +8,8 @@ class ExampleTest extends TestCase
+ {
+     /**
+      * A basic test example.
+-     *
+-     * @return void
+      */
+-    public function test_that_true_is_true()
++    public function test_that_true_is_true(): void
+     {
+         $this->assertTrue(true);
+     }
