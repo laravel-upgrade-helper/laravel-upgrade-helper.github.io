@@ -23,8 +23,6 @@ jobs:
         git config --global user.email 'laravel-upgrade-helper@users.noreply.github.com'
         curl --output generate-diffs.php https://raw.githubusercontent.com/laravel-upgrade-helper/laravel-diff-generator/main/generate-diffs.php
         php ./generate-diffs.php
-        LATEST_VERSION=$(tail -n 1 tags.txt)
-        LATEST_VERSION_ON_PROD=$(curl -s https://laravel-upgrade-helper.github.io/tags.txt | tail -n 1)
         if [[ `git status --porcelain` ]]; then
           git add .
           git commit -m "[Version-Bot] Add Laravel Version"
