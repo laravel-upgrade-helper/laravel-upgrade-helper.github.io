@@ -229,7 +229,8 @@
         }
 
         let sameVersionTags = this.tags.filter(tag => {
-          return tag.slice(0, 2) === this.baseVersion.slice(0, 2) &&
+          let sliceLength = this.baseVersion.slice(0, 2) === 'v5' ? 4 : 2;
+          return tag.slice(0, sliceLength) === this.baseVersion.slice(0, sliceLength) &&
             this.baseVersion.localeCompare(
               tag,
               undefined,
