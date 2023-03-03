@@ -1,0 +1,103 @@
+diff --git a/.gitignore b/.gitignore
+index 3cb7c776..7fe978f8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -8,12 +8,12 @@
+ .env
+ .env.backup
+ .env.production
++.phpunit.result.cache
+ Homestead.json
+ Homestead.yaml
+ auth.json
+ npm-debug.log
+ yarn-error.log
+-.phpunit.result.cache
+ /.fleet
+ /.idea
+ /.vscode
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8c536600..98ed5f4d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,15 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.0.1...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.0.3...10.x)
++
++## [v10.0.3](https://github.com/laravel/laravel/compare/v10.0.2...v10.0.3) - 2023-02-21
++
++- Remove redundant `@return` docblock in UserFactory by @datlechin in https://github.com/laravel/laravel/pull/6119
++- Reverts change in asset helper by @timacdonald in https://github.com/laravel/laravel/pull/6122
++
++## [v10.0.2](https://github.com/laravel/laravel/compare/v10.0.1...v10.0.2) - 2023-02-16
++
++- Remove unneeded call by @taylorotwell in https://github.com/laravel/laravel/commit/3986d4c54041fd27af36f96cf11bd79ce7b1ee4e
+ 
+ ## [v10.0.1](https://github.com/laravel/laravel/compare/v10.0.0...v10.0.1) - 2023-02-15
+ 
+diff --git a/config/app.php b/config/app.php
+index bca112fb..ef76a7ed 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -56,7 +56,7 @@ return [
+ 
+     'url' => env('APP_URL', 'http://localhost'),
+ 
+-    'asset_url' => env('ASSET_URL', '/'),
++    'asset_url' => env('ASSET_URL'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+diff --git a/config/auth.php b/config/auth.php
+index cae00280..9548c15d 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -80,7 +80,7 @@ return [
+     | than one user table or model in the application and you want to have
+     | separate password reset settings based on the specific user types.
+     |
+-    | The expire time is the number of minutes that each reset token will be
++    | The expiry time is the number of minutes that each reset token will be
+     | considered valid. This security feature keeps tokens short-lived so
+     | they have less time to be guessed. You may change this as needed.
+     |
+diff --git a/config/logging.php b/config/logging.php
+index 5aa1dbb7..4c3df4ce 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -102,6 +102,7 @@ return [
+         'syslog' => [
+             'driver' => 'syslog',
+             'level' => env('LOG_LEVEL', 'debug'),
++            'facility' => LOG_USER,
+         ],
+ 
+         'errorlog' => [
+diff --git a/config/mail.php b/config/mail.php
+index 275a3c64..542d98c3 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -28,7 +28,7 @@ return [
+     | sending an e-mail. You will specify which one you are using for your
+     | mailers below. You are free to add additional mailers as required.
+     |
+-    | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2"
++    | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+     |            "postmark", "log", "array", "failover"
+     |
+     */
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index d4e88356..a6ecc0af 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -28,8 +28,6 @@ class UserFactory extends Factory
+ 
+     /**
+      * Indicate that the model's email address should be unverified.
+-     *
+-     * @return $this
+      */
+     public function unverified(): static
+     {
