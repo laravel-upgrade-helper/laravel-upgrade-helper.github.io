@@ -1,0 +1,187 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 173a8721..f9de3795 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,14 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.0.6...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.0.7...10.x)
++
++## [v10.0.7](https://github.com/laravel/laravel/compare/v10.1.0...v10.0.7) - 2023-04-14
++
++- Adds `phpunit/phpunit@10.1` support by @nunomaduro in https://github.com/laravel/laravel/pull/6155
++
++## [v10.1.0](https://github.com/laravel/laravel/compare/v10.0.6...v10.1.0) - 2023-04-15
++
++- Minor skeleton slimming by @taylorotwell in https://github.com/laravel/laravel/pull/6159
+ 
+ ## [v10.0.6](https://github.com/laravel/laravel/compare/v10.0.5...v10.0.6) - 2023-04-05
+ 
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index b1c262c6..56af2640 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -8,25 +8,7 @@ use Throwable;
+ class Handler extends ExceptionHandler
+ {
+     /**
+-     * A list of exception types with their corresponding custom log levels.
+-     *
+-     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
+-     */
+-    protected $levels = [
+-        //
+-    ];
+-
+-    /**
+-     * A list of the exception types that are not reported.
+-     *
+-     * @var array<int, class-string<\Throwable>>
+-     */
+-    protected $dontReport = [
+-        //
+-    ];
+-
+-    /**
+-     * A list of the inputs that are never flashed to the session on validation exceptions.
++     * The list of the inputs that are never flashed to the session on validation exceptions.
+      *
+      * @var array<int, string>
+      */
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index c34cdcf1..1fb53dce 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -48,7 +48,7 @@ class Kernel extends HttpKernel
+     /**
+      * The application's middleware aliases.
+      *
+-     * Aliases may be used to conveniently assign middleware to routes and groups.
++     * Aliases may be used instead of class names to conveniently assign middleware to routes and groups.
+      *
+      * @var array<string, class-string|string>
+      */
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index dafcbee7..54756cd1 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -13,7 +13,7 @@ class AuthServiceProvider extends ServiceProvider
+      * @var array<class-string, class-string>
+      */
+     protected $policies = [
+-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
++        //
+     ];
+ 
+     /**
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 0c18923b..1cf5f15c 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -24,7 +24,9 @@ class RouteServiceProvider extends ServiceProvider
+      */
+     public function boot(): void
+     {
+-        $this->configureRateLimiting();
++        RateLimiter::for('api', function (Request $request) {
++            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
++        });
+ 
+         $this->routes(function () {
+             Route::middleware('api')
+@@ -35,14 +37,4 @@ class RouteServiceProvider extends ServiceProvider
+                 ->group(base_path('routes/web.php'));
+         });
+     }
+-
+-    /**
+-     * Configure the rate limiters for the application.
+-     */
+-    protected function configureRateLimiting(): void
+-    {
+-        RateLimiter::for('api', function (Request $request) {
+-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+-        });
+-    }
+ }
+diff --git a/composer.json b/composer.json
+index 4a1a7cda..4ac9c6ab 100644
+--- a/composer.json
++++ b/composer.json
+@@ -7,7 +7,7 @@
+     "require": {
+         "php": "^8.1",
+         "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^10.0",
++        "laravel/framework": "^10.8",
+         "laravel/sanctum": "^3.2",
+         "laravel/tinker": "^2.8"
+     },
+diff --git a/config/app.php b/config/app.php
+index ef76a7ed..4c231b47 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -1,6 +1,7 @@
+ <?php
+ 
+ use Illuminate\Support\Facades\Facade;
++use Illuminate\Support\ServiceProvider;
+ 
+ return [
+ 
+@@ -154,34 +155,7 @@ return [
+     |
+     */
+ 
+-    'providers' => [
+-
+-        /*
+-         * Laravel Framework Service Providers...
+-         */
+-        Illuminate\Auth\AuthServiceProvider::class,
+-        Illuminate\Broadcasting\BroadcastServiceProvider::class,
+-        Illuminate\Bus\BusServiceProvider::class,
+-        Illuminate\Cache\CacheServiceProvider::class,
+-        Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
+-        Illuminate\Cookie\CookieServiceProvider::class,
+-        Illuminate\Database\DatabaseServiceProvider::class,
+-        Illuminate\Encryption\EncryptionServiceProvider::class,
+-        Illuminate\Filesystem\FilesystemServiceProvider::class,
+-        Illuminate\Foundation\Providers\FoundationServiceProvider::class,
+-        Illuminate\Hashing\HashServiceProvider::class,
+-        Illuminate\Mail\MailServiceProvider::class,
+-        Illuminate\Notifications\NotificationServiceProvider::class,
+-        Illuminate\Pagination\PaginationServiceProvider::class,
+-        Illuminate\Pipeline\PipelineServiceProvider::class,
+-        Illuminate\Queue\QueueServiceProvider::class,
+-        Illuminate\Redis\RedisServiceProvider::class,
+-        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+-        Illuminate\Session\SessionServiceProvider::class,
+-        Illuminate\Translation\TranslationServiceProvider::class,
+-        Illuminate\Validation\ValidationServiceProvider::class,
+-        Illuminate\View\ViewServiceProvider::class,
+-
++    'providers' => ServiceProvider::defaultProviders()->merge([
+         /*
+          * Package Service Providers...
+          */
+@@ -194,8 +168,7 @@ return [
+         // App\Providers\BroadcastServiceProvider::class,
+         App\Providers\EventServiceProvider::class,
+         App\Providers\RouteServiceProvider::class,
+-
+-    ],
++    ])->toArray(),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -209,7 +182,7 @@ return [
+     */
+ 
+     'aliases' => Facade::defaultAliases()->merge([
+-        // 'ExampleClass' => App\Example\ExampleClass::class,
++        // 'Example' => App\Facades\Example::class,
+     ])->toArray(),
+ 
+ ];
