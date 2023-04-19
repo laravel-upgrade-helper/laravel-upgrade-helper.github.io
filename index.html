@@ -74,7 +74,7 @@
 
     <div class="text-center">
       <small>You may apply file like: </small>
-      <small><code v-text="'git apply <file.diff>'"></code></small>
+      <small><code v-text="'git apply --ignore-whitespace --reject <file.diff>'"></code></small>
     </div>
 
     <div v-show="diffString !==''" v-html="diffHtml"></div>
