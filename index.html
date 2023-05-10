@@ -68,11 +68,6 @@
     </div>
 
     <div class="text-center">
-      For upgrade guide see:
-      <a :href="guideLink" target="_blank" class="underline italic">link</a>
-    </div>
-
-    <div class="text-center">
       Click <a :href="diffFileLink" download><b class="underline text-red">here</b></a>
       to download patch file.
     </div>
@@ -208,13 +203,6 @@
     computed: {
       releaseLink() {
         return 'https://github.com/laravel/laravel/releases/tag/' + this.upgradeVersion;
-      },
-
-      guideLink() {
-        const majorVersion = this.upgradeVersion.split('.').pop();
-        const version = majorVersion >= 6 ? majorVersion + '.x' : this.upgradeVersion.split('.').slice(1, 3).join('.');
-
-        return 'https://laravel.com/docs/' + version + '/upgrade';
       },
 
       diffFileLink() {
