@@ -211,10 +211,12 @@
       },
 
       guideLink() {
-        const majorVersion = this.upgradeVersion.split('.').pop();
-        const version = majorVersion >= 6 ? majorVersion + '.x' : this.upgradeVersion.split('.').slice(1, 3).join('.');
+        if (this.upgradeVersion) {
+          let version = this.upgradeVersion.replace('v', '');
+          version = version[0] >= 6 ? version[0] + '.x' : version.slice(0, 3);
 
-        return 'https://laravel.com/docs/' + version + '/upgrade';
+          return 'https://laravel.com/docs/' + version + '/upgrade';
+        }
       },
 
       diffFileLink() {
