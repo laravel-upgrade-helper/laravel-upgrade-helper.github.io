@@ -67,7 +67,8 @@
       <a :href="releaseLink" target="_blank" class="underline italic">link</a>
     </div>
 
-    <div class="text-center">
+
+    <div class="text-center" v-show="documentationLink !== ''">
       For upgrade guide see:
       <a :href="documentationLink" target="_blank" class="underline italic">link</a>
     </div>
@@ -212,11 +213,22 @@
 
       documentationLink() {
         if (this.upgradeVersion) {
-          const splitVersion = this.upgradeVersion.split('.');
-          const majorVersion = parseInt(splitVersion[0].replace('v', ''));
-          const minorVersion = majorVersion === 5 ? splitVersion[1] : 'x';
+          const splitUpgradeVersion = this.upgradeVersion.split('.');
+          const upgradeMajorVersion = parseInt(splitUpgradeVersion[0].replace('v', ''));
+          const upgradeMinorVersion = upgradeMajorVersion === 5 ? splitUpgradeVersion[1] : 'x';
 
-          return `https://laravel.com/docs/${majorVersion}.${minorVersion}/upgrade`;
+          const splitBaseVersion = this.baseVersion.split('.');
+          const baseMajorVersion = parseInt(splitBaseVersion[0].replace('v', ''));
+          const baseMinorVersion = baseMajorVersion === 5 ? splitBaseVersion[1] : 'x';
+
+          if (
+            upgradeMajorVersion === baseMajorVersion &&
+            upgradeMinorVersion === baseMinorVersion
+          ) {
+            return '';
+          }
+
+          return `https://laravel.com/docs/${upgradeMajorVersion}.${upgradeMinorVersion}/upgrade`;
         }
 
         return '';
