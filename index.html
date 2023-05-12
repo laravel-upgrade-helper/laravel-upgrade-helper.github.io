@@ -69,7 +69,7 @@
 
     <div class="text-center">
       For upgrade guide see:
-      <a :href="guideLink" target="_blank" class="underline italic">link</a>
+      <a :href="documentationLink" target="_blank" class="underline italic">link</a>
     </div>
 
     <div class="text-center">
@@ -210,13 +210,16 @@
         return 'https://github.com/laravel/laravel/releases/tag/' + this.upgradeVersion;
       },
 
-      guideLink() {
+      documentationLink() {
         if (this.upgradeVersion) {
-          let version = this.upgradeVersion.replace('v', '');
-          version = version[0] >= 6 ? version[0] + '.x' : version.slice(0, 3);
+          const splitVersion = this.upgradeVersion.split('.');
+          const majorVersion = parseInt(splitVersion[0].replace('v', ''));
+          const minorVersion = majorVersion === 5 ? splitVersion[1] : 'x';
 
-          return 'https://laravel.com/docs/' + version + '/upgrade';
+          return `https://laravel.com/docs/${majorVersion}.${minorVersion}/upgrade`;
         }
+
+        return '';
       },
 
       diffFileLink() {
