@@ -1,0 +1,29 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 583e36b7..45eb31e0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,11 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.0...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.1...10.x)
++
++## [v10.2.1](https://github.com/laravel/laravel/compare/v10.2.0...v10.2.1) - 2023-05-12
++
++- Add hashed cast to user password by @emargareten in https://github.com/laravel/laravel/pull/6171
++- Bring back pusher cluster config option by @jesseleite in https://github.com/laravel/laravel/pull/6174
+ 
+ ## [v10.2.0](https://github.com/laravel/laravel/compare/v10.1.1...v10.2.0) - 2023-05-05
+ 
+diff --git a/config/cache.php b/config/cache.php
+index 33bb2954..d4171e22 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -52,6 +52,7 @@ return [
+         'file' => [
+             'driver' => 'file',
+             'path' => storage_path('framework/cache/data'),
++            'lock_path' => storage_path('framework/cache/data'),
+         ],
+ 
+         'memcached' => [
