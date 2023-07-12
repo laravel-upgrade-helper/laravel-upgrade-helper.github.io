@@ -1,0 +1,57 @@
+diff --git a/.env.example b/.env.example
+index 478972c2..ea0665b0 100644
+--- a/.env.example
++++ b/.env.example
+@@ -51,6 +51,7 @@ PUSHER_PORT=443
+ PUSHER_SCHEME=https
+ PUSHER_APP_CLUSTER=mt1
+ 
++VITE_APP_NAME="${APP_NAME}"
+ VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+ VITE_PUSHER_HOST="${PUSHER_HOST}"
+ VITE_PUSHER_PORT="${PUSHER_PORT}"
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7c5dc6b6..918817ca 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.3...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.4...10.x)
++
++## [v10.2.4](https://github.com/laravel/laravel/compare/v10.2.3...v10.2.4) - 2023-06-07
++
++- Add `precognitive` key to $middlewareAliases by @emargareten in https://github.com/laravel/laravel/pull/6193
+ 
+ ## [v10.2.3](https://github.com/laravel/laravel/compare/v10.2.2...v10.2.3) - 2023-06-01
+ 
+diff --git a/phpunit.xml b/phpunit.xml
+index e9f533da..f112c0c8 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -1,20 +1,20 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
++         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+          bootstrap="vendor/autoload.php"
+          colors="true"
+ >
+     <testsuites>
+         <testsuite name="Unit">
+-            <directory suffix="Test.php">./tests/Unit</directory>
++            <directory>tests/Unit</directory>
+         </testsuite>
+         <testsuite name="Feature">
+-            <directory suffix="Test.php">./tests/Feature</directory>
++            <directory>tests/Feature</directory>
+         </testsuite>
+     </testsuites>
+     <source>
+         <include>
+-            <directory suffix=".php">./app</directory>
++            <directory>app</directory>
+         </include>
+     </source>
+     <php>
