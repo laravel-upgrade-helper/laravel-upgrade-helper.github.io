@@ -1,0 +1,95 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 12aaca99..5e8baa21 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,27 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.6...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.9...10.x)
++
++## [v10.2.9](https://github.com/laravel/laravel/compare/v10.2.8...v10.2.9) - 2023-11-13
++
++- Update axios to latest version by [@emargareten](https://github.com/emargareten) in https://github.com/laravel/laravel/pull/6272
++
++## [v10.2.8](https://github.com/laravel/laravel/compare/v10.2.7...v10.2.8) - 2023-11-02
++
++- Revert "[10.x] Let database handle default collation" by [@taylorotwell](https://github.com/taylorotwell) in https://github.com/laravel/laravel/pull/6266
++
++## [v10.2.7](https://github.com/laravel/laravel/compare/v10.2.6...v10.2.7) - 2023-10-31
++
++- Postmark mailer configuration update by [@ninjaparade](https://github.com/ninjaparade) in https://github.com/laravel/laravel/pull/6228
++- [10.x] Update sanctum config file by [@ahmed-aliraqi](https://github.com/ahmed-aliraqi) in https://github.com/laravel/laravel/pull/6234
++- [10.x] Let database handle default collation by [@Jubeki](https://github.com/Jubeki) in https://github.com/laravel/laravel/pull/6241
++- [10.x] Increase bcrypt rounds to 12 by [@valorin](https://github.com/valorin) in https://github.com/laravel/laravel/pull/6245
++- [10.x] Use 12 bcrypt rounds for password in UserFactory by [@Jubeki](https://github.com/Jubeki) in https://github.com/laravel/laravel/pull/6247
++- [10.x] Fix typo in the comment for token prefix (sanctum config) by [@yuters](https://github.com/yuters) in https://github.com/laravel/laravel/pull/6248
++- [10.x] Update fixture hash to match testing cost by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6259
++- [10.x] Update minimum `laravel/sanctum` by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/laravel/pull/6261
++- [10.x] Hash improvements by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6258
++- Redis maintenance store config example contains an excess space by [@hedge-freek](https://github.com/hedge-freek) in https://github.com/laravel/laravel/pull/6264
+ 
+ ## [v10.2.6](https://github.com/laravel/laravel/compare/v10.2.5...v10.2.6) - 2023-08-10
+ 
+diff --git a/config/database.php b/config/database.php
+index 8cd8ed07..137ad18c 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -53,7 +53,7 @@ return [
+             'password' => env('DB_PASSWORD', ''),
+             'unix_socket' => env('DB_SOCKET', ''),
+             'charset' => 'utf8mb4',
+-            'collation' => null,
++            'collation' => 'utf8mb4_unicode_ci',
+             'prefix' => '',
+             'prefix_indexes' => true,
+             'strict' => true,
+diff --git a/config/session.php b/config/session.php
+index 8fed97c0..e738cb3e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -198,4 +198,17 @@ return [
+ 
+     'same_site' => 'lax',
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Partitioned Cookies
++    |--------------------------------------------------------------------------
++    |
++    | Setting this value to true will tie the cookie to the top-level site for
++    | a cross-site context. Partitioned cookies are accepted by the browser
++    | when flagged "secure" and the Same-Site attribute is set to "none".
++    |
++    */
++
++    'partitioned' => false,
++
+ ];
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index cde014af..584104c9 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -11,6 +11,9 @@ use Illuminate\Support\Str;
+  */
+ class UserFactory extends Factory
+ {
++    /**
++     * The current password being used by the factory.
++     */
+     protected static ?string $password;
+ 
+     /**
+diff --git a/package.json b/package.json
+index 0e6480f2..e9319dfe 100644
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,7 @@
+         "build": "vite build"
+     },
+     "devDependencies": {
+-        "axios": "^1.1.2",
++        "axios": "^1.6.1",
+         "laravel-vite-plugin": "^0.8.0",
+         "vite": "^4.0.0"
+     }

@@ -1,0 +1,69 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e8007923..5e8baa21 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,14 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.7...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.9...10.x)
++
++## [v10.2.9](https://github.com/laravel/laravel/compare/v10.2.8...v10.2.9) - 2023-11-13
++
++- Update axios to latest version by [@emargareten](https://github.com/emargareten) in https://github.com/laravel/laravel/pull/6272
++
++## [v10.2.8](https://github.com/laravel/laravel/compare/v10.2.7...v10.2.8) - 2023-11-02
++
++- Revert "[10.x] Let database handle default collation" by [@taylorotwell](https://github.com/taylorotwell) in https://github.com/laravel/laravel/pull/6266
+ 
+ ## [v10.2.7](https://github.com/laravel/laravel/compare/v10.2.6...v10.2.7) - 2023-10-31
+ 
+diff --git a/config/session.php b/config/session.php
+index 8fed97c0..e738cb3e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -198,4 +198,17 @@ return [
+ 
+     'same_site' => 'lax',
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Partitioned Cookies
++    |--------------------------------------------------------------------------
++    |
++    | Setting this value to true will tie the cookie to the top-level site for
++    | a cross-site context. Partitioned cookies are accepted by the browser
++    | when flagged "secure" and the Same-Site attribute is set to "none".
++    |
++    */
++
++    'partitioned' => false,
++
+ ];
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index cde014af..584104c9 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -11,6 +11,9 @@ use Illuminate\Support\Str;
+  */
+ class UserFactory extends Factory
+ {
++    /**
++     * The current password being used by the factory.
++     */
+     protected static ?string $password;
+ 
+     /**
+diff --git a/package.json b/package.json
+index 0e6480f2..e9319dfe 100644
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,7 @@
+         "build": "vite build"
+     },
+     "devDependencies": {
+-        "axios": "^1.1.2",
++        "axios": "^1.6.1",
+         "laravel-vite-plugin": "^0.8.0",
+         "vite": "^4.0.0"
+     }
