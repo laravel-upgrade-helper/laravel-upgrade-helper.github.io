@@ -1,0 +1,612 @@
+diff --git a/.env.example b/.env.example
+index 478972c2..ea0665b0 100644
+--- a/.env.example
++++ b/.env.example
+@@ -51,6 +51,7 @@ PUSHER_PORT=443
+ PUSHER_SCHEME=https
+ PUSHER_APP_CLUSTER=mt1
+ 
++VITE_APP_NAME="${APP_NAME}"
+ VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+ VITE_PUSHER_HOST="${PUSHER_HOST}"
+ VITE_PUSHER_PORT="${PUSHER_PORT}"
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index 8e6e9cd5..0e0c54ec 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -19,13 +19,13 @@ jobs:
+     strategy:
+       fail-fast: true
+       matrix:
+-        php: [8.1, 8.2]
++        php: [8.1, 8.2, 8.3]
+ 
+     name: PHP ${{ matrix.php }}
+ 
+     steps:
+       - name: Checkout code
+-        uses: actions/checkout@v3
++        uses: actions/checkout@v4
+ 
+       - name: Setup PHP
+         uses: shivammathur/setup-php@v2
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 173a8721..61700d13 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,76 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.0.6...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.10...10.x)
++
++## [v10.2.10](https://github.com/laravel/laravel/compare/v10.2.9...v10.2.10) - 2023-11-30
++
++* [10.x] Fixes missing property description by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6275
++* [10.x] Add partitioned cookie config key by [@fabricecw](https://github.com/fabricecw) in https://github.com/laravel/laravel/pull/6257
++
++## [v10.2.9](https://github.com/laravel/laravel/compare/v10.2.8...v10.2.9) - 2023-11-13
++
++- Update axios to latest version by [@emargareten](https://github.com/emargareten) in https://github.com/laravel/laravel/pull/6272
++
++## [v10.2.8](https://github.com/laravel/laravel/compare/v10.2.7...v10.2.8) - 2023-11-02
++
++- Revert "[10.x] Let database handle default collation" by [@taylorotwell](https://github.com/taylorotwell) in https://github.com/laravel/laravel/pull/6266
++
++## [v10.2.7](https://github.com/laravel/laravel/compare/v10.2.6...v10.2.7) - 2023-10-31
++
++- Postmark mailer configuration update by [@ninjaparade](https://github.com/ninjaparade) in https://github.com/laravel/laravel/pull/6228
++- [10.x] Update sanctum config file by [@ahmed-aliraqi](https://github.com/ahmed-aliraqi) in https://github.com/laravel/laravel/pull/6234
++- [10.x] Let database handle default collation by [@Jubeki](https://github.com/Jubeki) in https://github.com/laravel/laravel/pull/6241
++- [10.x] Increase bcrypt rounds to 12 by [@valorin](https://github.com/valorin) in https://github.com/laravel/laravel/pull/6245
++- [10.x] Use 12 bcrypt rounds for password in UserFactory by [@Jubeki](https://github.com/Jubeki) in https://github.com/laravel/laravel/pull/6247
++- [10.x] Fix typo in the comment for token prefix (sanctum config) by [@yuters](https://github.com/yuters) in https://github.com/laravel/laravel/pull/6248
++- [10.x] Update fixture hash to match testing cost by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6259
++- [10.x] Update minimum `laravel/sanctum` by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/laravel/pull/6261
++- [10.x] Hash improvements by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6258
++- Redis maintenance store config example contains an excess space by [@hedge-freek](https://github.com/hedge-freek) in https://github.com/laravel/laravel/pull/6264
++
++## [v10.2.6](https://github.com/laravel/laravel/compare/v10.2.5...v10.2.6) - 2023-08-10
++
++- Bump `laravel-vite-plugin` to latest version by [@adevade](https://github.com/adevade) in https://github.com/laravel/laravel/pull/6224
++
++## [v10.2.5](https://github.com/laravel/laravel/compare/v10.2.4...v10.2.5) - 2023-06-30
++
++- Allow accessing APP_NAME in Vite scope by [@domnantas](https://github.com/domnantas) in https://github.com/laravel/laravel/pull/6204
++- Omit default values for suffix in phpunit.xml by [@spawnia](https://github.com/spawnia) in https://github.com/laravel/laravel/pull/6210
++
++## [v10.2.4](https://github.com/laravel/laravel/compare/v10.2.3...v10.2.4) - 2023-06-07
++
++- Add `precognitive` key to $middlewareAliases by @emargareten in https://github.com/laravel/laravel/pull/6193
++
++## [v10.2.3](https://github.com/laravel/laravel/compare/v10.2.2...v10.2.3) - 2023-06-01
++
++- Update description by @taylorotwell in https://github.com/laravel/laravel/commit/85203d687ebba72b2805b89bba7d18dfae8f95c8
++
++## [v10.2.2](https://github.com/laravel/laravel/compare/v10.2.1...v10.2.2) - 2023-05-23
++
++- Add lock path by @taylorotwell in https://github.com/laravel/laravel/commit/a6bfbc7f90e33fd6cae3cb23f106c9689858c3b5
++
++## [v10.2.1](https://github.com/laravel/laravel/compare/v10.2.0...v10.2.1) - 2023-05-12
++
++- Add hashed cast to user password by @emargareten in https://github.com/laravel/laravel/pull/6171
++- Bring back pusher cluster config option by @jesseleite in https://github.com/laravel/laravel/pull/6174
++
++## [v10.2.0](https://github.com/laravel/laravel/compare/v10.1.1...v10.2.0) - 2023-05-05
++
++- Update welcome.blade.php by @aymanatmeh in https://github.com/laravel/laravel/pull/6163
++- Sets package.json type to module by @timacdonald in https://github.com/laravel/laravel/pull/6090
++- Add url support for mail config by @chu121su12 in https://github.com/laravel/laravel/pull/6170
++
++## [v10.1.1](https://github.com/laravel/laravel/compare/v10.0.7...v10.1.1) - 2023-04-18
++
++- Fix laravel/framework constraints for Default Service Providers by @Jubeki in https://github.com/laravel/laravel/pull/6160
++
++## [v10.0.7](https://github.com/laravel/laravel/compare/v10.1.0...v10.0.7) - 2023-04-14
++
++- Adds `phpunit/phpunit@10.1` support by @nunomaduro in https://github.com/laravel/laravel/pull/6155
++
++## [v10.1.0](https://github.com/laravel/laravel/compare/v10.0.6...v10.1.0) - 2023-04-15
++
++- Minor skeleton slimming by @taylorotwell in https://github.com/laravel/laravel/pull/6159
+ 
+ ## [v10.0.6](https://github.com/laravel/laravel/compare/v10.0.5...v10.0.6) - 2023-04-05
+ 
+diff --git a/README.md b/README.md
+index 3ed385a7..1824fc1b 100644
+--- a/README.md
++++ b/README.md
+@@ -31,23 +31,23 @@ If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Lar
+ 
+ ## Laravel Sponsors
+ 
+-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
++We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+ 
+ ### Premium Partners
+ 
+ - **[Vehikl](https://vehikl.com/)**
+ - **[Tighten Co.](https://tighten.co)**
++- **[WebReinvent](https://webreinvent.com/)**
+ - **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+ - **[64 Robots](https://64robots.com)**
+-- **[Cubet Techno Labs](https://cubettech.com)**
+-- **[Cyber-Duck](https://cyber-duck.co.uk)**
+-- **[Many](https://www.many.co.uk)**
+-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+-- **[DevSquad](https://devsquad.com)**
+ - **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
++- **[Cyber-Duck](https://cyber-duck.co.uk)**
++- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
++- **[Jump24](https://jump24.co.uk)**
++- **[Redberry](https://redberry.international/laravel/)**
++- **[Active Logic](https://activelogic.com)**
++- **[byte5](https://byte5.de)**
+ - **[OP.GG](https://op.gg)**
+-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+-- **[Lendio](https://lendio.com)**
+ 
+ ## Contributing
+ 
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+index b1c262c6..56af2640 100644
+--- a/app/Exceptions/Handler.php
++++ b/app/Exceptions/Handler.php
+@@ -8,25 +8,7 @@ use Throwable;
+ class Handler extends ExceptionHandler
+ {
+     /**
+-     * A list of exception types with their corresponding custom log levels.
+-     *
+-     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
+-     */
+-    protected $levels = [
+-        //
+-    ];
+-
+-    /**
+-     * A list of the exception types that are not reported.
+-     *
+-     * @var array<int, class-string<\Throwable>>
+-     */
+-    protected $dontReport = [
+-        //
+-    ];
+-
+-    /**
+-     * A list of the inputs that are never flashed to the session on validation exceptions.
++     * The list of the inputs that are never flashed to the session on validation exceptions.
+      *
+      * @var array<int, string>
+      */
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index c34cdcf1..494c0501 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@ -48,7 +48,7 @@ class Kernel extends HttpKernel
+     /**
+      * The application's middleware aliases.
+      *
+-     * Aliases may be used to conveniently assign middleware to routes and groups.
++     * Aliases may be used instead of class names to conveniently assign middleware to routes and groups.
+      *
+      * @var array<string, class-string|string>
+      */
+@@ -60,6 +60,7 @@ class Kernel extends HttpKernel
+         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
++        'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+         'signed' => \App\Http\Middleware\ValidateSignature::class,
+         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 23b40634..4d7f70f5 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -40,5 +40,6 @@ class User extends Authenticatable
+      */
+     protected $casts = [
+         'email_verified_at' => 'datetime',
++        'password' => 'hashed',
+     ];
+ }
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+index dafcbee7..54756cd1 100644
+--- a/app/Providers/AuthServiceProvider.php
++++ b/app/Providers/AuthServiceProvider.php
+@@ -13,7 +13,7 @@ class AuthServiceProvider extends ServiceProvider
+      * @var array<class-string, class-string>
+      */
+     protected $policies = [
+-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
++        //
+     ];
+ 
+     /**
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+index 0c18923b..1cf5f15c 100644
+--- a/app/Providers/RouteServiceProvider.php
++++ b/app/Providers/RouteServiceProvider.php
+@@ -24,7 +24,9 @@ class RouteServiceProvider extends ServiceProvider
+      */
+     public function boot(): void
+     {
+-        $this->configureRateLimiting();
++        RateLimiter::for('api', function (Request $request) {
++            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
++        });
+ 
+         $this->routes(function () {
+             Route::middleware('api')
+@@ -35,14 +37,4 @@ class RouteServiceProvider extends ServiceProvider
+                 ->group(base_path('routes/web.php'));
+         });
+     }
+-
+-    /**
+-     * Configure the rate limiters for the application.
+-     */
+-    protected function configureRateLimiting(): void
+-    {
+-        RateLimiter::for('api', function (Request $request) {
+-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+-        });
+-    }
+ }
+diff --git a/composer.json b/composer.json
+index 4a1a7cda..8a3d72d4 100644
+--- a/composer.json
++++ b/composer.json
+@@ -1,14 +1,14 @@
+ {
+     "name": "laravel/laravel",
+     "type": "project",
+-    "description": "The Laravel Framework.",
+-    "keywords": ["framework", "laravel"],
++    "description": "The skeleton application for the Laravel framework.",
++    "keywords": ["laravel", "framework"],
+     "license": "MIT",
+     "require": {
+         "php": "^8.1",
+         "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^10.0",
+-        "laravel/sanctum": "^3.2",
++        "laravel/framework": "^10.10",
++        "laravel/sanctum": "^3.3",
+         "laravel/tinker": "^2.8"
+     },
+     "require-dev": {
+diff --git a/config/app.php b/config/app.php
+index ef76a7ed..9207160d 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -1,6 +1,7 @@
+ <?php
+ 
+ use Illuminate\Support\Facades\Facade;
++use Illuminate\Support\ServiceProvider;
+ 
+ return [
+ 
+@@ -140,7 +141,7 @@ return [
+ 
+     'maintenance' => [
+         'driver' => 'file',
+-        // 'store'  => 'redis',
++        // 'store' => 'redis',
+     ],
+ 
+     /*
+@@ -154,34 +155,7 @@ return [
+     |
+     */
+ 
+-    'providers' => [
+-
+-        /*
+-         * Laravel Framework Service Providers...
+-         */
+-        Illuminate\Auth\AuthServiceProvider::class,
+-        Illuminate\Broadcasting\BroadcastServiceProvider::class,
+-        Illuminate\Bus\BusServiceProvider::class,
+-        Illuminate\Cache\CacheServiceProvider::class,
+-        Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
+-        Illuminate\Cookie\CookieServiceProvider::class,
+-        Illuminate\Database\DatabaseServiceProvider::class,
+-        Illuminate\Encryption\EncryptionServiceProvider::class,
+-        Illuminate\Filesystem\FilesystemServiceProvider::class,
+-        Illuminate\Foundation\Providers\FoundationServiceProvider::class,
+-        Illuminate\Hashing\HashServiceProvider::class,
+-        Illuminate\Mail\MailServiceProvider::class,
+-        Illuminate\Notifications\NotificationServiceProvider::class,
+-        Illuminate\Pagination\PaginationServiceProvider::class,
+-        Illuminate\Pipeline\PipelineServiceProvider::class,
+-        Illuminate\Queue\QueueServiceProvider::class,
+-        Illuminate\Redis\RedisServiceProvider::class,
+-        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+-        Illuminate\Session\SessionServiceProvider::class,
+-        Illuminate\Translation\TranslationServiceProvider::class,
+-        Illuminate\Validation\ValidationServiceProvider::class,
+-        Illuminate\View\ViewServiceProvider::class,
+-
++    'providers' => ServiceProvider::defaultProviders()->merge([
+         /*
+          * Package Service Providers...
+          */
+@@ -194,8 +168,7 @@ return [
+         // App\Providers\BroadcastServiceProvider::class,
+         App\Providers\EventServiceProvider::class,
+         App\Providers\RouteServiceProvider::class,
+-
+-    ],
++    ])->toArray(),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -209,7 +182,7 @@ return [
+     */
+ 
+     'aliases' => Facade::defaultAliases()->merge([
+-        // 'ExampleClass' => App\Example\ExampleClass::class,
++        // 'Example' => App\Facades\Example::class,
+     ])->toArray(),
+ 
+ ];
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+index 9e4d4aa4..24104853 100644
+--- a/config/broadcasting.php
++++ b/config/broadcasting.php
+@@ -36,6 +36,7 @@ return [
+             'secret' => env('PUSHER_APP_SECRET'),
+             'app_id' => env('PUSHER_APP_ID'),
+             'options' => [
++                'cluster' => env('PUSHER_APP_CLUSTER'),
+                 'host' => env('PUSHER_HOST') ?: 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com',
+                 'port' => env('PUSHER_PORT', 443),
+                 'scheme' => env('PUSHER_SCHEME', 'https'),
+diff --git a/config/cache.php b/config/cache.php
+index 33bb2954..d4171e22 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -52,6 +52,7 @@ return [
+         'file' => [
+             'driver' => 'file',
+             'path' => storage_path('framework/cache/data'),
++            'lock_path' => storage_path('framework/cache/data'),
+         ],
+ 
+         'memcached' => [
+diff --git a/config/hashing.php b/config/hashing.php
+index bcd3be4c..0e8a0bb3 100644
+--- a/config/hashing.php
++++ b/config/hashing.php
+@@ -29,7 +29,8 @@ return [
+     */
+ 
+     'bcrypt' => [
+-        'rounds' => env('BCRYPT_ROUNDS', 10),
++        'rounds' => env('BCRYPT_ROUNDS', 12),
++        'verify' => true,
+     ],
+ 
+     /*
+@@ -47,6 +48,7 @@ return [
+         'memory' => 65536,
+         'threads' => 1,
+         'time' => 4,
++        'verify' => true,
+     ],
+ 
+ ];
+diff --git a/config/mail.php b/config/mail.php
+index 542d98c3..d7416b15 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -36,6 +36,7 @@ return [
+     'mailers' => [
+         'smtp' => [
+             'transport' => 'smtp',
++            'url' => env('MAIL_URL'),
+             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+             'port' => env('MAIL_PORT', 587),
+             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+@@ -58,6 +59,7 @@ return [
+ 
+         'postmark' => [
+             'transport' => 'postmark',
++            // 'message_stream_id' => null,
+             // 'client' => [
+             //     'timeout' => 5,
+             // ],
+diff --git a/config/sanctum.php b/config/sanctum.php
+index 529cfdc9..35d75b31 100644
+--- a/config/sanctum.php
++++ b/config/sanctum.php
+@@ -41,13 +41,28 @@ return [
+     |--------------------------------------------------------------------------
+     |
+     | This value controls the number of minutes until an issued token will be
+-    | considered expired. If this value is null, personal access tokens do
+-    | not expire. This won't tweak the lifetime of first-party sessions.
++    | considered expired. This will override any values set in the token's
++    | "expires_at" attribute, but first-party sessions are not affected.
+     |
+     */
+ 
+     'expiration' => null,
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Token Prefix
++    |--------------------------------------------------------------------------
++    |
++    | Sanctum can prefix new tokens in order to take advantage of numerous
++    | security scanning initiatives maintained by open source platforms
++    | that notify developers if they commit tokens into repositories.
++    |
++    | See: https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning
++    |
++    */
++
++    'token_prefix' => env('SANCTUM_TOKEN_PREFIX', ''),
++
+     /*
+     |--------------------------------------------------------------------------
+     | Sanctum Middleware
+@@ -60,8 +75,9 @@ return [
+     */
+ 
+     'middleware' => [
+-        'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
++        'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,
+         'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
++        'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
+     ],
+ 
+ ];
+diff --git a/config/session.php b/config/session.php
+index 8fed97c0..e738cb3e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -198,4 +198,17 @@ return [
+ 
+     'same_site' => 'lax',
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Partitioned Cookies
++    |--------------------------------------------------------------------------
++    |
++    | Setting this value to true will tie the cookie to the top-level site for
++    | a cross-site context. Partitioned cookies are accepted by the browser
++    | when flagged "secure" and the Same-Site attribute is set to "none".
++    |
++    */
++
++    'partitioned' => false,
++
+ ];
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index a6ecc0af..584104c9 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -3,6 +3,7 @@
+ namespace Database\Factories;
+ 
+ use Illuminate\Database\Eloquent\Factories\Factory;
++use Illuminate\Support\Facades\Hash;
+ use Illuminate\Support\Str;
+ 
+ /**
+@@ -10,6 +11,11 @@ use Illuminate\Support\Str;
+  */
+ class UserFactory extends Factory
+ {
++    /**
++     * The current password being used by the factory.
++     */
++    protected static ?string $password;
++
+     /**
+      * Define the model's default state.
+      *
+@@ -21,7 +27,7 @@ class UserFactory extends Factory
+             'name' => fake()->name(),
+             'email' => fake()->unique()->safeEmail(),
+             'email_verified_at' => now(),
+-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
++            'password' => static::$password ??= Hash::make('password'),
+             'remember_token' => Str::random(10),
+         ];
+     }
+diff --git a/package.json b/package.json
+index 3a76ed03..fe1122a8 100644
+--- a/package.json
++++ b/package.json
+@@ -1,12 +1,13 @@
+ {
+     "private": true,
++    "type": "module",
+     "scripts": {
+         "dev": "vite",
+         "build": "vite build"
+     },
+     "devDependencies": {
+-        "axios": "^1.1.2",
+-        "laravel-vite-plugin": "^0.7.2",
+-        "vite": "^4.0.0"
++        "axios": "^1.6.1",
++        "laravel-vite-plugin": "^1.0.0",
++        "vite": "^5.0.0"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index e9f533da..bc86714b 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -1,20 +1,20 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
++         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+          bootstrap="vendor/autoload.php"
+          colors="true"
+ >
+     <testsuites>
+         <testsuite name="Unit">
+-            <directory suffix="Test.php">./tests/Unit</directory>
++            <directory>tests/Unit</directory>
+         </testsuite>
+         <testsuite name="Feature">
+-            <directory suffix="Test.php">./tests/Feature</directory>
++            <directory>tests/Feature</directory>
+         </testsuite>
+     </testsuites>
+     <source>
+         <include>
+-            <directory suffix=".php">./app</directory>
++            <directory>app</directory>
+         </include>
+     </source>
+     <php>
+@@ -24,6 +24,7 @@
+         <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
+         <!-- <env name="DB_DATABASE" value=":memory:"/> -->
+         <env name="MAIL_MAILER" value="array"/>
++        <env name="PULSE_ENABLED" value="false"/>
+         <env name="QUEUE_CONNECTION" value="sync"/>
+         <env name="SESSION_DRIVER" value="array"/>
+         <env name="TELESCOPE_ENABLED" value="false"/>
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 0406510b..638ec960 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -12,13 +12,13 @@
+ 
+         <!-- Styles -->
+         <style>
+-            /* ! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Figtree, sans-serif;font-feature-settings:normal}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::-webkit-backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mx-6{margin-left:1.5rem;margin-right:1.5rem}.ml-4{margin-left:1rem}.mt-16{margin-top:4rem}.mt-6{margin-top:1.5rem}.mt-4{margin-top:1rem}.-mt-px{margin-top:-1px}.mr-1{margin-right:0.25rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-16{height:4rem}.h-7{height:1.75rem}.h-6{height:1.5rem}.h-5{height:1.25rem}.min-h-screen{min-height:100vh}.w-auto{width:auto}.w-16{width:4rem}.w-7{width:1.75rem}.w-6{width:1.5rem}.w-5{width:1.25rem}.max-w-7xl{max-width:80rem}.shrink-0{flex-shrink:0}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.items-center{align-items:center}.justify-center{justify-content:center}.gap-6{gap:1.5rem}.gap-4{gap:1rem}.self-center{align-self:center}.rounded-lg{border-radius:0.5rem}.rounded-full{border-radius:9999px}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity))}.bg-dots-darker{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E")}.from-gray-700\/50{--tw-gradient-from:rgb(55 65 81 / 0.5);--tw-gradient-to:rgb(55 65 81 / 0);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-transparent{--tw-gradient-to:rgb(0 0 0 / 0);--tw-gradient-stops:var(--tw-gradient-from), transparent, var(--tw-gradient-to)}.bg-center{background-position:center}.stroke-red-500{stroke:#ef4444}.stroke-gray-400{stroke:#9ca3af}.p-6{padding:1.5rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.text-center{text-align:center}.text-right{text-align:right}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-gray-500\/20{--tw-shadow-color:rgb(107 114 128 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-red-500 *::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.selection\:bg-red-500::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.hover\:text-gray-900:hover{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.hover\:text-gray-700:hover{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity))}.focus\:rounded-sm:focus{border-radius:0.125rem}.focus\:outline:focus{outline-style:solid}.focus\:outline-2:focus{outline-width:2px}.focus\:outline-red-500:focus{outline-color:#ef4444}.group:hover .group-hover\:stroke-gray-600{stroke:#4b5563}@media (prefers-reduced-motion: no-preference){.motion-safe\:hover\:scale-\[1\.01\]:hover{--tw-scale-x:1.01;--tw-scale-y:1.01;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}}@media (prefers-color-scheme: dark){.dark\:bg-gray-900{--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity))}.dark\:bg-gray-800\/50{background-color:rgb(31 41 55 / 0.5)}.dark\:bg-red-800\/20{background-color:rgb(153 27 27 / 0.2)}.dark\:bg-dots-lighter{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E")}.dark\:bg-gradient-to-bl{background-image:linear-gradient(to bottom left, var(--tw-gradient-stops))}.dark\:stroke-gray-600{stroke:#4b5563}.dark\:text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity))}.dark\:text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:shadow-none{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.dark\:ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.dark\:ring-inset{--tw-ring-inset:inset}.dark\:ring-white\/5{--tw-ring-color:rgb(255 255 255 / 0.05)}.dark\:hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.group:hover .dark\:group-hover\:stroke-gray-400{stroke:#9ca3af}}@media (min-width: 640px){.sm\:fixed{position:fixed}.sm\:top-0{top:0px}.sm\:right-0{right:0px}.sm\:ml-0{margin-left:0px}.sm\:flex{display:flex}.sm\:items-center{align-items:center}.sm\:justify-center{justify-content:center}.sm\:justify-between{justify-content:space-between}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:gap-8{gap:2rem}.lg\:p-8{padding:2rem}}
++            /* ! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Figtree, sans-serif;font-feature-settings:normal}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::-webkit-backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mx-6{margin-left:1.5rem;margin-right:1.5rem}.ml-4{margin-left:1rem}.mt-16{margin-top:4rem}.mt-6{margin-top:1.5rem}.mt-4{margin-top:1rem}.-mt-px{margin-top:-1px}.mr-1{margin-right:0.25rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-16{height:4rem}.h-7{height:1.75rem}.h-6{height:1.5rem}.h-5{height:1.25rem}.min-h-screen{min-height:100vh}.w-auto{width:auto}.w-16{width:4rem}.w-7{width:1.75rem}.w-6{width:1.5rem}.w-5{width:1.25rem}.max-w-7xl{max-width:80rem}.shrink-0{flex-shrink:0}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.items-center{align-items:center}.justify-center{justify-content:center}.gap-6{gap:1.5rem}.gap-4{gap:1rem}.self-center{align-self:center}.rounded-lg{border-radius:0.5rem}.rounded-full{border-radius:9999px}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity))}.bg-dots-darker{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E")}.from-gray-700\/50{--tw-gradient-from:rgb(55 65 81 / 0.5);--tw-gradient-to:rgb(55 65 81 / 0);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-transparent{--tw-gradient-to:rgb(0 0 0 / 0);--tw-gradient-stops:var(--tw-gradient-from), transparent, var(--tw-gradient-to)}.bg-center{background-position:center}.stroke-red-500{stroke:#ef4444}.stroke-gray-400{stroke:#9ca3af}.p-6{padding:1.5rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.text-center{text-align:center}.text-right{text-align:right}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-gray-500\/20{--tw-shadow-color:rgb(107 114 128 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-red-500 *::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.selection\:bg-red-500::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.hover\:text-gray-900:hover{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.hover\:text-gray-700:hover{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity))}.focus\:rounded-sm:focus{border-radius:0.125rem}.focus\:outline:focus{outline-style:solid}.focus\:outline-2:focus{outline-width:2px}.focus\:outline-red-500:focus{outline-color:#ef4444}.group:hover .group-hover\:stroke-gray-600{stroke:#4b5563}.z-10{z-index: 10}@media (prefers-reduced-motion: no-preference){.motion-safe\:hover\:scale-\[1\.01\]:hover{--tw-scale-x:1.01;--tw-scale-y:1.01;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}}@media (prefers-color-scheme: dark){.dark\:bg-gray-900{--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity))}.dark\:bg-gray-800\/50{background-color:rgb(31 41 55 / 0.5)}.dark\:bg-red-800\/20{background-color:rgb(153 27 27 / 0.2)}.dark\:bg-dots-lighter{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E")}.dark\:bg-gradient-to-bl{background-image:linear-gradient(to bottom left, var(--tw-gradient-stops))}.dark\:stroke-gray-600{stroke:#4b5563}.dark\:text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity))}.dark\:text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:shadow-none{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.dark\:ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.dark\:ring-inset{--tw-ring-inset:inset}.dark\:ring-white\/5{--tw-ring-color:rgb(255 255 255 / 0.05)}.dark\:hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.group:hover .dark\:group-hover\:stroke-gray-400{stroke:#9ca3af}}@media (min-width: 640px){.sm\:fixed{position:fixed}.sm\:top-0{top:0px}.sm\:right-0{right:0px}.sm\:ml-0{margin-left:0px}.sm\:flex{display:flex}.sm\:items-center{align-items:center}.sm\:justify-center{justify-content:center}.sm\:justify-between{justify-content:space-between}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:gap-8{gap:2rem}.lg\:p-8{padding:2rem}}
+         </style>
+     </head>
+     <body class="antialiased">
+         <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
+             @if (Route::has('login'))
+-                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right">
++                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
+                     @auth
+                         <a href="{{ url('/home') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Home</a>
+                     @else
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index 8364a84e..2a4a09ee 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -14,6 +14,6 @@ class ExampleTest extends TestCase
+     {
+         $response = $this->get('/');
+ 
+-        $response->assertStatus(200);
++        $response->assertOk();
+     }
+ }
