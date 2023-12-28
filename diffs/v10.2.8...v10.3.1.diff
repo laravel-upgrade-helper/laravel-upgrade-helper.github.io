@@ -1,0 +1,156 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e8007923..39481a20 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,24 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.7...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.3.0...10.x)
++
++## [v10.3.0](https://github.com/laravel/laravel/compare/v10.2.10...v10.3.0) - 2023-12-19
++
++* [10.x] Use `assertOk()` instead of `assertStatus(200)` in tests by [@TENIOS](https://github.com/TENIOS) in https://github.com/laravel/laravel/pull/6287
++* [10.x] Vite 5 by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6292
++
++## [v10.2.10](https://github.com/laravel/laravel/compare/v10.2.9...v10.2.10) - 2023-11-30
++
++* [10.x] Fixes missing property description by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6275
++* [10.x] Add partitioned cookie config key by [@fabricecw](https://github.com/fabricecw) in https://github.com/laravel/laravel/pull/6257
++
++## [v10.2.9](https://github.com/laravel/laravel/compare/v10.2.8...v10.2.9) - 2023-11-13
++
++- Update axios to latest version by [@emargareten](https://github.com/emargareten) in https://github.com/laravel/laravel/pull/6272
++
++## [v10.2.8](https://github.com/laravel/laravel/compare/v10.2.7...v10.2.8) - 2023-11-02
++
++- Revert "[10.x] Let database handle default collation" by [@taylorotwell](https://github.com/taylorotwell) in https://github.com/laravel/laravel/pull/6266
+ 
+ ## [v10.2.7](https://github.com/laravel/laravel/compare/v10.2.6...v10.2.7) - 2023-10-31
+ 
+diff --git a/config/mail.php b/config/mail.php
+index d7416b15..e894b2e5 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -29,7 +29,7 @@ return [
+     | mailers below. You are free to add additional mailers as required.
+     |
+     | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+-    |            "postmark", "log", "array", "failover"
++    |            "postmark", "log", "array", "failover", "roundrobin"
+     |
+     */
+ 
+@@ -50,16 +50,16 @@ return [
+             'transport' => 'ses',
+         ],
+ 
+-        'mailgun' => [
+-            'transport' => 'mailgun',
++        'postmark' => [
++            'transport' => 'postmark',
++            // 'message_stream_id' => null,
+             // 'client' => [
+             //     'timeout' => 5,
+             // ],
+         ],
+ 
+-        'postmark' => [
+-            'transport' => 'postmark',
+-            // 'message_stream_id' => null,
++        'mailgun' => [
++            'transport' => 'mailgun',
+             // 'client' => [
+             //     'timeout' => 5,
+             // ],
+@@ -86,6 +86,14 @@ return [
+                 'log',
+             ],
+         ],
++
++        'roundrobin' => [
++            'transport' => 'roundrobin',
++            'mailers' => [
++                'ses',
++                'postmark',
++            ],
++        ],
+     ],
+ 
+     /*
+diff --git a/config/session.php b/config/session.php
+index 8fed97c0..e738cb3e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -198,4 +198,17 @@ return [
+ 
+     'same_site' => 'lax',
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Partitioned Cookies
++    |--------------------------------------------------------------------------
++    |
++    | Setting this value to true will tie the cookie to the top-level site for
++    | a cross-site context. Partitioned cookies are accepted by the browser
++    | when flagged "secure" and the Same-Site attribute is set to "none".
++    |
++    */
++
++    'partitioned' => false,
++
+ ];
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index cde014af..584104c9 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -11,6 +11,9 @@ use Illuminate\Support\Str;
+  */
+ class UserFactory extends Factory
+ {
++    /**
++     * The current password being used by the factory.
++     */
+     protected static ?string $password;
+ 
+     /**
+diff --git a/package.json b/package.json
+index 0e6480f2..fe1122a8 100644
+--- a/package.json
++++ b/package.json
+@@ -6,8 +6,8 @@
+         "build": "vite build"
+     },
+     "devDependencies": {
+-        "axios": "^1.1.2",
+-        "laravel-vite-plugin": "^0.8.0",
+-        "vite": "^4.0.0"
++        "axios": "^1.6.1",
++        "laravel-vite-plugin": "^1.0.0",
++        "vite": "^5.0.0"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index f112c0c8..bc86714b 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -24,6 +24,7 @@
+         <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
+         <!-- <env name="DB_DATABASE" value=":memory:"/> -->
+         <env name="MAIL_MAILER" value="array"/>
++        <env name="PULSE_ENABLED" value="false"/>
+         <env name="QUEUE_CONNECTION" value="sync"/>
+         <env name="SESSION_DRIVER" value="array"/>
+         <env name="TELESCOPE_ENABLED" value="false"/>
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index 8364a84e..2a4a09ee 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -14,6 +14,6 @@ class ExampleTest extends TestCase
+     {
+         $response = $this->get('/');
+ 
+-        $response->assertStatus(200);
++        $response->assertOk();
+     }
+ }
