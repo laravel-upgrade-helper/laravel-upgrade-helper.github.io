@@ -1,0 +1,96 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 61700d13..d34e77f5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,15 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.10...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.3.1...10.x)
++
++## [v10.3.1](https://github.com/laravel/laravel/compare/v10.3.0...v10.3.1) - 2023-12-23
++
++* [10.x] Add roundrobin transport driver config by [@me-shaon](https://github.com/me-shaon) in https://github.com/laravel/laravel/pull/6301
++
++## [v10.3.0](https://github.com/laravel/laravel/compare/v10.2.10...v10.3.0) - 2023-12-19
++
++* [10.x] Use `assertOk()` instead of `assertStatus(200)` in tests by [@TENIOS](https://github.com/TENIOS) in https://github.com/laravel/laravel/pull/6287
++* [10.x] Vite 5 by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6292
+ 
+ ## [v10.2.10](https://github.com/laravel/laravel/compare/v10.2.9...v10.2.10) - 2023-11-30
+ 
+diff --git a/config/mail.php b/config/mail.php
+index d7416b15..e894b2e5 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -29,7 +29,7 @@ return [
+     | mailers below. You are free to add additional mailers as required.
+     |
+     | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+-    |            "postmark", "log", "array", "failover"
++    |            "postmark", "log", "array", "failover", "roundrobin"
+     |
+     */
+ 
+@@ -50,16 +50,16 @@ return [
+             'transport' => 'ses',
+         ],
+ 
+-        'mailgun' => [
+-            'transport' => 'mailgun',
++        'postmark' => [
++            'transport' => 'postmark',
++            // 'message_stream_id' => null,
+             // 'client' => [
+             //     'timeout' => 5,
+             // ],
+         ],
+ 
+-        'postmark' => [
+-            'transport' => 'postmark',
+-            // 'message_stream_id' => null,
++        'mailgun' => [
++            'transport' => 'mailgun',
+             // 'client' => [
+             //     'timeout' => 5,
+             // ],
+@@ -86,6 +86,14 @@ return [
+                 'log',
+             ],
+         ],
++
++        'roundrobin' => [
++            'transport' => 'roundrobin',
++            'mailers' => [
++                'ses',
++                'postmark',
++            ],
++        ],
+     ],
+ 
+     /*
+diff --git a/package.json b/package.json
+index fe1122a8..56f5ddcc 100644
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,7 @@
+         "build": "vite build"
+     },
+     "devDependencies": {
+-        "axios": "^1.6.1",
++        "axios": "^1.6.4",
+         "laravel-vite-plugin": "^1.0.0",
+         "vite": "^5.0.0"
+     }
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index 2a4a09ee..8364a84e 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -14,6 +14,6 @@ class ExampleTest extends TestCase
+     {
+         $response = $this->get('/');
+ 
+-        $response->assertOk();
++        $response->assertStatus(200);
+     }
+ }
