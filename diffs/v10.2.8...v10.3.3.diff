@@ -1,0 +1,193 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e8007923..43d17400 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,34 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.2.7...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v10.3.2...10.x)
++
++## [v10.3.2](https://github.com/laravel/laravel/compare/v10.3.1...v10.3.2) - 2024-01-04
++
++* [10.x] Reverts `assertOk` change by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6303
++* Update Axios to latest version by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6306
++* [10.x] Update Axios to latest version by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6313
++
++## [v10.3.1](https://github.com/laravel/laravel/compare/v10.3.0...v10.3.1) - 2023-12-23
++
++* [10.x] Add roundrobin transport driver config by [@me-shaon](https://github.com/me-shaon) in https://github.com/laravel/laravel/pull/6301
++
++## [v10.3.0](https://github.com/laravel/laravel/compare/v10.2.10...v10.3.0) - 2023-12-19
++
++* [10.x] Use `assertOk()` instead of `assertStatus(200)` in tests by [@TENIOS](https://github.com/TENIOS) in https://github.com/laravel/laravel/pull/6287
++* [10.x] Vite 5 by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6292
++
++## [v10.2.10](https://github.com/laravel/laravel/compare/v10.2.9...v10.2.10) - 2023-11-30
++
++* [10.x] Fixes missing property description by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6275
++* [10.x] Add partitioned cookie config key by [@fabricecw](https://github.com/fabricecw) in https://github.com/laravel/laravel/pull/6257
++
++## [v10.2.9](https://github.com/laravel/laravel/compare/v10.2.8...v10.2.9) - 2023-11-13
++
++- Update axios to latest version by [@emargareten](https://github.com/emargareten) in https://github.com/laravel/laravel/pull/6272
++
++## [v10.2.8](https://github.com/laravel/laravel/compare/v10.2.7...v10.2.8) - 2023-11-02
++
++- Revert "[10.x] Let database handle default collation" by [@taylorotwell](https://github.com/taylorotwell) in https://github.com/laravel/laravel/pull/6266
+ 
+ ## [v10.2.7](https://github.com/laravel/laravel/compare/v10.2.6...v10.2.7) - 2023-10-31
+ 
+diff --git a/README.md b/README.md
+index 1824fc1b..1a4c26ba 100644
+--- a/README.md
++++ b/README.md
+@@ -27,7 +27,7 @@ Laravel has the most extensive and thorough [documentation](https://laravel.com/
+ 
+ You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+ 
+-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
++If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+ 
+ ## Laravel Sponsors
+ 
+diff --git a/config/mail.php b/config/mail.php
+index d7416b15..e894b2e5 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -29,7 +29,7 @@ return [
+     | mailers below. You are free to add additional mailers as required.
+     |
+     | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+-    |            "postmark", "log", "array", "failover"
++    |            "postmark", "log", "array", "failover", "roundrobin"
+     |
+     */
+ 
+@@ -50,16 +50,16 @@ return [
+             'transport' => 'ses',
+         ],
+ 
+-        'mailgun' => [
+-            'transport' => 'mailgun',
++        'postmark' => [
++            'transport' => 'postmark',
++            // 'message_stream_id' => null,
+             // 'client' => [
+             //     'timeout' => 5,
+             // ],
+         ],
+ 
+-        'postmark' => [
+-            'transport' => 'postmark',
+-            // 'message_stream_id' => null,
++        'mailgun' => [
++            'transport' => 'mailgun',
+             // 'client' => [
+             //     'timeout' => 5,
+             // ],
+@@ -86,6 +86,14 @@ return [
+                 'log',
+             ],
+         ],
++
++        'roundrobin' => [
++            'transport' => 'roundrobin',
++            'mailers' => [
++                'ses',
++                'postmark',
++            ],
++        ],
+     ],
+ 
+     /*
+diff --git a/config/session.php b/config/session.php
+index 8fed97c0..e738cb3e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -198,4 +198,17 @@ return [
+ 
+     'same_site' => 'lax',
+ 
++    /*
++    |--------------------------------------------------------------------------
++    | Partitioned Cookies
++    |--------------------------------------------------------------------------
++    |
++    | Setting this value to true will tie the cookie to the top-level site for
++    | a cross-site context. Partitioned cookies are accepted by the browser
++    | when flagged "secure" and the Same-Site attribute is set to "none".
++    |
++    */
++
++    'partitioned' => false,
++
+ ];
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index cde014af..584104c9 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -11,6 +11,9 @@ use Illuminate\Support\Str;
+  */
+ class UserFactory extends Factory
+ {
++    /**
++     * The current password being used by the factory.
++     */
+     protected static ?string $password;
+ 
+     /**
+diff --git a/package.json b/package.json
+index 0e6480f2..56f5ddcc 100644
+--- a/package.json
++++ b/package.json
+@@ -6,8 +6,8 @@
+         "build": "vite build"
+     },
+     "devDependencies": {
+-        "axios": "^1.1.2",
+-        "laravel-vite-plugin": "^0.8.0",
+-        "vite": "^4.0.0"
++        "axios": "^1.6.4",
++        "laravel-vite-plugin": "^1.0.0",
++        "vite": "^5.0.0"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index f112c0c8..bc86714b 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -24,6 +24,7 @@
+         <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
+         <!-- <env name="DB_DATABASE" value=":memory:"/> -->
+         <env name="MAIL_MAILER" value="array"/>
++        <env name="PULSE_ENABLED" value="false"/>
+         <env name="QUEUE_CONNECTION" value="sync"/>
+         <env name="SESSION_DRIVER" value="array"/>
+         <env name="TELESCOPE_ENABLED" value="false"/>
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 638ec960..33533508 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -119,18 +119,11 @@
+                 </div>
+ 
+                 <div class="flex justify-center mt-16 px-0 sm:items-center sm:justify-between">
+-                    <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-left">
+-                        <div class="flex items-center gap-4">
+-                            <a href="https://github.com/sponsors/taylorotwell" class="group inline-flex items-center hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
+-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="-mt-px mr-1 w-5 h-5 stroke-gray-400 dark:stroke-gray-600 group-hover:stroke-gray-600 dark:group-hover:stroke-gray-400">
+-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+-                                </svg>
+-                                Sponsor
+-                            </a>
+-                        </div>
++                    <div class="text-center text-sm sm:text-left">
++                        &nbsp;
+                     </div>
+ 
+-                    <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
++                    <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
+                         Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                     </div>
+                 </div>
