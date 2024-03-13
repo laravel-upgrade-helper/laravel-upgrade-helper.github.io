@@ -1,0 +1,13 @@
+diff --git a/composer.json b/composer.json
+index 7033b06f..9fe4aa63 100644
+--- a/composer.json
++++ b/composer.json
+@@ -44,7 +44,7 @@
+         "post-create-project-cmd": [
+             "@php artisan key:generate --ansi",
+             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+-            "@php artisan migrate --ansi"
++            "@php artisan migrate --graceful --ansi"
+         ]
+     },
+     "extra": {
