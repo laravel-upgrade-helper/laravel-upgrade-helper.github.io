@@ -1,0 +1,3173 @@
+diff --git a/.env.example b/.env.example
+index ea0665b0..7b49625a 100644
+--- a/.env.example
++++ b/.env.example
+@@ -2,35 +2,53 @@ APP_NAME=Laravel
+ APP_ENV=local
+ APP_KEY=
+ APP_DEBUG=true
++APP_TIMEZONE=UTC
+ APP_URL=http://localhost
+ 
++APP_LOCALE=en
++APP_FALLBACK_LOCALE=en
++APP_FAKER_LOCALE=en_US
++
++APP_MAINTENANCE_DRIVER=file
++APP_MAINTENANCE_STORE=database
++
++BCRYPT_ROUNDS=12
++
+ LOG_CHANNEL=stack
++LOG_STACK=single
+ LOG_DEPRECATIONS_CHANNEL=null
+ LOG_LEVEL=debug
+ 
+-DB_CONNECTION=mysql
+-DB_HOST=127.0.0.1
+-DB_PORT=3306
+-DB_DATABASE=laravel
+-DB_USERNAME=root
+-DB_PASSWORD=
++DB_CONNECTION=sqlite
++# DB_HOST=127.0.0.1
++# DB_PORT=3306
++# DB_DATABASE=laravel
++# DB_USERNAME=root
++# DB_PASSWORD=
+ 
+-BROADCAST_DRIVER=log
+-CACHE_DRIVER=file
+-FILESYSTEM_DISK=local
+-QUEUE_CONNECTION=sync
+-SESSION_DRIVER=file
++SESSION_DRIVER=database
+ SESSION_LIFETIME=120
++SESSION_ENCRYPT=false
++SESSION_PATH=/
++SESSION_DOMAIN=null
++
++BROADCAST_CONNECTION=log
++FILESYSTEM_DISK=local
++QUEUE_CONNECTION=database
++
++CACHE_STORE=database
++CACHE_PREFIX=
+ 
+ MEMCACHED_HOST=127.0.0.1
+ 
++REDIS_CLIENT=phpredis
+ REDIS_HOST=127.0.0.1
+ REDIS_PASSWORD=null
+ REDIS_PORT=6379
+ 
+-MAIL_MAILER=smtp
+-MAIL_HOST=mailpit
+-MAIL_PORT=1025
++MAIL_MAILER=log
++MAIL_HOST=127.0.0.1
++MAIL_PORT=2525
+ MAIL_USERNAME=null
+ MAIL_PASSWORD=null
+ MAIL_ENCRYPTION=null
+@@ -43,17 +61,4 @@ AWS_DEFAULT_REGION=us-east-1
+ AWS_BUCKET=
+ AWS_USE_PATH_STYLE_ENDPOINT=false
+ 
+-PUSHER_APP_ID=
+-PUSHER_APP_KEY=
+-PUSHER_APP_SECRET=
+-PUSHER_HOST=
+-PUSHER_PORT=443
+-PUSHER_SCHEME=https
+-PUSHER_APP_CLUSTER=mt1
+-
+ VITE_APP_NAME="${APP_NAME}"
+-VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+-VITE_PUSHER_HOST="${PUSHER_HOST}"
+-VITE_PUSHER_PORT="${PUSHER_PORT}"
+-VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+-VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index 0e0c54ec..03601bdb 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -19,7 +19,7 @@ jobs:
+     strategy:
+       fail-fast: true
+       matrix:
+-        php: [8.1, 8.2, 8.3]
++        php: [8.2, 8.3]
+ 
+     name: PHP ${{ matrix.php }}
+ 
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 43d17400..78e0e75e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,119 +1,17 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v10.3.2...10.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.2...11.x)
+ 
+-## [v10.3.2](https://github.com/laravel/laravel/compare/v10.3.1...v10.3.2) - 2024-01-04
++## [v11.0.2](https://github.com/laravel/laravel/compare/v11.0.1...v11.0.2) - 2024-03-13
+ 
+-* [10.x] Reverts `assertOk` change by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6303
+-* Update Axios to latest version by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6306
+-* [10.x] Update Axios to latest version by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6313
++* [11.x] Remove branch alias from composer.json by [@zepfietje](https://github.com/zepfietje) in https://github.com/laravel/laravel/pull/6366
++* [11.x] Fixes typo in welcome page by [@jrd-lewis](https://github.com/jrd-lewis) in https://github.com/laravel/laravel/pull/6363
++* change mariadb default by [@taylorotwell](https://github.com/taylorotwell) in https://github.com/laravel/laravel/commit/79969c99c6456a6d6edfbe78d241575fe1f65594
+ 
+-## [v10.3.1](https://github.com/laravel/laravel/compare/v10.3.0...v10.3.1) - 2023-12-23
++## [v11.0.1](https://github.com/laravel/laravel/compare/v11.0.0...v11.0.1) - 2024-03-12
+ 
+-* [10.x] Add roundrobin transport driver config by [@me-shaon](https://github.com/me-shaon) in https://github.com/laravel/laravel/pull/6301
++* [11.x] Fixes SQLite driver missing by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6361
+ 
+-## [v10.3.0](https://github.com/laravel/laravel/compare/v10.2.10...v10.3.0) - 2023-12-19
++## [v11.0.0 (2023-02-17)](https://github.com/laravel/laravel/compare/v10.3.2...v11.0.0)
+ 
+-* [10.x] Use `assertOk()` instead of `assertStatus(200)` in tests by [@TENIOS](https://github.com/TENIOS) in https://github.com/laravel/laravel/pull/6287
+-* [10.x] Vite 5 by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6292
+-
+-## [v10.2.10](https://github.com/laravel/laravel/compare/v10.2.9...v10.2.10) - 2023-11-30
+-
+-* [10.x] Fixes missing property description by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6275
+-* [10.x] Add partitioned cookie config key by [@fabricecw](https://github.com/fabricecw) in https://github.com/laravel/laravel/pull/6257
+-
+-## [v10.2.9](https://github.com/laravel/laravel/compare/v10.2.8...v10.2.9) - 2023-11-13
+-
+-- Update axios to latest version by [@emargareten](https://github.com/emargareten) in https://github.com/laravel/laravel/pull/6272
+-
+-## [v10.2.8](https://github.com/laravel/laravel/compare/v10.2.7...v10.2.8) - 2023-11-02
+-
+-- Revert "[10.x] Let database handle default collation" by [@taylorotwell](https://github.com/taylorotwell) in https://github.com/laravel/laravel/pull/6266
+-
+-## [v10.2.7](https://github.com/laravel/laravel/compare/v10.2.6...v10.2.7) - 2023-10-31
+-
+-- Postmark mailer configuration update by [@ninjaparade](https://github.com/ninjaparade) in https://github.com/laravel/laravel/pull/6228
+-- [10.x] Update sanctum config file by [@ahmed-aliraqi](https://github.com/ahmed-aliraqi) in https://github.com/laravel/laravel/pull/6234
+-- [10.x] Let database handle default collation by [@Jubeki](https://github.com/Jubeki) in https://github.com/laravel/laravel/pull/6241
+-- [10.x] Increase bcrypt rounds to 12 by [@valorin](https://github.com/valorin) in https://github.com/laravel/laravel/pull/6245
+-- [10.x] Use 12 bcrypt rounds for password in UserFactory by [@Jubeki](https://github.com/Jubeki) in https://github.com/laravel/laravel/pull/6247
+-- [10.x] Fix typo in the comment for token prefix (sanctum config) by [@yuters](https://github.com/yuters) in https://github.com/laravel/laravel/pull/6248
+-- [10.x] Update fixture hash to match testing cost by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6259
+-- [10.x] Update minimum `laravel/sanctum` by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/laravel/pull/6261
+-- [10.x] Hash improvements by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6258
+-- Redis maintenance store config example contains an excess space by [@hedge-freek](https://github.com/hedge-freek) in https://github.com/laravel/laravel/pull/6264
+-
+-## [v10.2.6](https://github.com/laravel/laravel/compare/v10.2.5...v10.2.6) - 2023-08-10
+-
+-- Bump `laravel-vite-plugin` to latest version by [@adevade](https://github.com/adevade) in https://github.com/laravel/laravel/pull/6224
+-
+-## [v10.2.5](https://github.com/laravel/laravel/compare/v10.2.4...v10.2.5) - 2023-06-30
+-
+-- Allow accessing APP_NAME in Vite scope by [@domnantas](https://github.com/domnantas) in https://github.com/laravel/laravel/pull/6204
+-- Omit default values for suffix in phpunit.xml by [@spawnia](https://github.com/spawnia) in https://github.com/laravel/laravel/pull/6210
+-
+-## [v10.2.4](https://github.com/laravel/laravel/compare/v10.2.3...v10.2.4) - 2023-06-07
+-
+-- Add `precognitive` key to $middlewareAliases by @emargareten in https://github.com/laravel/laravel/pull/6193
+-
+-## [v10.2.3](https://github.com/laravel/laravel/compare/v10.2.2...v10.2.3) - 2023-06-01
+-
+-- Update description by @taylorotwell in https://github.com/laravel/laravel/commit/85203d687ebba72b2805b89bba7d18dfae8f95c8
+-
+-## [v10.2.2](https://github.com/laravel/laravel/compare/v10.2.1...v10.2.2) - 2023-05-23
+-
+-- Add lock path by @taylorotwell in https://github.com/laravel/laravel/commit/a6bfbc7f90e33fd6cae3cb23f106c9689858c3b5
+-
+-## [v10.2.1](https://github.com/laravel/laravel/compare/v10.2.0...v10.2.1) - 2023-05-12
+-
+-- Add hashed cast to user password by @emargareten in https://github.com/laravel/laravel/pull/6171
+-- Bring back pusher cluster config option by @jesseleite in https://github.com/laravel/laravel/pull/6174
+-
+-## [v10.2.0](https://github.com/laravel/laravel/compare/v10.1.1...v10.2.0) - 2023-05-05
+-
+-- Update welcome.blade.php by @aymanatmeh in https://github.com/laravel/laravel/pull/6163
+-- Sets package.json type to module by @timacdonald in https://github.com/laravel/laravel/pull/6090
+-- Add url support for mail config by @chu121su12 in https://github.com/laravel/laravel/pull/6170
+-
+-## [v10.1.1](https://github.com/laravel/laravel/compare/v10.0.7...v10.1.1) - 2023-04-18
+-
+-- Fix laravel/framework constraints for Default Service Providers by @Jubeki in https://github.com/laravel/laravel/pull/6160
+-
+-## [v10.0.7](https://github.com/laravel/laravel/compare/v10.1.0...v10.0.7) - 2023-04-14
+-
+-- Adds `phpunit/phpunit@10.1` support by @nunomaduro in https://github.com/laravel/laravel/pull/6155
+-
+-## [v10.1.0](https://github.com/laravel/laravel/compare/v10.0.6...v10.1.0) - 2023-04-15
+-
+-- Minor skeleton slimming by @taylorotwell in https://github.com/laravel/laravel/pull/6159
+-
+-## [v10.0.6](https://github.com/laravel/laravel/compare/v10.0.5...v10.0.6) - 2023-04-05
+-
+-- Add job batching options to Queue configuration file by @AnOlsen in https://github.com/laravel/laravel/pull/6149
+-
+-## [v10.0.5](https://github.com/laravel/laravel/compare/v10.0.4...v10.0.5) - 2023-03-08
+-
+-- Add replace_placeholders to log channels by @alanpoulain in https://github.com/laravel/laravel/pull/6139
+-
+-## [v10.0.4](https://github.com/laravel/laravel/compare/v10.0.3...v10.0.4) - 2023-02-27
+-
+-- Fix typo by @izzudin96 in https://github.com/laravel/laravel/pull/6128
+-- Specify facility in the syslog driver config by @nicolus in https://github.com/laravel/laravel/pull/6130
+-
+-## [v10.0.3](https://github.com/laravel/laravel/compare/v10.0.2...v10.0.3) - 2023-02-21
+-
+-- Remove redundant `@return` docblock in UserFactory by @datlechin in https://github.com/laravel/laravel/pull/6119
+-- Reverts change in asset helper by @timacdonald in https://github.com/laravel/laravel/pull/6122
+-
+-## [v10.0.2](https://github.com/laravel/laravel/compare/v10.0.1...v10.0.2) - 2023-02-16
+-
+-- Remove unneeded call by @taylorotwell in https://github.com/laravel/laravel/commit/3986d4c54041fd27af36f96cf11bd79ce7b1ee4e
+-
+-## [v10.0.1](https://github.com/laravel/laravel/compare/v10.0.0...v10.0.1) - 2023-02-15
+-
+-- Add PHPUnit result cache to gitignore by @itxshakil in https://github.com/laravel/laravel/pull/6105
+-- Allow php-http/discovery as a composer plugin by @nicolas-grekas in https://github.com/laravel/laravel/pull/6106
+-
+-## [v10.0.0 (2022-02-14)](https://github.com/laravel/laravel/compare/v9.5.2...v10.0.0)
+-
+-Laravel 10 includes a variety of changes to the application skeleton. Please consult the diff to see what's new.
++Laravel 11 includes a variety of changes to the application skeleton. Please consult the diff to see what's new.
+diff --git a/app/Console/Kernel.php b/app/Console/Kernel.php
+deleted file mode 100644
+index e6b9960e..00000000
+--- a/app/Console/Kernel.php
++++ /dev/null
+@@ -1,27 +0,0 @@
+-<?php
+-
+-namespace App\Console;
+-
+-use Illuminate\Console\Scheduling\Schedule;
+-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+-
+-class Kernel extends ConsoleKernel
+-{
+-    /**
+-     * Define the application's command schedule.
+-     */
+-    protected function schedule(Schedule $schedule): void
+-    {
+-        // $schedule->command('inspire')->hourly();
+-    }
+-
+-    /**
+-     * Register the commands for the application.
+-     */
+-    protected function commands(): void
+-    {
+-        $this->load(__DIR__.'/Commands');
+-
+-        require base_path('routes/console.php');
+-    }
+-}
+diff --git a/app/Exceptions/Handler.php b/app/Exceptions/Handler.php
+deleted file mode 100644
+index 56af2640..00000000
+--- a/app/Exceptions/Handler.php
++++ /dev/null
+@@ -1,30 +0,0 @@
+-<?php
+-
+-namespace App\Exceptions;
+-
+-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+-use Throwable;
+-
+-class Handler extends ExceptionHandler
+-{
+-    /**
+-     * The list of the inputs that are never flashed to the session on validation exceptions.
+-     *
+-     * @var array<int, string>
+-     */
+-    protected $dontFlash = [
+-        'current_password',
+-        'password',
+-        'password_confirmation',
+-    ];
+-
+-    /**
+-     * Register the exception handling callbacks for the application.
+-     */
+-    public function register(): void
+-    {
+-        $this->reportable(function (Throwable $e) {
+-            //
+-        });
+-    }
+-}
+diff --git a/app/Http/Controllers/Controller.php b/app/Http/Controllers/Controller.php
+index 77ec359a..8677cd5c 100644
+--- a/app/Http/Controllers/Controller.php
++++ b/app/Http/Controllers/Controller.php
+@@ -2,11 +2,7 @@
+ 
+ namespace App\Http\Controllers;
+ 
+-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+-use Illuminate\Foundation\Validation\ValidatesRequests;
+-use Illuminate\Routing\Controller as BaseController;
+-
+-class Controller extends BaseController
++abstract class Controller
+ {
+-    use AuthorizesRequests, ValidatesRequests;
++    //
+ }
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+deleted file mode 100644
+index 494c0501..00000000
+--- a/app/Http/Kernel.php
++++ /dev/null
+@@ -1,68 +0,0 @@
+-<?php
+-
+-namespace App\Http;
+-
+-use Illuminate\Foundation\Http\Kernel as HttpKernel;
+-
+-class Kernel extends HttpKernel
+-{
+-    /**
+-     * The application's global HTTP middleware stack.
+-     *
+-     * These middleware are run during every request to your application.
+-     *
+-     * @var array<int, class-string|string>
+-     */
+-    protected $middleware = [
+-        // \App\Http\Middleware\TrustHosts::class,
+-        \App\Http\Middleware\TrustProxies::class,
+-        \Illuminate\Http\Middleware\HandleCors::class,
+-        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+-        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+-        \App\Http\Middleware\TrimStrings::class,
+-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+-    ];
+-
+-    /**
+-     * The application's route middleware groups.
+-     *
+-     * @var array<string, array<int, class-string|string>>
+-     */
+-    protected $middlewareGroups = [
+-        'web' => [
+-            \App\Http\Middleware\EncryptCookies::class,
+-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+-            \Illuminate\Session\Middleware\StartSession::class,
+-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+-            \App\Http\Middleware\VerifyCsrfToken::class,
+-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+-        ],
+-
+-        'api' => [
+-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+-        ],
+-    ];
+-
+-    /**
+-     * The application's middleware aliases.
+-     *
+-     * Aliases may be used instead of class names to conveniently assign middleware to routes and groups.
+-     *
+-     * @var array<string, class-string|string>
+-     */
+-    protected $middlewareAliases = [
+-        'auth' => \App\Http\Middleware\Authenticate::class,
+-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+-        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+-        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+-        'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+-        'signed' => \App\Http\Middleware\ValidateSignature::class,
+-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+-    ];
+-}
+diff --git a/app/Http/Middleware/Authenticate.php b/app/Http/Middleware/Authenticate.php
+deleted file mode 100644
+index d4ef6447..00000000
+--- a/app/Http/Middleware/Authenticate.php
++++ /dev/null
+@@ -1,17 +0,0 @@
+-<?php
+-
+-namespace App\Http\Middleware;
+-
+-use Illuminate\Auth\Middleware\Authenticate as Middleware;
+-use Illuminate\Http\Request;
+-
+-class Authenticate extends Middleware
+-{
+-    /**
+-     * Get the path the user should be redirected to when they are not authenticated.
+-     */
+-    protected function redirectTo(Request $request): ?string
+-    {
+-        return $request->expectsJson() ? null : route('login');
+-    }
+-}
+diff --git a/app/Http/Middleware/EncryptCookies.php b/app/Http/Middleware/EncryptCookies.php
+deleted file mode 100644
+index 867695bd..00000000
+--- a/app/Http/Middleware/EncryptCookies.php
++++ /dev/null
+@@ -1,17 +0,0 @@
+-<?php
+-
+-namespace App\Http\Middleware;
+-
+-use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
+-
+-class EncryptCookies extends Middleware
+-{
+-    /**
+-     * The names of the cookies that should not be encrypted.
+-     *
+-     * @var array<int, string>
+-     */
+-    protected $except = [
+-        //
+-    ];
+-}
+diff --git a/app/Http/Middleware/PreventRequestsDuringMaintenance.php b/app/Http/Middleware/PreventRequestsDuringMaintenance.php
+deleted file mode 100644
+index 74cbd9a9..00000000
+--- a/app/Http/Middleware/PreventRequestsDuringMaintenance.php
++++ /dev/null
+@@ -1,17 +0,0 @@
+-<?php
+-
+-namespace App\Http\Middleware;
+-
+-use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Middleware;
+-
+-class PreventRequestsDuringMaintenance extends Middleware
+-{
+-    /**
+-     * The URIs that should be reachable while maintenance mode is enabled.
+-     *
+-     * @var array<int, string>
+-     */
+-    protected $except = [
+-        //
+-    ];
+-}
+diff --git a/app/Http/Middleware/RedirectIfAuthenticated.php b/app/Http/Middleware/RedirectIfAuthenticated.php
+deleted file mode 100644
+index afc78c4e..00000000
+--- a/app/Http/Middleware/RedirectIfAuthenticated.php
++++ /dev/null
+@@ -1,30 +0,0 @@
+-<?php
+-
+-namespace App\Http\Middleware;
+-
+-use App\Providers\RouteServiceProvider;
+-use Closure;
+-use Illuminate\Http\Request;
+-use Illuminate\Support\Facades\Auth;
+-use Symfony\Component\HttpFoundation\Response;
+-
+-class RedirectIfAuthenticated
+-{
+-    /**
+-     * Handle an incoming request.
+-     *
+-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+-     */
+-    public function handle(Request $request, Closure $next, string ...$guards): Response
+-    {
+-        $guards = empty($guards) ? [null] : $guards;
+-
+-        foreach ($guards as $guard) {
+-            if (Auth::guard($guard)->check()) {
+-                return redirect(RouteServiceProvider::HOME);
+-            }
+-        }
+-
+-        return $next($request);
+-    }
+-}
+diff --git a/app/Http/Middleware/TrimStrings.php b/app/Http/Middleware/TrimStrings.php
+deleted file mode 100644
+index 88cadcaa..00000000
+--- a/app/Http/Middleware/TrimStrings.php
++++ /dev/null
+@@ -1,19 +0,0 @@
+-<?php
+-
+-namespace App\Http\Middleware;
+-
+-use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
+-
+-class TrimStrings extends Middleware
+-{
+-    /**
+-     * The names of the attributes that should not be trimmed.
+-     *
+-     * @var array<int, string>
+-     */
+-    protected $except = [
+-        'current_password',
+-        'password',
+-        'password_confirmation',
+-    ];
+-}
+diff --git a/app/Http/Middleware/TrustHosts.php b/app/Http/Middleware/TrustHosts.php
+deleted file mode 100644
+index c9c58bdd..00000000
+--- a/app/Http/Middleware/TrustHosts.php
++++ /dev/null
+@@ -1,20 +0,0 @@
+-<?php
+-
+-namespace App\Http\Middleware;
+-
+-use Illuminate\Http\Middleware\TrustHosts as Middleware;
+-
+-class TrustHosts extends Middleware
+-{
+-    /**
+-     * Get the host patterns that should be trusted.
+-     *
+-     * @return array<int, string|null>
+-     */
+-    public function hosts(): array
+-    {
+-        return [
+-            $this->allSubdomainsOfApplicationUrl(),
+-        ];
+-    }
+-}
+diff --git a/app/Http/Middleware/TrustProxies.php b/app/Http/Middleware/TrustProxies.php
+deleted file mode 100644
+index 3391630e..00000000
+--- a/app/Http/Middleware/TrustProxies.php
++++ /dev/null
+@@ -1,28 +0,0 @@
+-<?php
+-
+-namespace App\Http\Middleware;
+-
+-use Illuminate\Http\Middleware\TrustProxies as Middleware;
+-use Illuminate\Http\Request;
+-
+-class TrustProxies extends Middleware
+-{
+-    /**
+-     * The trusted proxies for this application.
+-     *
+-     * @var array<int, string>|string|null
+-     */
+-    protected $proxies;
+-
+-    /**
+-     * The headers that should be used to detect proxies.
+-     *
+-     * @var int
+-     */
+-    protected $headers =
+-        Request::HEADER_X_FORWARDED_FOR |
+-        Request::HEADER_X_FORWARDED_HOST |
+-        Request::HEADER_X_FORWARDED_PORT |
+-        Request::HEADER_X_FORWARDED_PROTO |
+-        Request::HEADER_X_FORWARDED_AWS_ELB;
+-}
+diff --git a/app/Http/Middleware/ValidateSignature.php b/app/Http/Middleware/ValidateSignature.php
+deleted file mode 100644
+index 093bf64a..00000000
+--- a/app/Http/Middleware/ValidateSignature.php
++++ /dev/null
+@@ -1,22 +0,0 @@
+-<?php
+-
+-namespace App\Http\Middleware;
+-
+-use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
+-
+-class ValidateSignature extends Middleware
+-{
+-    /**
+-     * The names of the query string parameters that should be ignored.
+-     *
+-     * @var array<int, string>
+-     */
+-    protected $except = [
+-        // 'fbclid',
+-        // 'utm_campaign',
+-        // 'utm_content',
+-        // 'utm_medium',
+-        // 'utm_source',
+-        // 'utm_term',
+-    ];
+-}
+diff --git a/app/Http/Middleware/VerifyCsrfToken.php b/app/Http/Middleware/VerifyCsrfToken.php
+deleted file mode 100644
+index 9e865217..00000000
+--- a/app/Http/Middleware/VerifyCsrfToken.php
++++ /dev/null
+@@ -1,17 +0,0 @@
+-<?php
+-
+-namespace App\Http\Middleware;
+-
+-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+-
+-class VerifyCsrfToken extends Middleware
+-{
+-    /**
+-     * The URIs that should be excluded from CSRF verification.
+-     *
+-     * @var array<int, string>
+-     */
+-    protected $except = [
+-        //
+-    ];
+-}
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 4d7f70f5..def621f4 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -6,11 +6,10 @@ namespace App\Models;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
+ use Illuminate\Notifications\Notifiable;
+-use Laravel\Sanctum\HasApiTokens;
+ 
+ class User extends Authenticatable
+ {
+-    use HasApiTokens, HasFactory, Notifiable;
++    use HasFactory, Notifiable;
+ 
+     /**
+      * The attributes that are mass assignable.
+@@ -34,12 +33,15 @@ class User extends Authenticatable
+     ];
+ 
+     /**
+-     * The attributes that should be cast.
++     * Get the attributes that should be cast.
+      *
+-     * @var array<string, string>
++     * @return array<string, string>
+      */
+-    protected $casts = [
+-        'email_verified_at' => 'datetime',
+-        'password' => 'hashed',
+-    ];
++    protected function casts(): array
++    {
++        return [
++            'email_verified_at' => 'datetime',
++            'password' => 'hashed',
++        ];
++    }
+ }
+diff --git a/app/Providers/AuthServiceProvider.php b/app/Providers/AuthServiceProvider.php
+deleted file mode 100644
+index 54756cd1..00000000
+--- a/app/Providers/AuthServiceProvider.php
++++ /dev/null
+@@ -1,26 +0,0 @@
+-<?php
+-
+-namespace App\Providers;
+-
+-// use Illuminate\Support\Facades\Gate;
+-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+-
+-class AuthServiceProvider extends ServiceProvider
+-{
+-    /**
+-     * The model to policy mappings for the application.
+-     *
+-     * @var array<class-string, class-string>
+-     */
+-    protected $policies = [
+-        //
+-    ];
+-
+-    /**
+-     * Register any authentication / authorization services.
+-     */
+-    public function boot(): void
+-    {
+-        //
+-    }
+-}
+diff --git a/app/Providers/BroadcastServiceProvider.php b/app/Providers/BroadcastServiceProvider.php
+deleted file mode 100644
+index 2be04f5d..00000000
+--- a/app/Providers/BroadcastServiceProvider.php
++++ /dev/null
+@@ -1,19 +0,0 @@
+-<?php
+-
+-namespace App\Providers;
+-
+-use Illuminate\Support\Facades\Broadcast;
+-use Illuminate\Support\ServiceProvider;
+-
+-class BroadcastServiceProvider extends ServiceProvider
+-{
+-    /**
+-     * Bootstrap any application services.
+-     */
+-    public function boot(): void
+-    {
+-        Broadcast::routes();
+-
+-        require base_path('routes/channels.php');
+-    }
+-}
+diff --git a/app/Providers/EventServiceProvider.php b/app/Providers/EventServiceProvider.php
+deleted file mode 100644
+index 2d65aac0..00000000
+--- a/app/Providers/EventServiceProvider.php
++++ /dev/null
+@@ -1,38 +0,0 @@
+-<?php
+-
+-namespace App\Providers;
+-
+-use Illuminate\Auth\Events\Registered;
+-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+-use Illuminate\Support\Facades\Event;
+-
+-class EventServiceProvider extends ServiceProvider
+-{
+-    /**
+-     * The event to listener mappings for the application.
+-     *
+-     * @var array<class-string, array<int, class-string>>
+-     */
+-    protected $listen = [
+-        Registered::class => [
+-            SendEmailVerificationNotification::class,
+-        ],
+-    ];
+-
+-    /**
+-     * Register any events for your application.
+-     */
+-    public function boot(): void
+-    {
+-        //
+-    }
+-
+-    /**
+-     * Determine if events and listeners should be automatically discovered.
+-     */
+-    public function shouldDiscoverEvents(): bool
+-    {
+-        return false;
+-    }
+-}
+diff --git a/app/Providers/RouteServiceProvider.php b/app/Providers/RouteServiceProvider.php
+deleted file mode 100644
+index 1cf5f15c..00000000
+--- a/app/Providers/RouteServiceProvider.php
++++ /dev/null
+@@ -1,40 +0,0 @@
+-<?php
+-
+-namespace App\Providers;
+-
+-use Illuminate\Cache\RateLimiting\Limit;
+-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+-use Illuminate\Http\Request;
+-use Illuminate\Support\Facades\RateLimiter;
+-use Illuminate\Support\Facades\Route;
+-
+-class RouteServiceProvider extends ServiceProvider
+-{
+-    /**
+-     * The path to your application's "home" route.
+-     *
+-     * Typically, users are redirected here after authentication.
+-     *
+-     * @var string
+-     */
+-    public const HOME = '/home';
+-
+-    /**
+-     * Define your route model bindings, pattern filters, and other route configuration.
+-     */
+-    public function boot(): void
+-    {
+-        RateLimiter::for('api', function (Request $request) {
+-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+-        });
+-
+-        $this->routes(function () {
+-            Route::middleware('api')
+-                ->prefix('api')
+-                ->group(base_path('routes/api.php'));
+-
+-            Route::middleware('web')
+-                ->group(base_path('routes/web.php'));
+-        });
+-    }
+-}
+diff --git a/artisan b/artisan
+index 67a3329b..8e04b422 100755
+--- a/artisan
++++ b/artisan
+@@ -1,53 +1,15 @@
+ #!/usr/bin/env php
+ <?php
+ 
+-define('LARAVEL_START', microtime(true));
++use Symfony\Component\Console\Input\ArgvInput;
+ 
+-/*
+-|--------------------------------------------------------------------------
+-| Register The Auto Loader
+-|--------------------------------------------------------------------------
+-|
+-| Composer provides a convenient, automatically generated class loader
+-| for our application. We just need to utilize it! We'll require it
+-| into the script here so that we do not have to worry about the
+-| loading of any of our classes manually. It's great to relax.
+-|
+-*/
++define('LARAVEL_START', microtime(true));
+ 
++// Register the Composer autoloader...
+ require __DIR__.'/vendor/autoload.php';
+ 
+-$app = require_once __DIR__.'/bootstrap/app.php';
+-
+-/*
+-|--------------------------------------------------------------------------
+-| Run The Artisan Application
+-|--------------------------------------------------------------------------
+-|
+-| When we run the console application, the current CLI command will be
+-| executed in this console and the response sent back to a terminal
+-| or another output device for the developers. Here goes nothing!
+-|
+-*/
+-
+-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+-
+-$status = $kernel->handle(
+-    $input = new Symfony\Component\Console\Input\ArgvInput,
+-    new Symfony\Component\Console\Output\ConsoleOutput
+-);
+-
+-/*
+-|--------------------------------------------------------------------------
+-| Shutdown The Application
+-|--------------------------------------------------------------------------
+-|
+-| Once Artisan has finished running, we will fire off the shutdown events
+-| so that any final work may be done by the application before we shut
+-| down the process. This is the last thing to happen to the request.
+-|
+-*/
+-
+-$kernel->terminate($input, $status);
++// Bootstrap Laravel and handle the command...
++$status = (require_once __DIR__.'/bootstrap/app.php')
++    ->handleCommand(new ArgvInput);
+ 
+ exit($status);
+diff --git a/bootstrap/app.php b/bootstrap/app.php
+index 037e17df..7b162dac 100644
+--- a/bootstrap/app.php
++++ b/bootstrap/app.php
+@@ -1,55 +1,18 @@
+ <?php
+ 
+-/*
+-|--------------------------------------------------------------------------
+-| Create The Application
+-|--------------------------------------------------------------------------
+-|
+-| The first thing we will do is create a new Laravel application instance
+-| which serves as the "glue" for all the components of Laravel, and is
+-| the IoC container for the system binding all of the various parts.
+-|
+-*/
+-
+-$app = new Illuminate\Foundation\Application(
+-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
+-);
+-
+-/*
+-|--------------------------------------------------------------------------
+-| Bind Important Interfaces
+-|--------------------------------------------------------------------------
+-|
+-| Next, we need to bind some important interfaces into the container so
+-| we will be able to resolve them when needed. The kernels serve the
+-| incoming requests to this application from both the web and CLI.
+-|
+-*/
+-
+-$app->singleton(
+-    Illuminate\Contracts\Http\Kernel::class,
+-    App\Http\Kernel::class
+-);
+-
+-$app->singleton(
+-    Illuminate\Contracts\Console\Kernel::class,
+-    App\Console\Kernel::class
+-);
+-
+-$app->singleton(
+-    Illuminate\Contracts\Debug\ExceptionHandler::class,
+-    App\Exceptions\Handler::class
+-);
+-
+-/*
+-|--------------------------------------------------------------------------
+-| Return The Application
+-|--------------------------------------------------------------------------
+-|
+-| This script returns the application instance. The instance is given to
+-| the calling script so we can separate the building of the instances
+-| from the actual running of the application and sending responses.
+-|
+-*/
+-
+-return $app;
++use Illuminate\Foundation\Application;
++use Illuminate\Foundation\Configuration\Exceptions;
++use Illuminate\Foundation\Configuration\Middleware;
++
++return Application::configure(basePath: dirname(__DIR__))
++    ->withRouting(
++        web: __DIR__.'/../routes/web.php',
++        commands: __DIR__.'/../routes/console.php',
++        health: '/up',
++    )
++    ->withMiddleware(function (Middleware $middleware) {
++        //
++    })
++    ->withExceptions(function (Exceptions $exceptions) {
++        //
++    })->create();
+diff --git a/bootstrap/providers.php b/bootstrap/providers.php
+new file mode 100644
+index 00000000..38b258d1
+--- /dev/null
++++ b/bootstrap/providers.php
+@@ -0,0 +1,5 @@
++<?php
++
++return [
++    App\Providers\AppServiceProvider::class,
++];
+diff --git a/composer.json b/composer.json
+index 8a3d72d4..8728b94b 100644
+--- a/composer.json
++++ b/composer.json
+@@ -5,20 +5,18 @@
+     "keywords": ["laravel", "framework"],
+     "license": "MIT",
+     "require": {
+-        "php": "^8.1",
+-        "guzzlehttp/guzzle": "^7.2",
+-        "laravel/framework": "^10.10",
+-        "laravel/sanctum": "^3.3",
+-        "laravel/tinker": "^2.8"
++        "php": "^8.2",
++        "laravel/framework": "^11.0",
++        "laravel/tinker": "^2.9"
+     },
+     "require-dev": {
+-        "fakerphp/faker": "^1.9.1",
+-        "laravel/pint": "^1.0",
+-        "laravel/sail": "^1.18",
+-        "mockery/mockery": "^1.4.4",
+-        "nunomaduro/collision": "^7.0",
+-        "phpunit/phpunit": "^10.1",
+-        "spatie/laravel-ignition": "^2.0"
++        "fakerphp/faker": "^1.23",
++        "laravel/pint": "^1.13",
++        "laravel/sail": "^1.26",
++        "mockery/mockery": "^1.6",
++        "nunomaduro/collision": "^8.0",
++        "phpunit/phpunit": "^10.5",
++        "spatie/laravel-ignition": "^2.4"
+     },
+     "autoload": {
+         "psr-4": {
+@@ -44,7 +42,9 @@
+             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+         ],
+         "post-create-project-cmd": [
+-            "@php artisan key:generate --ansi"
++            "@php artisan key:generate --ansi",
++            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
++            "@php artisan migrate --graceful --ansi"
+         ]
+     },
+     "extra": {
+diff --git a/config/app.php b/config/app.php
+index 9207160d..f4672673 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -1,8 +1,5 @@
+ <?php
+ 
+-use Illuminate\Support\Facades\Facade;
+-use Illuminate\Support\ServiceProvider;
+-
+ return [
+ 
+     /*
+@@ -10,9 +7,9 @@ return [
+     | Application Name
+     |--------------------------------------------------------------------------
+     |
+-    | This value is the name of your application. This value is used when the
++    | This value is the name of your application, which will be used when the
+     | framework needs to place the application's name in a notification or
+-    | any other location as required by the application or its packages.
++    | other UI elements where an application name needs to be displayed.
+     |
+     */
+ 
+@@ -51,26 +48,24 @@ return [
+     |
+     | This URL is used by the console to properly generate URLs when using
+     | the Artisan command line tool. You should set this to the root of
+-    | your application so that it is used when running Artisan tasks.
++    | the application so that it's available within Artisan commands.
+     |
+     */
+ 
+     'url' => env('APP_URL', 'http://localhost'),
+ 
+-    'asset_url' => env('ASSET_URL'),
+-
+     /*
+     |--------------------------------------------------------------------------
+     | Application Timezone
+     |--------------------------------------------------------------------------
+     |
+     | Here you may specify the default timezone for your application, which
+-    | will be used by the PHP date and date-time functions. We have gone
+-    | ahead and set this to a sensible default for you out of the box.
++    | will be used by the PHP date and date-time functions. The timezone
++    | is set to "UTC" by default as it is suitable for most use cases.
+     |
+     */
+ 
+-    'timezone' => 'UTC',
++    'timezone' => env('APP_TIMEZONE', 'UTC'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -78,53 +73,37 @@ return [
+     |--------------------------------------------------------------------------
+     |
+     | The application locale determines the default locale that will be used
+-    | by the translation service provider. You are free to set this value
+-    | to any of the locales which will be supported by the application.
+-    |
+-    */
+-
+-    'locale' => 'en',
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Application Fallback Locale
+-    |--------------------------------------------------------------------------
+-    |
+-    | The fallback locale determines the locale to use when the current one
+-    | is not available. You may change the value to correspond to any of
+-    | the language folders that are provided through your application.
++    | by Laravel's translation / localization methods. This option can be
++    | set to any locale for which you plan to have translation strings.
+     |
+     */
+ 
+-    'fallback_locale' => 'en',
++    'locale' => env('APP_LOCALE', 'en'),
+ 
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Faker Locale
+-    |--------------------------------------------------------------------------
+-    |
+-    | This locale will be used by the Faker PHP library when generating fake
+-    | data for your database seeds. For example, this will be used to get
+-    | localized telephone numbers, street address information and more.
+-    |
+-    */
++    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+ 
+-    'faker_locale' => 'en_US',
++    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+     | Encryption Key
+     |--------------------------------------------------------------------------
+     |
+-    | This key is used by the Illuminate encrypter service and should be set
+-    | to a random, 32 character string, otherwise these encrypted strings
+-    | will not be safe. Please do this before deploying an application!
++    | This key is utilized by Laravel's encryption services and should be set
++    | to a random, 32 character string to ensure that all encrypted values
++    | are secure. You should do this prior to deploying the application.
+     |
+     */
+ 
++    'cipher' => 'AES-256-CBC',
++
+     'key' => env('APP_KEY'),
+ 
+-    'cipher' => 'AES-256-CBC',
++    'previous_keys' => [
++        ...array_filter(
++            explode(',', env('APP_PREVIOUS_KEYS', ''))
++        ),
++    ],
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -140,49 +119,8 @@ return [
+     */
+ 
+     'maintenance' => [
+-        'driver' => 'file',
+-        // 'store' => 'redis',
++        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
++        'store' => env('APP_MAINTENANCE_STORE', 'database'),
+     ],
+ 
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Autoloaded Service Providers
+-    |--------------------------------------------------------------------------
+-    |
+-    | The service providers listed here will be automatically loaded on the
+-    | request to your application. Feel free to add your own services to
+-    | this array to grant expanded functionality to your applications.
+-    |
+-    */
+-
+-    'providers' => ServiceProvider::defaultProviders()->merge([
+-        /*
+-         * Package Service Providers...
+-         */
+-
+-        /*
+-         * Application Service Providers...
+-         */
+-        App\Providers\AppServiceProvider::class,
+-        App\Providers\AuthServiceProvider::class,
+-        // App\Providers\BroadcastServiceProvider::class,
+-        App\Providers\EventServiceProvider::class,
+-        App\Providers\RouteServiceProvider::class,
+-    ])->toArray(),
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Class Aliases
+-    |--------------------------------------------------------------------------
+-    |
+-    | This array of class aliases will be registered when this application
+-    | is started. However, feel free to register as many as you wish as
+-    | the aliases are "lazy" loaded so they don't hinder performance.
+-    |
+-    */
+-
+-    'aliases' => Facade::defaultAliases()->merge([
+-        // 'Example' => App\Facades\Example::class,
+-    ])->toArray(),
+-
+ ];
+diff --git a/config/auth.php b/config/auth.php
+index 9548c15d..0ba5d5d8 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -7,15 +7,15 @@ return [
+     | Authentication Defaults
+     |--------------------------------------------------------------------------
+     |
+-    | This option controls the default authentication "guard" and password
+-    | reset options for your application. You may change these defaults
++    | This option defines the default authentication "guard" and password
++    | reset "broker" for your application. You may change these values
+     | as required, but they're a perfect start for most applications.
+     |
+     */
+ 
+     'defaults' => [
+-        'guard' => 'web',
+-        'passwords' => 'users',
++        'guard' => env('AUTH_GUARD', 'web'),
++        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+     ],
+ 
+     /*
+@@ -25,11 +25,11 @@ return [
+     |
+     | Next, you may define every authentication guard for your application.
+     | Of course, a great default configuration has been defined for you
+-    | here which uses session storage and the Eloquent user provider.
++    | which utilizes session storage plus the Eloquent user provider.
+     |
+-    | All authentication drivers have a user provider. This defines how the
++    | All authentication guards have a user provider, which defines how the
+     | users are actually retrieved out of your database or other storage
+-    | mechanisms used by this application to persist your user's data.
++    | system used by the application. Typically, Eloquent is utilized.
+     |
+     | Supported: "session"
+     |
+@@ -47,12 +47,12 @@ return [
+     | User Providers
+     |--------------------------------------------------------------------------
+     |
+-    | All authentication drivers have a user provider. This defines how the
++    | All authentication guards have a user provider, which defines how the
+     | users are actually retrieved out of your database or other storage
+-    | mechanisms used by this application to persist your user's data.
++    | system used by the application. Typically, Eloquent is utilized.
+     |
+     | If you have multiple user tables or models you may configure multiple
+-    | sources which represent each model / table. These sources may then
++    | providers to represent the model / table. These providers may then
+     | be assigned to any extra authentication guards you have defined.
+     |
+     | Supported: "database", "eloquent"
+@@ -62,7 +62,7 @@ return [
+     'providers' => [
+         'users' => [
+             'driver' => 'eloquent',
+-            'model' => App\Models\User::class,
++            'model' => env('AUTH_MODEL', App\Models\User::class),
+         ],
+ 
+         // 'users' => [
+@@ -76,9 +76,9 @@ return [
+     | Resetting Passwords
+     |--------------------------------------------------------------------------
+     |
+-    | You may specify multiple password reset configurations if you have more
+-    | than one user table or model in the application and you want to have
+-    | separate password reset settings based on the specific user types.
++    | These configuration options specify the behavior of Laravel's password
++    | reset functionality, including the table utilized for token storage
++    | and the user provider that is invoked to actually retrieve users.
+     |
+     | The expiry time is the number of minutes that each reset token will be
+     | considered valid. This security feature keeps tokens short-lived so
+@@ -93,7 +93,7 @@ return [
+     'passwords' => [
+         'users' => [
+             'provider' => 'users',
+-            'table' => 'password_reset_tokens',
++            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+             'expire' => 60,
+             'throttle' => 60,
+         ],
+@@ -105,11 +105,11 @@ return [
+     |--------------------------------------------------------------------------
+     |
+     | Here you may define the amount of seconds before a password confirmation
+-    | times out and the user is prompted to re-enter their password via the
++    | window expires and users are asked to re-enter their password via the
+     | confirmation screen. By default, the timeout lasts for three hours.
+     |
+     */
+ 
+-    'password_timeout' => 10800,
++    'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+ 
+ ];
+diff --git a/config/broadcasting.php b/config/broadcasting.php
+deleted file mode 100644
+index 24104853..00000000
+--- a/config/broadcasting.php
++++ /dev/null
+@@ -1,71 +0,0 @@
+-<?php
+-
+-return [
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Default Broadcaster
+-    |--------------------------------------------------------------------------
+-    |
+-    | This option controls the default broadcaster that will be used by the
+-    | framework when an event needs to be broadcast. You may set this to
+-    | any of the connections defined in the "connections" array below.
+-    |
+-    | Supported: "pusher", "ably", "redis", "log", "null"
+-    |
+-    */
+-
+-    'default' => env('BROADCAST_DRIVER', 'null'),
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Broadcast Connections
+-    |--------------------------------------------------------------------------
+-    |
+-    | Here you may define all of the broadcast connections that will be used
+-    | to broadcast events to other systems or over websockets. Samples of
+-    | each available type of connection are provided inside this array.
+-    |
+-    */
+-
+-    'connections' => [
+-
+-        'pusher' => [
+-            'driver' => 'pusher',
+-            'key' => env('PUSHER_APP_KEY'),
+-            'secret' => env('PUSHER_APP_SECRET'),
+-            'app_id' => env('PUSHER_APP_ID'),
+-            'options' => [
+-                'cluster' => env('PUSHER_APP_CLUSTER'),
+-                'host' => env('PUSHER_HOST') ?: 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com',
+-                'port' => env('PUSHER_PORT', 443),
+-                'scheme' => env('PUSHER_SCHEME', 'https'),
+-                'encrypted' => true,
+-                'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
+-            ],
+-            'client_options' => [
+-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+-            ],
+-        ],
+-
+-        'ably' => [
+-            'driver' => 'ably',
+-            'key' => env('ABLY_KEY'),
+-        ],
+-
+-        'redis' => [
+-            'driver' => 'redis',
+-            'connection' => 'default',
+-        ],
+-
+-        'log' => [
+-            'driver' => 'log',
+-        ],
+-
+-        'null' => [
+-            'driver' => 'null',
+-        ],
+-
+-    ],
+-
+-];
+diff --git a/config/cache.php b/config/cache.php
+index d4171e22..3eb95d10 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -9,13 +9,13 @@ return [
+     | Default Cache Store
+     |--------------------------------------------------------------------------
+     |
+-    | This option controls the default cache connection that gets used while
+-    | using this caching library. This connection is used when another is
+-    | not explicitly specified when executing a given caching function.
++    | This option controls the default cache store that will be used by the
++    | framework. This connection is utilized if another isn't explicitly
++    | specified when running a cache operation inside the application.
+     |
+     */
+ 
+-    'default' => env('CACHE_DRIVER', 'file'),
++    'default' => env('CACHE_STORE', 'database'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -26,17 +26,13 @@ return [
+     | well as their drivers. You may even define multiple stores for the
+     | same cache driver to group types of items stored in your caches.
+     |
+-    | Supported drivers: "apc", "array", "database", "file",
+-    |         "memcached", "redis", "dynamodb", "octane", "null"
++    | Supported drivers: "apc", "array", "database", "file", "memcached",
++    |                    "redis", "dynamodb", "octane", "null"
+     |
+     */
+ 
+     'stores' => [
+ 
+-        'apc' => [
+-            'driver' => 'apc',
+-        ],
+-
+         'array' => [
+             'driver' => 'array',
+             'serialize' => false,
+@@ -44,9 +40,9 @@ return [
+ 
+         'database' => [
+             'driver' => 'database',
+-            'table' => 'cache',
+-            'connection' => null,
+-            'lock_connection' => null,
++            'table' => env('DB_CACHE_TABLE', 'cache'),
++            'connection' => env('DB_CACHE_CONNECTION', null),
++            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION', null),
+         ],
+ 
+         'file' => [
+@@ -76,8 +72,8 @@ return [
+ 
+         'redis' => [
+             'driver' => 'redis',
+-            'connection' => 'cache',
+-            'lock_connection' => 'default',
++            'connection' => env('REDIS_CACHE_CONNECTION', 'cache'),
++            'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
+         ],
+ 
+         'dynamodb' => [
+@@ -100,8 +96,8 @@ return [
+     | Cache Key Prefix
+     |--------------------------------------------------------------------------
+     |
+-    | When utilizing the APC, database, memcached, Redis, or DynamoDB cache
+-    | stores there might be other applications using the same cache. For
++    | When utilizing the APC, database, memcached, Redis, and DynamoDB cache
++    | stores, there might be other applications using the same cache. For
+     | that reason, you may prefix every cache key to avoid collisions.
+     |
+     */
+diff --git a/config/cors.php b/config/cors.php
+deleted file mode 100644
+index 8a39e6da..00000000
+--- a/config/cors.php
++++ /dev/null
+@@ -1,34 +0,0 @@
+-<?php
+-
+-return [
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Cross-Origin Resource Sharing (CORS) Configuration
+-    |--------------------------------------------------------------------------
+-    |
+-    | Here you may configure your settings for cross-origin resource sharing
+-    | or "CORS". This determines what cross-origin operations may execute
+-    | in web browsers. You are free to adjust these settings as needed.
+-    |
+-    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+-    |
+-    */
+-
+-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+-
+-    'allowed_methods' => ['*'],
+-
+-    'allowed_origins' => ['*'],
+-
+-    'allowed_origins_patterns' => [],
+-
+-    'allowed_headers' => ['*'],
+-
+-    'exposed_headers' => [],
+-
+-    'max_age' => 0,
+-
+-    'supports_credentials' => false,
+-
+-];
+diff --git a/config/database.php b/config/database.php
+index 137ad18c..f8e8dcb8 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -10,26 +10,22 @@ return [
+     |--------------------------------------------------------------------------
+     |
+     | Here you may specify which of the database connections below you wish
+-    | to use as your default connection for all database work. Of course
+-    | you may use many connections at once using the Database library.
++    | to use as your default connection for database operations. This is
++    | the connection which will be utilized unless another connection
++    | is explicitly specified when you execute a query / statement.
+     |
+     */
+ 
+-    'default' => env('DB_CONNECTION', 'mysql'),
++    'default' => env('DB_CONNECTION', 'sqlite'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+     | Database Connections
+     |--------------------------------------------------------------------------
+     |
+-    | Here are each of the database connections setup for your application.
+-    | Of course, examples of configuring each database platform that is
+-    | supported by Laravel is shown below to make development simple.
+-    |
+-    |
+-    | All database work in Laravel is done through the PHP PDO facilities
+-    | so make sure you have the driver for your particular database of
+-    | choice installed on your machine before you begin development.
++    | Below are all of the database connections defined for your application.
++    | An example configuration is provided for each database system which
++    | is supported by Laravel. You're free to add / remove connections.
+     |
+     */
+ 
+@@ -37,7 +33,7 @@ return [
+ 
+         'sqlite' => [
+             'driver' => 'sqlite',
+-            'url' => env('DATABASE_URL'),
++            'url' => env('DB_URL'),
+             'database' => env('DB_DATABASE', database_path('database.sqlite')),
+             'prefix' => '',
+             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+@@ -45,15 +41,35 @@ return [
+ 
+         'mysql' => [
+             'driver' => 'mysql',
+-            'url' => env('DATABASE_URL'),
++            'url' => env('DB_URL'),
++            'host' => env('DB_HOST', '127.0.0.1'),
++            'port' => env('DB_PORT', '3306'),
++            'database' => env('DB_DATABASE', 'laravel'),
++            'username' => env('DB_USERNAME', 'root'),
++            'password' => env('DB_PASSWORD', ''),
++            'unix_socket' => env('DB_SOCKET', ''),
++            'charset' => env('DB_CHARSET', 'utf8mb4'),
++            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
++            'prefix' => '',
++            'prefix_indexes' => true,
++            'strict' => true,
++            'engine' => null,
++            'options' => extension_loaded('pdo_mysql') ? array_filter([
++                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
++            ]) : [],
++        ],
++
++        'mariadb' => [
++            'driver' => 'mariadb',
++            'url' => env('DB_URL'),
+             'host' => env('DB_HOST', '127.0.0.1'),
+             'port' => env('DB_PORT', '3306'),
+-            'database' => env('DB_DATABASE', 'forge'),
+-            'username' => env('DB_USERNAME', 'forge'),
++            'database' => env('DB_DATABASE', 'laravel'),
++            'username' => env('DB_USERNAME', 'root'),
+             'password' => env('DB_PASSWORD', ''),
+             'unix_socket' => env('DB_SOCKET', ''),
+-            'charset' => 'utf8mb4',
+-            'collation' => 'utf8mb4_unicode_ci',
++            'charset' => env('DB_CHARSET', 'utf8mb4'),
++            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+             'prefix' => '',
+             'prefix_indexes' => true,
+             'strict' => true,
+@@ -65,13 +81,13 @@ return [
+ 
+         'pgsql' => [
+             'driver' => 'pgsql',
+-            'url' => env('DATABASE_URL'),
++            'url' => env('DB_URL'),
+             'host' => env('DB_HOST', '127.0.0.1'),
+             'port' => env('DB_PORT', '5432'),
+-            'database' => env('DB_DATABASE', 'forge'),
+-            'username' => env('DB_USERNAME', 'forge'),
++            'database' => env('DB_DATABASE', 'laravel'),
++            'username' => env('DB_USERNAME', 'root'),
+             'password' => env('DB_PASSWORD', ''),
+-            'charset' => 'utf8',
++            'charset' => env('DB_CHARSET', 'utf8'),
+             'prefix' => '',
+             'prefix_indexes' => true,
+             'search_path' => 'public',
+@@ -80,13 +96,13 @@ return [
+ 
+         'sqlsrv' => [
+             'driver' => 'sqlsrv',
+-            'url' => env('DATABASE_URL'),
++            'url' => env('DB_URL'),
+             'host' => env('DB_HOST', 'localhost'),
+             'port' => env('DB_PORT', '1433'),
+-            'database' => env('DB_DATABASE', 'forge'),
+-            'username' => env('DB_USERNAME', 'forge'),
++            'database' => env('DB_DATABASE', 'laravel'),
++            'username' => env('DB_USERNAME', 'root'),
+             'password' => env('DB_PASSWORD', ''),
+-            'charset' => 'utf8',
++            'charset' => env('DB_CHARSET', 'utf8'),
+             'prefix' => '',
+             'prefix_indexes' => true,
+             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
+@@ -102,11 +118,14 @@ return [
+     |
+     | This table keeps track of all the migrations that have already run for
+     | your application. Using this information, we can determine which of
+-    | the migrations on disk haven't actually been run in the database.
++    | the migrations on disk haven't actually been run on the database.
+     |
+     */
+ 
+-    'migrations' => 'migrations',
++    'migrations' => [
++        'table' => 'migrations',
++        'update_date_on_publish' => true,
++    ],
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -115,7 +134,7 @@ return [
+     |
+     | Redis is an open source, fast, and advanced key-value store that also
+     | provides a richer body of commands than a typical key-value system
+-    | such as APC or Memcached. Laravel makes it easy to dig right in.
++    | such as Memcached. You may define your connection settings here.
+     |
+     */
+ 
+diff --git a/config/filesystems.php b/config/filesystems.php
+index e9d9dbdb..44fe9c82 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -9,7 +9,7 @@ return [
+     |
+     | Here you may specify the default filesystem disk that should be used
+     | by the framework. The "local" disk, as well as a variety of cloud
+-    | based disks are available to your application. Just store away!
++    | based disks are available to your application for file storage.
+     |
+     */
+ 
+@@ -20,9 +20,9 @@ return [
+     | Filesystem Disks
+     |--------------------------------------------------------------------------
+     |
+-    | Here you may configure as many filesystem "disks" as you wish, and you
+-    | may even configure multiple disks of the same driver. Defaults have
+-    | been set up for each driver as an example of the required values.
++    | Below you may configure as many filesystem disks as necessary, and you
++    | may even configure multiple disks for the same driver. Examples for
++    | most supported storage drivers are configured here for reference.
+     |
+     | Supported Drivers: "local", "ftp", "sftp", "s3"
+     |
+diff --git a/config/hashing.php b/config/hashing.php
+deleted file mode 100644
+index 0e8a0bb3..00000000
+--- a/config/hashing.php
++++ /dev/null
+@@ -1,54 +0,0 @@
+-<?php
+-
+-return [
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Default Hash Driver
+-    |--------------------------------------------------------------------------
+-    |
+-    | This option controls the default hash driver that will be used to hash
+-    | passwords for your application. By default, the bcrypt algorithm is
+-    | used; however, you remain free to modify this option if you wish.
+-    |
+-    | Supported: "bcrypt", "argon", "argon2id"
+-    |
+-    */
+-
+-    'driver' => 'bcrypt',
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Bcrypt Options
+-    |--------------------------------------------------------------------------
+-    |
+-    | Here you may specify the configuration options that should be used when
+-    | passwords are hashed using the Bcrypt algorithm. This will allow you
+-    | to control the amount of time it takes to hash the given password.
+-    |
+-    */
+-
+-    'bcrypt' => [
+-        'rounds' => env('BCRYPT_ROUNDS', 12),
+-        'verify' => true,
+-    ],
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Argon Options
+-    |--------------------------------------------------------------------------
+-    |
+-    | Here you may specify the configuration options that should be used when
+-    | passwords are hashed using the Argon algorithm. These will allow you
+-    | to control the amount of time it takes to hash the given password.
+-    |
+-    */
+-
+-    'argon' => [
+-        'memory' => 65536,
+-        'threads' => 1,
+-        'time' => 4,
+-        'verify' => true,
+-    ],
+-
+-];
+diff --git a/config/logging.php b/config/logging.php
+index c44d2763..d526b64d 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -12,9 +12,9 @@ return [
+     | Default Log Channel
+     |--------------------------------------------------------------------------
+     |
+-    | This option defines the default log channel that gets used when writing
+-    | messages to the logs. The name specified in this option should match
+-    | one of the channels defined in the "channels" configuration array.
++    | This option defines the default log channel that is utilized to write
++    | messages to your logs. The value provided here should match one of
++    | the channels present in the list of "channels" configured below.
+     |
+     */
+ 
+@@ -33,7 +33,7 @@ return [
+ 
+     'deprecations' => [
+         'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
+-        'trace' => false,
++        'trace' => env('LOG_DEPRECATIONS_TRACE', false),
+     ],
+ 
+     /*
+@@ -41,20 +41,20 @@ return [
+     | Log Channels
+     |--------------------------------------------------------------------------
+     |
+-    | Here you may configure the log channels for your application. Out of
+-    | the box, Laravel uses the Monolog PHP logging library. This gives
+-    | you a variety of powerful log handlers / formatters to utilize.
++    | Here you may configure the log channels for your application. Laravel
++    | utilizes the Monolog PHP logging library, which includes a variety
++    | of powerful log handlers and formatters that you're free to use.
+     |
+     | Available Drivers: "single", "daily", "slack", "syslog",
+-    |                    "errorlog", "monolog",
+-    |                    "custom", "stack"
++    |                    "errorlog", "monolog", "custom", "stack"
+     |
+     */
+ 
+     'channels' => [
++
+         'stack' => [
+             'driver' => 'stack',
+-            'channels' => ['single'],
++            'channels' => explode(',', env('LOG_STACK', 'single')),
+             'ignore_exceptions' => false,
+         ],
+ 
+@@ -69,15 +69,15 @@ return [
+             'driver' => 'daily',
+             'path' => storage_path('logs/laravel.log'),
+             'level' => env('LOG_LEVEL', 'debug'),
+-            'days' => 14,
++            'days' => env('LOG_DAILY_DAYS', 14),
+             'replace_placeholders' => true,
+         ],
+ 
+         'slack' => [
+             'driver' => 'slack',
+             'url' => env('LOG_SLACK_WEBHOOK_URL'),
+-            'username' => 'Laravel Log',
+-            'emoji' => ':boom:',
++            'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
++            'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
+             'level' => env('LOG_LEVEL', 'critical'),
+             'replace_placeholders' => true,
+         ],
+@@ -108,7 +108,7 @@ return [
+         'syslog' => [
+             'driver' => 'syslog',
+             'level' => env('LOG_LEVEL', 'debug'),
+-            'facility' => LOG_USER,
++            'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
+             'replace_placeholders' => true,
+         ],
+ 
+@@ -126,6 +126,7 @@ return [
+         'emergency' => [
+             'path' => storage_path('logs/laravel.log'),
+         ],
++
+     ],
+ 
+ ];
+diff --git a/config/mail.php b/config/mail.php
+index e894b2e5..a4a02fe4 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -7,13 +7,14 @@ return [
+     | Default Mailer
+     |--------------------------------------------------------------------------
+     |
+-    | This option controls the default mailer that is used to send any email
+-    | messages sent by your application. Alternative mailers may be setup
+-    | and used as needed; however, this mailer will be used by default.
++    | This option controls the default mailer that is used to send all email
++    | messages unless another mailer is explicitly specified when sending
++    | the message. All additional mailers can be configured within the
++    | "mailers" array. Examples of each type of mailer are provided.
+     |
+     */
+ 
+-    'default' => env('MAIL_MAILER', 'smtp'),
++    'default' => env('MAIL_MAILER', 'log'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -24,9 +25,9 @@ return [
+     | their respective settings. Several examples have been configured for
+     | you and you are free to add your own as your application requires.
+     |
+-    | Laravel supports a variety of mail "transport" drivers to be used while
+-    | sending an e-mail. You will specify which one you are using for your
+-    | mailers below. You are free to add additional mailers as required.
++    | Laravel supports a variety of mail "transport" drivers that can be used
++    | when delivering an email. You may specify which one you're using for
++    | your mailers below. You may also add additional mailers if needed.
+     |
+     | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+     |            "postmark", "log", "array", "failover", "roundrobin"
+@@ -34,11 +35,12 @@ return [
+     */
+ 
+     'mailers' => [
++
+         'smtp' => [
+             'transport' => 'smtp',
+             'url' => env('MAIL_URL'),
+-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+-            'port' => env('MAIL_PORT', 587),
++            'host' => env('MAIL_HOST', '127.0.0.1'),
++            'port' => env('MAIL_PORT', 2525),
+             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+@@ -52,14 +54,7 @@ return [
+ 
+         'postmark' => [
+             'transport' => 'postmark',
+-            // 'message_stream_id' => null,
+-            // 'client' => [
+-            //     'timeout' => 5,
+-            // ],
+-        ],
+-
+-        'mailgun' => [
+-            'transport' => 'mailgun',
++            // 'message_stream_id' => env('POSTMARK_MESSAGE_STREAM_ID'),
+             // 'client' => [
+             //     'timeout' => 5,
+             // ],
+@@ -87,13 +82,6 @@ return [
+             ],
+         ],
+ 
+-        'roundrobin' => [
+-            'transport' => 'roundrobin',
+-            'mailers' => [
+-                'ses',
+-                'postmark',
+-            ],
+-        ],
+     ],
+ 
+     /*
+@@ -101,9 +89,9 @@ return [
+     | Global "From" Address
+     |--------------------------------------------------------------------------
+     |
+-    | You may wish for all e-mails sent by your application to be sent from
+-    | the same address. Here, you may specify a name and address that is
+-    | used globally for all e-mails that are sent by your application.
++    | You may wish for all emails sent by your application to be sent from
++    | the same address. Here you may specify a name and address that is
++    | used globally for all emails that are sent by your application.
+     |
+     */
+ 
+@@ -112,23 +100,4 @@ return [
+         'name' => env('MAIL_FROM_NAME', 'Example'),
+     ],
+ 
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Markdown Mail Settings
+-    |--------------------------------------------------------------------------
+-    |
+-    | If you are using Markdown based email rendering, you may configure your
+-    | theme and component paths here, allowing you to customize the design
+-    | of the emails. Or, you may simply stick with the Laravel defaults!
+-    |
+-    */
+-
+-    'markdown' => [
+-        'theme' => 'default',
+-
+-        'paths' => [
+-            resource_path('views/vendor/mail'),
+-        ],
+-    ],
+-
+ ];
+diff --git a/config/queue.php b/config/queue.php
+index 01c6b054..4f689e9c 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -7,22 +7,22 @@ return [
+     | Default Queue Connection Name
+     |--------------------------------------------------------------------------
+     |
+-    | Laravel's queue API supports an assortment of back-ends via a single
+-    | API, giving you convenient access to each back-end using the same
+-    | syntax for every one. Here you may define a default connection.
++    | Laravel's queue supports a variety of backends via a single, unified
++    | API, giving you convenient access to each backend using identical
++    | syntax for each. The default queue connection is defined below.
+     |
+     */
+ 
+-    'default' => env('QUEUE_CONNECTION', 'sync'),
++    'default' => env('QUEUE_CONNECTION', 'database'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+     | Queue Connections
+     |--------------------------------------------------------------------------
+     |
+-    | Here you may configure the connection information for each server that
+-    | is used by your application. A default configuration has been added
+-    | for each back-end shipped with Laravel. You are free to add more.
++    | Here you may configure the connection options for every queue backend
++    | used by your application. An example configuration is provided for
++    | each backend supported by Laravel. You're also free to add more.
+     |
+     | Drivers: "sync", "database", "beanstalkd", "sqs", "redis", "null"
+     |
+@@ -36,17 +36,18 @@ return [
+ 
+         'database' => [
+             'driver' => 'database',
+-            'table' => 'jobs',
+-            'queue' => 'default',
+-            'retry_after' => 90,
++            'connection' => env('DB_QUEUE_CONNECTION', null),
++            'table' => env('DB_QUEUE_TABLE', 'jobs'),
++            'queue' => env('DB_QUEUE', 'default'),
++            'retry_after' => env('DB_QUEUE_RETRY_AFTER', 90),
+             'after_commit' => false,
+         ],
+ 
+         'beanstalkd' => [
+             'driver' => 'beanstalkd',
+-            'host' => 'localhost',
+-            'queue' => 'default',
+-            'retry_after' => 90,
++            'host' => env('BEANSTALKD_QUEUE_HOST', 'localhost'),
++            'queue' => env('BEANSTALKD_QUEUE', 'default'),
++            'retry_after' => env('BEANSTALKD_QUEUE_RETRY_AFTER', 90),
+             'block_for' => 0,
+             'after_commit' => false,
+         ],
+@@ -64,9 +65,9 @@ return [
+ 
+         'redis' => [
+             'driver' => 'redis',
+-            'connection' => 'default',
++            'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
+             'queue' => env('REDIS_QUEUE', 'default'),
+-            'retry_after' => 90,
++            'retry_after' => env('REDIS_QUEUE_RETRY_AFTER', 90),
+             'block_for' => null,
+             'after_commit' => false,
+         ],
+@@ -85,7 +86,7 @@ return [
+     */
+ 
+     'batching' => [
+-        'database' => env('DB_CONNECTION', 'mysql'),
++        'database' => env('DB_CONNECTION', 'sqlite'),
+         'table' => 'job_batches',
+     ],
+ 
+@@ -95,14 +96,16 @@ return [
+     |--------------------------------------------------------------------------
+     |
+     | These options configure the behavior of failed queue job logging so you
+-    | can control which database and table are used to store the jobs that
+-    | have failed. You may change them to any database / table you wish.
++    | can control how and where failed jobs are stored. Laravel ships with
++    | support for storing failed jobs in a simple file or in a database.
++    |
++    | Supported drivers: "database-uuids", "dynamodb", "file", "null"
+     |
+     */
+ 
+     'failed' => [
+         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
+-        'database' => env('DB_CONNECTION', 'mysql'),
++        'database' => env('DB_CONNECTION', 'sqlite'),
+         'table' => 'failed_jobs',
+     ],
+ 
+diff --git a/config/sanctum.php b/config/sanctum.php
+deleted file mode 100644
+index 35d75b31..00000000
+--- a/config/sanctum.php
++++ /dev/null
+@@ -1,83 +0,0 @@
+-<?php
+-
+-use Laravel\Sanctum\Sanctum;
+-
+-return [
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Stateful Domains
+-    |--------------------------------------------------------------------------
+-    |
+-    | Requests from the following domains / hosts will receive stateful API
+-    | authentication cookies. Typically, these should include your local
+-    | and production domains which access your API via a frontend SPA.
+-    |
+-    */
+-
+-    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
+-        '%s%s',
+-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+-        Sanctum::currentApplicationUrlWithPort()
+-    ))),
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Sanctum Guards
+-    |--------------------------------------------------------------------------
+-    |
+-    | This array contains the authentication guards that will be checked when
+-    | Sanctum is trying to authenticate a request. If none of these guards
+-    | are able to authenticate the request, Sanctum will use the bearer
+-    | token that's present on an incoming request for authentication.
+-    |
+-    */
+-
+-    'guard' => ['web'],
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Expiration Minutes
+-    |--------------------------------------------------------------------------
+-    |
+-    | This value controls the number of minutes until an issued token will be
+-    | considered expired. This will override any values set in the token's
+-    | "expires_at" attribute, but first-party sessions are not affected.
+-    |
+-    */
+-
+-    'expiration' => null,
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Token Prefix
+-    |--------------------------------------------------------------------------
+-    |
+-    | Sanctum can prefix new tokens in order to take advantage of numerous
+-    | security scanning initiatives maintained by open source platforms
+-    | that notify developers if they commit tokens into repositories.
+-    |
+-    | See: https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning
+-    |
+-    */
+-
+-    'token_prefix' => env('SANCTUM_TOKEN_PREFIX', ''),
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Sanctum Middleware
+-    |--------------------------------------------------------------------------
+-    |
+-    | When authenticating your first-party SPA with Sanctum you may need to
+-    | customize some of the middleware Sanctum uses while processing the
+-    | request. You may change the middleware listed below as required.
+-    |
+-    */
+-
+-    'middleware' => [
+-        'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,
+-        'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
+-        'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
+-    ],
+-
+-];
+diff --git a/config/services.php b/config/services.php
+index 0ace530e..6bb68f6a 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -14,13 +14,6 @@ return [
+     |
+     */
+ 
+-    'mailgun' => [
+-        'domain' => env('MAILGUN_DOMAIN'),
+-        'secret' => env('MAILGUN_SECRET'),
+-        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+-        'scheme' => 'https',
+-    ],
+-
+     'postmark' => [
+         'token' => env('POSTMARK_TOKEN'),
+     ],
+@@ -31,4 +24,11 @@ return [
+         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+     ],
+ 
++    'slack' => [
++        'notifications' => [
++            'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
++            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
++        ],
++    ],
++
+ ];
+diff --git a/config/session.php b/config/session.php
+index e738cb3e..0e22ee41 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -9,16 +9,16 @@ return [
+     | Default Session Driver
+     |--------------------------------------------------------------------------
+     |
+-    | This option controls the default session "driver" that will be used on
+-    | requests. By default, we will use the lightweight native driver but
+-    | you may specify any of the other wonderful drivers provided here.
++    | This option determines the default session driver that is utilized for
++    | incoming requests. Laravel supports a variety of storage options to
++    | persist session data. Database storage is a great default choice.
+     |
+     | Supported: "file", "cookie", "database", "apc",
+     |            "memcached", "redis", "dynamodb", "array"
+     |
+     */
+ 
+-    'driver' => env('SESSION_DRIVER', 'file'),
++    'driver' => env('SESSION_DRIVER', 'database'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -27,13 +27,14 @@ return [
+     |
+     | Here you may specify the number of minutes that you wish the session
+     | to be allowed to remain idle before it expires. If you want them
+-    | to immediately expire on the browser closing, set that option.
++    | to expire immediately when the browser is closed then you may
++    | indicate that via the expire_on_close configuration option.
+     |
+     */
+ 
+     'lifetime' => env('SESSION_LIFETIME', 120),
+ 
+-    'expire_on_close' => false,
++    'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -41,21 +42,21 @@ return [
+     |--------------------------------------------------------------------------
+     |
+     | This option allows you to easily specify that all of your session data
+-    | should be encrypted before it is stored. All encryption will be run
+-    | automatically by Laravel and you can use the Session like normal.
++    | should be encrypted before it's stored. All encryption is performed
++    | automatically by Laravel and you may use the session like normal.
+     |
+     */
+ 
+-    'encrypt' => false,
++    'encrypt' => env('SESSION_ENCRYPT', false),
+ 
+     /*
+     |--------------------------------------------------------------------------
+     | Session File Location
+     |--------------------------------------------------------------------------
+     |
+-    | When using the native session driver, we need a location where session
+-    | files may be stored. A default has been set for you but a different
+-    | location may be specified. This is only needed for file sessions.
++    | When utilizing the "file" session driver, the session files are placed
++    | on disk. The default storage location is defined here; however, you
++    | are free to provide another location where they should be stored.
+     |
+     */
+ 
+@@ -79,22 +80,22 @@ return [
+     | Session Database Table
+     |--------------------------------------------------------------------------
+     |
+-    | When using the "database" session driver, you may specify the table we
+-    | should use to manage the sessions. Of course, a sensible default is
+-    | provided for you; however, you are free to change this as needed.
++    | When using the "database" session driver, you may specify the table to
++    | be used to store sessions. Of course, a sensible default is defined
++    | for you; however, you're welcome to change this to another table.
+     |
+     */
+ 
+-    'table' => 'sessions',
++    'table' => env('SESSION_TABLE', 'sessions'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+     | Session Cache Store
+     |--------------------------------------------------------------------------
+     |
+-    | While using one of the framework's cache driven session backends you may
+-    | list a cache store that should be used for these sessions. This value
+-    | must match with one of the application's configured cache "stores".
++    | When using one of the framework's cache driven session backends, you may
++    | define the cache store which should be used to store the session data
++    | between requests. This must match one of your defined cache stores.
+     |
+     | Affects: "apc", "dynamodb", "memcached", "redis"
+     |
+@@ -120,9 +121,10 @@ return [
+     | Session Cookie Name
+     |--------------------------------------------------------------------------
+     |
+-    | Here you may change the name of the cookie used to identify a session
+-    | instance by ID. The name specified here will get used every time a
+-    | new session cookie is created by the framework for every driver.
++    | Here you may change the name of the session cookie that is created by
++    | the framework. Typically, you should not need to change this value
++    | since doing so does not grant a meaningful security improvement.
++    |
+     |
+     */
+ 
+@@ -138,20 +140,20 @@ return [
+     |
+     | The session cookie path determines the path for which the cookie will
+     | be regarded as available. Typically, this will be the root path of
+-    | your application but you are free to change this when necessary.
++    | your application, but you're free to change this when necessary.
+     |
+     */
+ 
+-    'path' => '/',
++    'path' => env('SESSION_PATH', '/'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+     | Session Cookie Domain
+     |--------------------------------------------------------------------------
+     |
+-    | Here you may change the domain of the cookie used to identify a session
+-    | in your application. This will determine which domains the cookie is
+-    | available to in your application. A sensible default has been set.
++    | This value determines the domain and subdomains the session cookie is
++    | available to. By default, the cookie will be available to the root
++    | domain and all subdomains. Typically, this shouldn't be changed.
+     |
+     */
+ 
+@@ -177,11 +179,11 @@ return [
+     |
+     | Setting this value to true will prevent JavaScript from accessing the
+     | value of the cookie and the cookie will only be accessible through
+-    | the HTTP protocol. You are free to modify this option if needed.
++    | the HTTP protocol. It's unlikely you should disable this option.
+     |
+     */
+ 
+-    'http_only' => true,
++    'http_only' => env('SESSION_HTTP_ONLY', true),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -190,13 +192,15 @@ return [
+     |
+     | This option determines how your cookies behave when cross-site requests
+     | take place, and can be used to mitigate CSRF attacks. By default, we
+-    | will set this value to "lax" since this is a secure default value.
++    | will set this value to "lax" to permit secure cross-site requests.
++    |
++    | See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value
+     |
+     | Supported: "lax", "strict", "none", null
+     |
+     */
+ 
+-    'same_site' => 'lax',
++    'same_site' => env('SESSION_SAME_SITE', 'lax'),
+ 
+     /*
+     |--------------------------------------------------------------------------
+@@ -209,6 +213,6 @@ return [
+     |
+     */
+ 
+-    'partitioned' => false,
++    'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
+ 
+ ];
+diff --git a/config/view.php b/config/view.php
+deleted file mode 100644
+index 22b8a18d..00000000
+--- a/config/view.php
++++ /dev/null
+@@ -1,36 +0,0 @@
+-<?php
+-
+-return [
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | View Storage Paths
+-    |--------------------------------------------------------------------------
+-    |
+-    | Most templating systems load templates from disk. Here you may specify
+-    | an array of paths that should be checked for your views. Of course
+-    | the usual Laravel view path has already been registered for you.
+-    |
+-    */
+-
+-    'paths' => [
+-        resource_path('views'),
+-    ],
+-
+-    /*
+-    |--------------------------------------------------------------------------
+-    | Compiled View Path
+-    |--------------------------------------------------------------------------
+-    |
+-    | This option determines where all the compiled Blade templates will be
+-    | stored for your application. Typically, this is within the storage
+-    | directory. However, as usual, you are free to change this value.
+-    |
+-    */
+-
+-    'compiled' => env(
+-        'VIEW_COMPILED_PATH',
+-        realpath(storage_path('framework/views'))
+-    ),
+-
+-];
+diff --git a/database/migrations/2014_10_12_000000_create_users_table.php b/database/migrations/0001_01_01_000000_create_users_table.php
+similarity index 50%
+rename from database/migrations/2014_10_12_000000_create_users_table.php
+rename to database/migrations/0001_01_01_000000_create_users_table.php
+index 444fafb7..05fb5d9e 100644
+--- a/database/migrations/2014_10_12_000000_create_users_table.php
++++ b/database/migrations/0001_01_01_000000_create_users_table.php
+@@ -20,6 +20,21 @@ return new class extends Migration
+             $table->rememberToken();
+             $table->timestamps();
+         });
++
++        Schema::create('password_reset_tokens', function (Blueprint $table) {
++            $table->string('email')->primary();
++            $table->string('token');
++            $table->timestamp('created_at')->nullable();
++        });
++
++        Schema::create('sessions', function (Blueprint $table) {
++            $table->string('id')->primary();
++            $table->foreignId('user_id')->nullable()->index();
++            $table->string('ip_address', 45)->nullable();
++            $table->text('user_agent')->nullable();
++            $table->longText('payload');
++            $table->integer('last_activity')->index();
++        });
+     }
+ 
+     /**
+@@ -28,5 +43,7 @@ return new class extends Migration
+     public function down(): void
+     {
+         Schema::dropIfExists('users');
++        Schema::dropIfExists('password_reset_tokens');
++        Schema::dropIfExists('sessions');
+     }
+ };
+diff --git a/database/migrations/0001_01_01_000001_create_cache_table.php b/database/migrations/0001_01_01_000001_create_cache_table.php
+new file mode 100644
+index 00000000..b9c106be
+--- /dev/null
++++ b/database/migrations/0001_01_01_000001_create_cache_table.php
+@@ -0,0 +1,35 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    /**
++     * Run the migrations.
++     */
++    public function up(): void
++    {
++        Schema::create('cache', function (Blueprint $table) {
++            $table->string('key')->primary();
++            $table->mediumText('value');
++            $table->integer('expiration');
++        });
++
++        Schema::create('cache_locks', function (Blueprint $table) {
++            $table->string('key')->primary();
++            $table->string('owner');
++            $table->integer('expiration');
++        });
++    }
++
++    /**
++     * Reverse the migrations.
++     */
++    public function down(): void
++    {
++        Schema::dropIfExists('cache');
++        Schema::dropIfExists('cache_locks');
++    }
++};
+diff --git a/database/migrations/0001_01_01_000002_create_jobs_table.php b/database/migrations/0001_01_01_000002_create_jobs_table.php
+new file mode 100644
+index 00000000..425e7058
+--- /dev/null
++++ b/database/migrations/0001_01_01_000002_create_jobs_table.php
+@@ -0,0 +1,57 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    /**
++     * Run the migrations.
++     */
++    public function up(): void
++    {
++        Schema::create('jobs', function (Blueprint $table) {
++            $table->id();
++            $table->string('queue')->index();
++            $table->longText('payload');
++            $table->unsignedTinyInteger('attempts');
++            $table->unsignedInteger('reserved_at')->nullable();
++            $table->unsignedInteger('available_at');
++            $table->unsignedInteger('created_at');
++        });
++
++        Schema::create('job_batches', function (Blueprint $table) {
++            $table->string('id')->primary();
++            $table->string('name');
++            $table->integer('total_jobs');
++            $table->integer('pending_jobs');
++            $table->integer('failed_jobs');
++            $table->longText('failed_job_ids');
++            $table->mediumText('options')->nullable();
++            $table->integer('cancelled_at')->nullable();
++            $table->integer('created_at');
++            $table->integer('finished_at')->nullable();
++        });
++
++        Schema::create('failed_jobs', function (Blueprint $table) {
++            $table->id();
++            $table->string('uuid')->unique();
++            $table->text('connection');
++            $table->text('queue');
++            $table->longText('payload');
++            $table->longText('exception');
++            $table->timestamp('failed_at')->useCurrent();
++        });
++    }
++
++    /**
++     * Reverse the migrations.
++     */
++    public function down(): void
++    {
++        Schema::dropIfExists('jobs');
++        Schema::dropIfExists('job_batches');
++        Schema::dropIfExists('failed_jobs');
++    }
++};
+diff --git a/database/migrations/2014_10_12_100000_create_password_reset_tokens_table.php b/database/migrations/2014_10_12_100000_create_password_reset_tokens_table.php
+deleted file mode 100644
+index 81a7229b..00000000
+--- a/database/migrations/2014_10_12_100000_create_password_reset_tokens_table.php
++++ /dev/null
+@@ -1,28 +0,0 @@
+-<?php
+-
+-use Illuminate\Database\Migrations\Migration;
+-use Illuminate\Database\Schema\Blueprint;
+-use Illuminate\Support\Facades\Schema;
+-
+-return new class extends Migration
+-{
+-    /**
+-     * Run the migrations.
+-     */
+-    public function up(): void
+-    {
+-        Schema::create('password_reset_tokens', function (Blueprint $table) {
+-            $table->string('email')->primary();
+-            $table->string('token');
+-            $table->timestamp('created_at')->nullable();
+-        });
+-    }
+-
+-    /**
+-     * Reverse the migrations.
+-     */
+-    public function down(): void
+-    {
+-        Schema::dropIfExists('password_reset_tokens');
+-    }
+-};
+diff --git a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php b/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+deleted file mode 100644
+index 249da817..00000000
+--- a/database/migrations/2019_08_19_000000_create_failed_jobs_table.php
++++ /dev/null
+@@ -1,32 +0,0 @@
+-<?php
+-
+-use Illuminate\Database\Migrations\Migration;
+-use Illuminate\Database\Schema\Blueprint;
+-use Illuminate\Support\Facades\Schema;
+-
+-return new class extends Migration
+-{
+-    /**
+-     * Run the migrations.
+-     */
+-    public function up(): void
+-    {
+-        Schema::create('failed_jobs', function (Blueprint $table) {
+-            $table->id();
+-            $table->string('uuid')->unique();
+-            $table->text('connection');
+-            $table->text('queue');
+-            $table->longText('payload');
+-            $table->longText('exception');
+-            $table->timestamp('failed_at')->useCurrent();
+-        });
+-    }
+-
+-    /**
+-     * Reverse the migrations.
+-     */
+-    public function down(): void
+-    {
+-        Schema::dropIfExists('failed_jobs');
+-    }
+-};
+diff --git a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php b/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+deleted file mode 100644
+index e828ad81..00000000
+--- a/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
++++ /dev/null
+@@ -1,33 +0,0 @@
+-<?php
+-
+-use Illuminate\Database\Migrations\Migration;
+-use Illuminate\Database\Schema\Blueprint;
+-use Illuminate\Support\Facades\Schema;
+-
+-return new class extends Migration
+-{
+-    /**
+-     * Run the migrations.
+-     */
+-    public function up(): void
+-    {
+-        Schema::create('personal_access_tokens', function (Blueprint $table) {
+-            $table->id();
+-            $table->morphs('tokenable');
+-            $table->string('name');
+-            $table->string('token', 64)->unique();
+-            $table->text('abilities')->nullable();
+-            $table->timestamp('last_used_at')->nullable();
+-            $table->timestamp('expires_at')->nullable();
+-            $table->timestamps();
+-        });
+-    }
+-
+-    /**
+-     * Reverse the migrations.
+-     */
+-    public function down(): void
+-    {
+-        Schema::dropIfExists('personal_access_tokens');
+-    }
+-};
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index a9f4519f..d01a0ef2 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -2,6 +2,7 @@
+ 
+ namespace Database\Seeders;
+ 
++use App\Models\User;
+ // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+ use Illuminate\Database\Seeder;
+ 
+@@ -12,11 +13,11 @@ class DatabaseSeeder extends Seeder
+      */
+     public function run(): void
+     {
+-        // \App\Models\User::factory(10)->create();
++        // User::factory(10)->create();
+ 
+-        // \App\Models\User::factory()->create([
+-        //     'name' => 'Test User',
+-        //     'email' => 'test@example.com',
+-        // ]);
++        User::factory()->create([
++            'name' => 'Test User',
++            'email' => 'test@example.com',
++        ]);
+     }
+ }
+diff --git a/package.json b/package.json
+index 56f5ddcc..4e934caa 100644
+--- a/package.json
++++ b/package.json
+@@ -7,7 +7,7 @@
+     },
+     "devDependencies": {
+         "axios": "^1.6.4",
+-        "laravel-vite-plugin": "^1.0.0",
+-        "vite": "^5.0.0"
++        "laravel-vite-plugin": "^1.0",
++        "vite": "^5.0"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index bc86714b..506b9a38 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -19,8 +19,9 @@
+     </source>
+     <php>
+         <env name="APP_ENV" value="testing"/>
++        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+         <env name="BCRYPT_ROUNDS" value="4"/>
+-        <env name="CACHE_DRIVER" value="array"/>
++        <env name="CACHE_STORE" value="array"/>
+         <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
+         <!-- <env name="DB_DATABASE" value=":memory:"/> -->
+         <env name="MAIL_MAILER" value="array"/>
+diff --git a/public/index.php b/public/index.php
+index 1d69f3a2..947d9896 100644
+--- a/public/index.php
++++ b/public/index.php
+@@ -1,55 +1,17 @@
+ <?php
+ 
+-use Illuminate\Contracts\Http\Kernel;
+ use Illuminate\Http\Request;
+ 
+ define('LARAVEL_START', microtime(true));
+ 
+-/*
+-|--------------------------------------------------------------------------
+-| Check If The Application Is Under Maintenance
+-|--------------------------------------------------------------------------
+-|
+-| If the application is in maintenance / demo mode via the "down" command
+-| we will load this file so that any pre-rendered content can be shown
+-| instead of starting the framework, which could cause an exception.
+-|
+-*/
+-
++// Determine if the application is in maintenance mode...
+ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+     require $maintenance;
+ }
+ 
+-/*
+-|--------------------------------------------------------------------------
+-| Register The Auto Loader
+-|--------------------------------------------------------------------------
+-|
+-| Composer provides a convenient, automatically generated class loader for
+-| this application. We just need to utilize it! We'll simply require it
+-| into the script here so we don't need to manually load our classes.
+-|
+-*/
+-
++// Register the Composer autoloader...
+ require __DIR__.'/../vendor/autoload.php';
+ 
+-/*
+-|--------------------------------------------------------------------------
+-| Run The Application
+-|--------------------------------------------------------------------------
+-|
+-| Once we have the application, we can handle the incoming request using
+-| the application's HTTP kernel. Then, we will send the response back
+-| to this client's browser, allowing them to enjoy our application.
+-|
+-*/
+-
+-$app = require_once __DIR__.'/../bootstrap/app.php';
+-
+-$kernel = $app->make(Kernel::class);
+-
+-$response = $kernel->handle(
+-    $request = Request::capture()
+-)->send();
+-
+-$kernel->terminate($request, $response);
++// Bootstrap Laravel and handle the request...
++(require_once __DIR__.'/../bootstrap/app.php')
++    ->handleRequest(Request::capture());
+diff --git a/resources/js/bootstrap.js b/resources/js/bootstrap.js
+index 846d3505..5f1390b0 100644
+--- a/resources/js/bootstrap.js
++++ b/resources/js/bootstrap.js
+@@ -1,32 +1,4 @@
+-/**
+- * We'll load the axios HTTP library which allows us to easily issue requests
+- * to our Laravel back-end. This library automatically handles sending the
+- * CSRF token as a header based on the value of the "XSRF" token cookie.
+- */
+-
+ import axios from 'axios';
+ window.axios = axios;
+ 
+ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+-
+-/**
+- * Echo exposes an expressive API for subscribing to channels and listening
+- * for events that are broadcast by Laravel. Echo and event broadcasting
+- * allows your team to easily build robust real-time web applications.
+- */
+-
+-// import Echo from 'laravel-echo';
+-
+-// import Pusher from 'pusher-js';
+-// window.Pusher = Pusher;
+-
+-// window.Echo = new Echo({
+-//     broadcaster: 'pusher',
+-//     key: import.meta.env.VITE_PUSHER_APP_KEY,
+-//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+-//     wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+-//     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+-//     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+-//     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+-//     enabledTransports: ['ws', 'wss'],
+-// });
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 33533508..abe98dc3 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -12,120 +12,159 @@
+ 
+         <!-- Styles -->
+         <style>
+-            /* ! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Figtree, sans-serif;font-feature-settings:normal}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::-webkit-backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mx-6{margin-left:1.5rem;margin-right:1.5rem}.ml-4{margin-left:1rem}.mt-16{margin-top:4rem}.mt-6{margin-top:1.5rem}.mt-4{margin-top:1rem}.-mt-px{margin-top:-1px}.mr-1{margin-right:0.25rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-16{height:4rem}.h-7{height:1.75rem}.h-6{height:1.5rem}.h-5{height:1.25rem}.min-h-screen{min-height:100vh}.w-auto{width:auto}.w-16{width:4rem}.w-7{width:1.75rem}.w-6{width:1.5rem}.w-5{width:1.25rem}.max-w-7xl{max-width:80rem}.shrink-0{flex-shrink:0}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.items-center{align-items:center}.justify-center{justify-content:center}.gap-6{gap:1.5rem}.gap-4{gap:1rem}.self-center{align-self:center}.rounded-lg{border-radius:0.5rem}.rounded-full{border-radius:9999px}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity))}.bg-dots-darker{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E")}.from-gray-700\/50{--tw-gradient-from:rgb(55 65 81 / 0.5);--tw-gradient-to:rgb(55 65 81 / 0);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-transparent{--tw-gradient-to:rgb(0 0 0 / 0);--tw-gradient-stops:var(--tw-gradient-from), transparent, var(--tw-gradient-to)}.bg-center{background-position:center}.stroke-red-500{stroke:#ef4444}.stroke-gray-400{stroke:#9ca3af}.p-6{padding:1.5rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.text-center{text-align:center}.text-right{text-align:right}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-gray-500\/20{--tw-shadow-color:rgb(107 114 128 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-red-500 *::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.selection\:bg-red-500::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.hover\:text-gray-900:hover{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.hover\:text-gray-700:hover{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity))}.focus\:rounded-sm:focus{border-radius:0.125rem}.focus\:outline:focus{outline-style:solid}.focus\:outline-2:focus{outline-width:2px}.focus\:outline-red-500:focus{outline-color:#ef4444}.group:hover .group-hover\:stroke-gray-600{stroke:#4b5563}.z-10{z-index: 10}@media (prefers-reduced-motion: no-preference){.motion-safe\:hover\:scale-\[1\.01\]:hover{--tw-scale-x:1.01;--tw-scale-y:1.01;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}}@media (prefers-color-scheme: dark){.dark\:bg-gray-900{--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity))}.dark\:bg-gray-800\/50{background-color:rgb(31 41 55 / 0.5)}.dark\:bg-red-800\/20{background-color:rgb(153 27 27 / 0.2)}.dark\:bg-dots-lighter{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E")}.dark\:bg-gradient-to-bl{background-image:linear-gradient(to bottom left, var(--tw-gradient-stops))}.dark\:stroke-gray-600{stroke:#4b5563}.dark\:text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity))}.dark\:text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:shadow-none{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.dark\:ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.dark\:ring-inset{--tw-ring-inset:inset}.dark\:ring-white\/5{--tw-ring-color:rgb(255 255 255 / 0.05)}.dark\:hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.group:hover .dark\:group-hover\:stroke-gray-400{stroke:#9ca3af}}@media (min-width: 640px){.sm\:fixed{position:fixed}.sm\:top-0{top:0px}.sm\:right-0{right:0px}.sm\:ml-0{margin-left:0px}.sm\:flex{display:flex}.sm\:items-center{align-items:center}.sm\:justify-center{justify-content:center}.sm\:justify-between{justify-content:space-between}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:gap-8{gap:2rem}.lg\:p-8{padding:2rem}}
++            /* ! tailwindcss v3.4.1 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Figtree, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.absolute{position:absolute}.relative{position:relative}.-left-20{left:-5rem}.top-0{top:0px}.-bottom-16{bottom:-4rem}.-left-16{left:-4rem}.-mx-3{margin-left:-0.75rem;margin-right:-0.75rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.aspect-video{aspect-ratio:16 / 9}.size-12{width:3rem;height:3rem}.size-5{width:1.25rem;height:1.25rem}.size-6{width:1.5rem;height:1.5rem}.h-12{height:3rem}.h-40{height:10rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-full{width:100%}.w-\[calc\(100\%\+8rem\)\]{width:calc(100% + 8rem)}.w-auto{width:auto}.max-w-\[877px\]{max-width:877px}.max-w-2xl{max-width:42rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.self-center{align-self:center}.overflow-hidden{overflow:hidden}.rounded-\[10px\]{border-radius:10px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-sm{border-radius:0.125rem}.bg-\[\#FF2D20\]\/10{background-color:rgb(255 45 32 / 0.1)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-gradient-to-b{background-image:linear-gradient(to bottom, var(--tw-gradient-stops))}.from-transparent{--tw-gradient-from:transparent var(--tw-gradient-from-position);--tw-gradient-to:rgb(0 0 0 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-white{--tw-gradient-to:rgb(255 255 255 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #fff var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-white{--tw-gradient-to:#fff var(--tw-gradient-to-position)}.stroke-\[\#FF2D20\]{stroke:#FF2D20}.object-cover{object-fit:cover}.object-top{object-position:top}.p-6{padding:1.5rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.pt-3{padding-top:0.75rem}.text-center{text-align:center}.font-sans{font-family:Figtree, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-sm\/relaxed{font-size:0.875rem;line-height:1.625}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-semibold{font-weight:600}.text-black{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-\[0px_14px_34px_0px_rgba\(0\2c 0\2c 0\2c 0\.08\)\]{--tw-shadow:0px 14px 34px 0px rgba(0,0,0,0.08);--tw-shadow-colored:0px 14px 34px 0px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-transparent{--tw-ring-color:transparent}.ring-white\/\[0\.05\]{--tw-ring-color:rgb(255 255 255 / 0.05)}.drop-shadow-\[0px_4px_34px_rgba\(0\2c 0\2c 0\2c 0\.06\)\]{--tw-drop-shadow:drop-shadow(0px 4px 34px rgba(0,0,0,0.06));filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.drop-shadow-\[0px_4px_34px_rgba\(0\2c 0\2c 0\2c 0\.25\)\]{--tw-drop-shadow:drop-shadow(0px 4px 34px rgba(0,0,0,0.25));filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-300{transition-duration:300ms}.selection\:bg-\[\#FF2D20\] *::selection{--tw-bg-opacity:1;background-color:rgb(255 45 32 / var(--tw-bg-opacity))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.selection\:bg-\[\#FF2D20\]::selection{--tw-bg-opacity:1;background-color:rgb(255 45 32 / var(--tw-bg-opacity))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.hover\:text-black:hover{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity))}.hover\:text-black\/70:hover{color:rgb(0 0 0 / 0.7)}.hover\:ring-black\/20:hover{--tw-ring-color:rgb(0 0 0 / 0.2)}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus-visible\:ring-1:focus-visible{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus-visible\:ring-\[\#FF2D20\]:focus-visible{--tw-ring-opacity:1;--tw-ring-color:rgb(255 45 32 / var(--tw-ring-opacity))}@media (min-width: 640px){.sm\:size-16{width:4rem;height:4rem}.sm\:size-6{width:1.5rem;height:1.5rem}.sm\:pt-5{padding-top:1.25rem}}@media (min-width: 768px){.md\:row-span-3{grid-row:span 3 / span 3}}@media (min-width: 1024px){.lg\:col-start-2{grid-column-start:2}.lg\:h-16{height:4rem}.lg\:max-w-7xl{max-width:80rem}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:flex-col{flex-direction:column}.lg\:items-end{align-items:flex-end}.lg\:justify-center{justify-content:center}.lg\:gap-8{gap:2rem}.lg\:p-10{padding:2.5rem}.lg\:pb-10{padding-bottom:2.5rem}.lg\:pt-0{padding-top:0px}.lg\:text-\[\#FF2D20\]{--tw-text-opacity:1;color:rgb(255 45 32 / var(--tw-text-opacity))}}@media (prefers-color-scheme: dark){.dark\:block{display:block}.dark\:hidden{display:none}.dark\:bg-black{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity))}.dark\:bg-zinc-900{--tw-bg-opacity:1;background-color:rgb(24 24 27 / var(--tw-bg-opacity))}.dark\:via-zinc-900{--tw-gradient-to:rgb(24 24 27 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #18181b var(--tw-gradient-via-position), var(--tw-gradient-to)}.dark\:to-zinc-900{--tw-gradient-to:#18181b var(--tw-gradient-to-position)}.dark\:text-white\/50{color:rgb(255 255 255 / 0.5)}.dark\:text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:text-white\/70{color:rgb(255 255 255 / 0.7)}.dark\:ring-zinc-800{--tw-ring-opacity:1;--tw-ring-color:rgb(39 39 42 / var(--tw-ring-opacity))}.dark\:hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:hover\:text-white\/70:hover{color:rgb(255 255 255 / 0.7)}.dark\:hover\:text-white\/80:hover{color:rgb(255 255 255 / 0.8)}.dark\:hover\:ring-zinc-700:hover{--tw-ring-opacity:1;--tw-ring-color:rgb(63 63 70 / var(--tw-ring-opacity))}.dark\:focus-visible\:ring-\[\#FF2D20\]:focus-visible{--tw-ring-opacity:1;--tw-ring-color:rgb(255 45 32 / var(--tw-ring-opacity))}.dark\:focus-visible\:ring-white:focus-visible{--tw-ring-opacity:1;--tw-ring-color:rgb(255 255 255 / var(--tw-ring-opacity))}}
+         </style>
+     </head>
+-    <body class="antialiased">
+-        <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
+-            @if (Route::has('login'))
+-                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
+-                    @auth
+-                        <a href="{{ url('/home') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Home</a>
+-                    @else
+-                        <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
+-
+-                        @if (Route::has('register'))
+-                            <a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
++    <body class="font-sans antialiased dark:bg-black dark:text-white/50">
++        <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
++            <img id="background" class="absolute -left-20 top-0 max-w-[877px]" src="https://laravel.com/assets/img/welcome/background.svg" />
++            <div class="relative min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
++                <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
++                    <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
++                        <div class="flex lg:justify-center lg:col-start-2">
++                            <svg class="h-12 w-auto text-white lg:h-16 lg:text-[#FF2D20]" viewBox="0 0 62 65" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z" fill="currentColor"/></svg>
++                        </div>
++                        @if (Route::has('login'))
++                            <nav class="-mx-3 flex flex-1 justify-end">
++                                @auth
++                                    <a
++                                        href="{{ url('/dashboard') }}"
++                                        class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
++                                    >
++                                        Dashboard
++                                    </a>
++                                @else
++                                    <a
++                                        href="{{ route('login') }}"
++                                        class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
++                                    >
++                                        Log in
++                                    </a>
++
++                                    @if (Route::has('register'))
++                                        <a
++                                            href="{{ route('register') }}"
++                                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
++                                        >
++                                            Register
++                                        </a>
++                                    @endif
++                                @endauth
++                            </nav>
+                         @endif
+-                    @endauth
+-                </div>
+-            @endif
+-
+-            <div class="max-w-7xl mx-auto p-6 lg:p-8">
+-                <div class="flex justify-center">
+-                    <svg viewBox="0 0 62 65" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-16 w-auto bg-gray-100 dark:bg-gray-900">
+-                        <path d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z" fill="#FF2D20"/>
+-                    </svg>
+-                </div>
+-
+-                <div class="mt-16">
+-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+-                        <a href="https://laravel.com/docs" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
+-                            <div>
+-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
+-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
+-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+-                                    </svg>
++                    </header>
++
++                    <main class="mt-6">
++                        <div class="grid gap-6 lg:grid-cols-2 lg:gap-8">
++                            <a
++                                href="https://laravel.com/docs"
++                                id="docs-card"
++                                class="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
++                            >
++                                <div id="screenshot-container" class="relative flex w-full flex-1 items-stretch">
++                                    <img
++                                        src="https://laravel.com/assets/img/welcome/docs-light.svg"
++                                        alt="Laravel documentation screenshot"
++                                        class="aspect-video h-full w-full flex-1 rounded-[10px] object-top object-cover drop-shadow-[0px_4px_34px_rgba(0,0,0,0.06)] dark:hidden"
++                                        onerror="
++                                            document.getElementById('screenshot-container').classList.add('!hidden');
++                                            document.getElementById('docs-card').classList.add('!row-span-1');
++                                            document.getElementById('docs-card-content').classList.add('!flex-row');
++                                            document.getElementById('background').classList.add('!hidden');
++                                        "
++                                    />
++                                    <img
++                                        src="https://laravel.com/assets/img/welcome/docs-dark.svg"
++                                        alt="Laravel documentation screenshot"
++                                        class="hidden aspect-video h-full w-full flex-1 rounded-[10px] object-top object-cover drop-shadow-[0px_4px_34px_rgba(0,0,0,0.25)] dark:block"
++                                    />
++                                    <div
++                                        class="absolute -bottom-16 -left-16 h-40 w-[calc(100%+8rem)] bg-gradient-to-b from-transparent via-white to-white dark:via-zinc-900 dark:to-zinc-900"
++                                    ></div>
+                                 </div>
+ 
+-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Documentation</h2>
++                                <div class="relative flex items-center gap-6 lg:items-end">
++                                    <div id="docs-card-content" class="flex items-start gap-6 lg:flex-col">
++                                        <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
++                                            <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#FF2D20" d="M23 4a1 1 0 0 0-1.447-.894L12.224 7.77a.5.5 0 0 1-.448 0L2.447 3.106A1 1 0 0 0 1 4v13.382a1.99 1.99 0 0 0 1.105 1.79l9.448 4.728c.14.065.293.1.447.1.154-.005.306-.04.447-.105l9.453-4.724a1.99 1.99 0 0 0 1.1-1.789V4ZM3 6.023a.25.25 0 0 1 .362-.223l7.5 3.75a.251.251 0 0 1 .138.223v11.2a.25.25 0 0 1-.362.224l-7.5-3.75a.25.25 0 0 1-.138-.22V6.023Zm18 11.2a.25.25 0 0 1-.138.224l-7.5 3.75a.249.249 0 0 1-.329-.099.249.249 0 0 1-.033-.12V9.772a.251.251 0 0 1 .138-.224l7.5-3.75a.25.25 0 0 1 .362.224v11.2Z"/><path fill="#FF2D20" d="m3.55 1.893 8 4.048a1.008 1.008 0 0 0 .9 0l8-4.048a1 1 0 0 0-.9-1.785l-7.322 3.706a.506.506 0 0 1-.452 0L4.454.108a1 1 0 0 0-.9 1.785H3.55Z"/></svg>
++                                        </div>
+ 
+-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+-                                    Laravel has wonderful documentation covering every aspect of the framework. Whether you are a newcomer or have prior experience with Laravel, we recommend reading our documentation from beginning to end.
+-                                </p>
+-                            </div>
++                                        <div class="pt-3 sm:pt-5 lg:pt-0">
++                                            <h2 class="text-xl font-semibold text-black dark:text-white">Documentation</h2>
+ 
+-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
+-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+-                            </svg>
+-                        </a>
++                                            <p class="mt-4 text-sm/relaxed">
++                                                Laravel has wonderful documentation covering every aspect of the framework. Whether you are a newcomer or have prior experience with Laravel, we recommend reading our documentation from beginning to end.
++                                            </p>
++                                        </div>
++                                    </div>
+ 
+-                        <a href="https://laracasts.com" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
+-                            <div>
+-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
+-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
+-                                        <path stroke-linecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+-                                    </svg>
++                                    <svg class="size-6 shrink-0 stroke-[#FF2D20]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
++                                </div>
++                            </a>
++
++                            <a
++                                href="https://laracasts.com"
++                                class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
++                            >
++                                <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
++                                    <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><g fill="#FF2D20"><path d="M24 8.25a.5.5 0 0 0-.5-.5H.5a.5.5 0 0 0-.5.5v12a2.5 2.5 0 0 0 2.5 2.5h19a2.5 2.5 0 0 0 2.5-2.5v-12Zm-7.765 5.868a1.221 1.221 0 0 1 0 2.264l-6.626 2.776A1.153 1.153 0 0 1 8 18.123v-5.746a1.151 1.151 0 0 1 1.609-1.035l6.626 2.776ZM19.564 1.677a.25.25 0 0 0-.177-.427H15.6a.106.106 0 0 0-.072.03l-4.54 4.543a.25.25 0 0 0 .177.427h3.783c.027 0 .054-.01.073-.03l4.543-4.543ZM22.071 1.318a.047.047 0 0 0-.045.013l-4.492 4.492a.249.249 0 0 0 .038.385.25.25 0 0 0 .14.042h5.784a.5.5 0 0 0 .5-.5v-2a2.5 2.5 0 0 0-1.925-2.432ZM13.014 1.677a.25.25 0 0 0-.178-.427H9.101a.106.106 0 0 0-.073.03l-4.54 4.543a.25.25 0 0 0 .177.427H8.4a.106.106 0 0 0 .073-.03l4.54-4.543ZM6.513 1.677a.25.25 0 0 0-.177-.427H2.5A2.5 2.5 0 0 0 0 3.75v2a.5.5 0 0 0 .5.5h1.4a.106.106 0 0 0 .073-.03l4.54-4.543Z"/></g></svg>
+                                 </div>
+ 
+-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laracasts</h2>
++                                <div class="pt-3 sm:pt-5">
++                                    <h2 class="text-xl font-semibold text-black dark:text-white">Laracasts</h2>
+ 
+-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+-                                    Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
+-                                </p>
+-                            </div>
++                                    <p class="mt-4 text-sm/relaxed">
++                                        Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
++                                    </p>
++                                </div>
+ 
+-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
+-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+-                            </svg>
+-                        </a>
++                                <svg class="size-6 shrink-0 self-center stroke-[#FF2D20]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
++                            </a>
+ 
+-                        <a href="https://laravel-news.com" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
+-                            <div>
+-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
+-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
+-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" />
+-                                    </svg>
++                            <a
++                                href="https://laravel-news.com"
++                                class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
++                            >
++                                <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
++                                    <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><g fill="#FF2D20"><path d="M8.75 4.5H5.5c-.69 0-1.25.56-1.25 1.25v4.75c0 .69.56 1.25 1.25 1.25h3.25c.69 0 1.25-.56 1.25-1.25V5.75c0-.69-.56-1.25-1.25-1.25Z"/><path d="M24 10a3 3 0 0 0-3-3h-2V2.5a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2V20a3.5 3.5 0 0 0 3.5 3.5h17A3.5 3.5 0 0 0 24 20V10ZM3.5 21.5A1.5 1.5 0 0 1 2 20V3a.5.5 0 0 1 .5-.5h14a.5.5 0 0 1 .5.5v17c0 .295.037.588.11.874a.5.5 0 0 1-.484.625L3.5 21.5ZM22 20a1.5 1.5 0 1 1-3 0V9.5a.5.5 0 0 1 .5-.5H21a1 1 0 0 1 1 1v10Z"/><path d="M12.751 6.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 7.3v-.5a.75.75 0 0 1 .751-.753ZM12.751 10.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 11.3v-.5a.75.75 0 0 1 .751-.753ZM4.751 14.047h10a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-10A.75.75 0 0 1 4 15.3v-.5a.75.75 0 0 1 .751-.753ZM4.75 18.047h7.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-7.5A.75.75 0 0 1 4 19.3v-.5a.75.75 0 0 1 .75-.753Z"/></g></svg>
+                                 </div>
+ 
+-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laravel News</h2>
+-
+-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+-                                    Laravel News is a community driven portal and newsletter aggregating all of the latest and most important news in the Laravel ecosystem, including new package releases and tutorials.
+-                                </p>
+-                            </div>
++                                <div class="pt-3 sm:pt-5">
++                                    <h2 class="text-xl font-semibold text-black dark:text-white">Laravel News</h2>
+ 
+-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
+-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+-                            </svg>
+-                        </a>
++                                    <p class="mt-4 text-sm/relaxed">
++                                        Laravel News is a community driven portal and newsletter aggregating all of the latest and most important news in the Laravel ecosystem, including new package releases and tutorials.
++                                    </p>
++                                </div>
+ 
+-                        <div class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
+-                            <div>
+-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
+-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
+-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64" />
++                                <svg class="size-6 shrink-0 self-center stroke-[#FF2D20]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
++                            </a>
++
++                            <div class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800">
++                                <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
++                                    <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
++                                        <g fill="#FF2D20">
++                                            <path
++                                                d="M16.597 12.635a.247.247 0 0 0-.08-.237 2.234 2.234 0 0 1-.769-1.68c.001-.195.03-.39.084-.578a.25.25 0 0 0-.09-.267 8.8 8.8 0 0 0-4.826-1.66.25.25 0 0 0-.268.181 2.5 2.5 0 0 1-2.4 1.824.045.045 0 0 0-.045.037 12.255 12.255 0 0 0-.093 3.86.251.251 0 0 0 .208.214c2.22.366 4.367 1.08 6.362 2.118a.252.252 0 0 0 .32-.079 10.09 10.09 0 0 0 1.597-3.733ZM13.616 17.968a.25.25 0 0 0-.063-.407A19.697 19.697 0 0 0 8.91 15.98a.25.25 0 0 0-.287.325c.151.455.334.898.548 1.328.437.827.981 1.594 1.619 2.28a.249.249 0 0 0 .32.044 29.13 29.13 0 0 0 2.506-1.99ZM6.303 14.105a.25.25 0 0 0 .265-.274 13.048 13.048 0 0 1 .205-4.045.062.062 0 0 0-.022-.07 2.5 2.5 0 0 1-.777-.982.25.25 0 0 0-.271-.149 11 11 0 0 0-5.6 2.815.255.255 0 0 0-.075.163c-.008.135-.02.27-.02.406.002.8.084 1.598.246 2.381a.25.25 0 0 0 .303.193 19.924 19.924 0 0 1 5.746-.438ZM9.228 20.914a.25.25 0 0 0 .1-.393 11.53 11.53 0 0 1-1.5-2.22 12.238 12.238 0 0 1-.91-2.465.248.248 0 0 0-.22-.187 18.876 18.876 0 0 0-5.69.33.249.249 0 0 0-.179.336c.838 2.142 2.272 4 4.132 5.353a.254.254 0 0 0 .15.048c1.41-.01 2.807-.282 4.117-.802ZM18.93 12.957l-.005-.008a.25.25 0 0 0-.268-.082 2.21 2.21 0 0 1-.41.081.25.25 0 0 0-.217.2c-.582 2.66-2.127 5.35-5.75 7.843a.248.248 0 0 0-.09.299.25.25 0 0 0 .065.091 28.703 28.703 0 0 0 2.662 2.12.246.246 0 0 0 .209.037c2.579-.701 4.85-2.242 6.456-4.378a.25.25 0 0 0 .048-.189 13.51 13.51 0 0 0-2.7-6.014ZM5.702 7.058a.254.254 0 0 0 .2-.165A2.488 2.488 0 0 1 7.98 5.245a.093.093 0 0 0 .078-.062 19.734 19.734 0 0 1 3.055-4.74.25.25 0 0 0-.21-.41 12.009 12.009 0 0 0-10.4 8.558.25.25 0 0 0 .373.281 12.912 12.912 0 0 1 4.826-1.814ZM10.773 22.052a.25.25 0 0 0-.28-.046c-.758.356-1.55.635-2.365.833a.25.25 0 0 0-.022.48c1.252.43 2.568.65 3.893.65.1 0 .2 0 .3-.008a.25.25 0 0 0 .147-.444c-.526-.424-1.1-.917-1.673-1.465ZM18.744 8.436a.249.249 0 0 0 .15.228 2.246 2.246 0 0 1 1.352 2.054c0 .337-.08.67-.23.972a.25.25 0 0 0 .042.28l.007.009a15.016 15.016 0 0 1 2.52 4.6.25.25 0 0 0 .37.132.25.25 0 0 0 .096-.114c.623-1.464.944-3.039.945-4.63a12.005 12.005 0 0 0-5.78-10.258.25.25 0 0 0-.373.274c.547 2.109.85 4.274.901 6.453ZM9.61 5.38a.25.25 0 0 0 .08.31c.34.24.616.561.8.935a.25.25 0 0 0 .3.127.631.631 0 0 1 .206-.034c2.054.078 4.036.772 5.69 1.991a.251.251 0 0 0 .267.024c.046-.024.093-.047.141-.067a.25.25 0 0 0 .151-.23A29.98 29.98 0 0 0 15.957.764a.25.25 0 0 0-.16-.164 11.924 11.924 0 0 0-2.21-.518.252.252 0 0 0-.215.076A22.456 22.456 0 0 0 9.61 5.38Z"
++                                            />
++                                        </g>
+                                     </svg>
+                                 </div>
+ 
+-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</h2>
++                                <div class="pt-3 sm:pt-5">
++                                    <h2 class="text-xl font-semibold text-black dark:text-white">Vibrant Ecosystem</h2>
+ 
+-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+-                                    Laravel's robust library of first-party tools and libraries, such as <a href="https://forge.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Forge</a>, <a href="https://vapor.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Vapor</a>, <a href="https://nova.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Nova</a>, and <a href="https://envoyer.io" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Envoyer</a> help you take your projects to the next level. Pair them with powerful open source libraries like <a href="https://laravel.com/docs/billing" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Cashier</a>, <a href="https://laravel.com/docs/dusk" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dusk</a>, <a href="https://laravel.com/docs/broadcasting" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Echo</a>, <a href="https://laravel.com/docs/horizon" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Horizon</a>, <a href="https://laravel.com/docs/sanctum" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Sanctum</a>, <a href="https://laravel.com/docs/telescope" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Telescope</a>, and more.
+-                                </p>
++                                    <p class="mt-4 text-sm/relaxed">
++                                        Laravel's robust library of first-party tools and libraries, such as <a href="https://forge.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Forge</a>, <a href="https://vapor.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Vapor</a>, <a href="https://nova.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Nova</a>, <a href="https://envoyer.io" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Envoyer</a>, and <a href="https://herd.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Herd</a> help you take your projects to the next level. Pair them with powerful open source libraries like <a href="https://laravel.com/docs/billing" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Cashier</a>, <a href="https://laravel.com/docs/dusk" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Dusk</a>, <a href="https://laravel.com/docs/broadcasting" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Echo</a>, <a href="https://laravel.com/docs/horizon" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Horizon</a>, <a href="https://laravel.com/docs/sanctum" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Sanctum</a>, <a href="https://laravel.com/docs/telescope" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Telescope</a>, and more.
++                                    </p>
++                                </div>
+                             </div>
+                         </div>
+-                    </div>
+-                </div>
+-
+-                <div class="flex justify-center mt-16 px-0 sm:items-center sm:justify-between">
+-                    <div class="text-center text-sm sm:text-left">
+-                        &nbsp;
+-                    </div>
++                    </main>
+ 
+-                    <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
++                    <footer class="py-16 text-center text-sm text-black dark:text-white/70">
+                         Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+-                    </div>
++                    </footer>
+                 </div>
+             </div>
+         </div>
+diff --git a/routes/api.php b/routes/api.php
+deleted file mode 100644
+index 889937e1..00000000
+--- a/routes/api.php
++++ /dev/null
+@@ -1,19 +0,0 @@
+-<?php
+-
+-use Illuminate\Http\Request;
+-use Illuminate\Support\Facades\Route;
+-
+-/*
+-|--------------------------------------------------------------------------
+-| API Routes
+-|--------------------------------------------------------------------------
+-|
+-| Here is where you can register API routes for your application. These
+-| routes are loaded by the RouteServiceProvider and all of them will
+-| be assigned to the "api" middleware group. Make something great!
+-|
+-*/
+-
+-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+-    return $request->user();
+-});
+diff --git a/routes/channels.php b/routes/channels.php
+deleted file mode 100644
+index 5d451e1f..00000000
+--- a/routes/channels.php
++++ /dev/null
+@@ -1,18 +0,0 @@
+-<?php
+-
+-use Illuminate\Support\Facades\Broadcast;
+-
+-/*
+-|--------------------------------------------------------------------------
+-| Broadcast Channels
+-|--------------------------------------------------------------------------
+-|
+-| Here you may register all of the event broadcasting channels that your
+-| application supports. The given channel authorization callbacks are
+-| used to check if an authenticated user can listen to the channel.
+-|
+-*/
+-
+-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
+-    return (int) $user->id === (int) $id;
+-});
+diff --git a/routes/console.php b/routes/console.php
+index e05f4c9a..eff2ed24 100644
+--- a/routes/console.php
++++ b/routes/console.php
+@@ -3,17 +3,6 @@
+ use Illuminate\Foundation\Inspiring;
+ use Illuminate\Support\Facades\Artisan;
+ 
+-/*
+-|--------------------------------------------------------------------------
+-| Console Routes
+-|--------------------------------------------------------------------------
+-|
+-| This file is where you may define all of your Closure based console
+-| commands. Each Closure is bound to a command instance allowing a
+-| simple approach to interacting with each command's IO methods.
+-|
+-*/
+-
+ Artisan::command('inspire', function () {
+     $this->comment(Inspiring::quote());
+-})->purpose('Display an inspiring quote');
++})->purpose('Display an inspiring quote')->hourly();
+diff --git a/routes/web.php b/routes/web.php
+index d259f33e..86a06c53 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@ -2,17 +2,6 @@
+ 
+ use Illuminate\Support\Facades\Route;
+ 
+-/*
+-|--------------------------------------------------------------------------
+-| Web Routes
+-|--------------------------------------------------------------------------
+-|
+-| Here is where you can register web routes for your application. These
+-| routes are loaded by the RouteServiceProvider and all of them will
+-| be assigned to the "web" middleware group. Make something great!
+-|
+-*/
+-
+ Route::get('/', function () {
+     return view('welcome');
+ });
+diff --git a/tests/CreatesApplication.php b/tests/CreatesApplication.php
+deleted file mode 100644
+index cc683011..00000000
+--- a/tests/CreatesApplication.php
++++ /dev/null
+@@ -1,21 +0,0 @@
+-<?php
+-
+-namespace Tests;
+-
+-use Illuminate\Contracts\Console\Kernel;
+-use Illuminate\Foundation\Application;
+-
+-trait CreatesApplication
+-{
+-    /**
+-     * Creates the application.
+-     */
+-    public function createApplication(): Application
+-    {
+-        $app = require __DIR__.'/../bootstrap/app.php';
+-
+-        $app->make(Kernel::class)->bootstrap();
+-
+-        return $app;
+-    }
+-}
+diff --git a/tests/TestCase.php b/tests/TestCase.php
+index 2932d4a6..fe1ffc2f 100644
+--- a/tests/TestCase.php
++++ b/tests/TestCase.php
+@@ -6,5 +6,5 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+ 
+ abstract class TestCase extends BaseTestCase
+ {
+-    use CreatesApplication;
++    //
+ }
