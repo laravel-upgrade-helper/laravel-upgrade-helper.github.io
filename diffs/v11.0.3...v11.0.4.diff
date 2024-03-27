@@ -1,0 +1,79 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 78e0e75e..df80d88c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.2...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.3...11.x)
++
++## [v11.0.3](https://github.com/laravel/laravel/compare/v11.0.2...v11.0.3) - 2024-03-14
++
++* [11.x] Revert collation change by [@driesvints](https://github.com/driesvints) in https://github.com/laravel/laravel/pull/6372
+ 
+ ## [v11.0.2](https://github.com/laravel/laravel/compare/v11.0.1...v11.0.2) - 2024-03-13
+ 
+diff --git a/config/cache.php b/config/cache.php
+index 3eb95d10..38680919 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -41,8 +41,8 @@ return [
+         'database' => [
+             'driver' => 'database',
+             'table' => env('DB_CACHE_TABLE', 'cache'),
+-            'connection' => env('DB_CACHE_CONNECTION', null),
+-            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION', null),
++            'connection' => env('DB_CACHE_CONNECTION'),
++            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'),
+         ],
+ 
+         'file' => [
+diff --git a/config/queue.php b/config/queue.php
+index 4f689e9c..116bd8d0 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -36,10 +36,10 @@ return [
+ 
+         'database' => [
+             'driver' => 'database',
+-            'connection' => env('DB_QUEUE_CONNECTION', null),
++            'connection' => env('DB_QUEUE_CONNECTION'),
+             'table' => env('DB_QUEUE_TABLE', 'jobs'),
+             'queue' => env('DB_QUEUE', 'default'),
+-            'retry_after' => env('DB_QUEUE_RETRY_AFTER', 90),
++            'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),
+             'after_commit' => false,
+         ],
+ 
+@@ -47,7 +47,7 @@ return [
+             'driver' => 'beanstalkd',
+             'host' => env('BEANSTALKD_QUEUE_HOST', 'localhost'),
+             'queue' => env('BEANSTALKD_QUEUE', 'default'),
+-            'retry_after' => env('BEANSTALKD_QUEUE_RETRY_AFTER', 90),
++            'retry_after' => (int) env('BEANSTALKD_QUEUE_RETRY_AFTER', 90),
+             'block_for' => 0,
+             'after_commit' => false,
+         ],
+@@ -67,7 +67,7 @@ return [
+             'driver' => 'redis',
+             'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
+             'queue' => env('REDIS_QUEUE', 'default'),
+-            'retry_after' => env('REDIS_QUEUE_RETRY_AFTER', 90),
++            'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
+             'block_for' => null,
+             'after_commit' => false,
+         ],
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index abe98dc3..a9898e33 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -140,7 +140,7 @@
+                                 <svg class="size-6 shrink-0 self-center stroke-[#FF2D20]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
+                             </a>
+ 
+-                            <div class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800">
++                            <div class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]">
+                                 <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
+                                     <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                         <g fill="#FF2D20">
