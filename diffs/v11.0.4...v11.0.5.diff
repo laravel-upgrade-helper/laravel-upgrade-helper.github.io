@@ -1,0 +1,32 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index df80d88c..b1908a1b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,13 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.3...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.4...11.x)
++
++## [v11.0.4](https://github.com/laravel/laravel/compare/v11.0.3...v11.0.4) - 2024-03-15
++
++* [11.x] Removed useless null parameter for env helper (cache.php) by [@siarheipashkevich](https://github.com/siarheipashkevich) in https://github.com/laravel/laravel/pull/6374
++* [11.x] Removed useless null parameter for env helper (queue.php) by [@siarheipashkevich](https://github.com/siarheipashkevich) in https://github.com/laravel/laravel/pull/6373
++* [11.x] Fix retry_after to be an integer by [@driesvints](https://github.com/driesvints) in https://github.com/laravel/laravel/pull/6377
++* [11.x] Fix on hover animation and ring by [@michaelnabil230](https://github.com/michaelnabil230) in https://github.com/laravel/laravel/pull/6376
+ 
+ ## [v11.0.3](https://github.com/laravel/laravel/compare/v11.0.2...v11.0.3) - 2024-03-14
+ 
+diff --git a/composer.json b/composer.json
+index 8728b94b..52c9f418 100644
+--- a/composer.json
++++ b/composer.json
+@@ -15,7 +15,7 @@
+         "laravel/sail": "^1.26",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.0",
+-        "phpunit/phpunit": "^10.5",
++        "phpunit/phpunit": "^11.0",
+         "spatie/laravel-ignition": "^2.4"
+     },
+     "autoload": {
