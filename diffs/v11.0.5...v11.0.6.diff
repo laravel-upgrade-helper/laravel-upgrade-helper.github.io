@@ -1,0 +1,60 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b1908a1b..10640c37 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.4...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.5...11.x)
++
++## [v11.0.5](https://github.com/laravel/laravel/compare/v11.0.4...v11.0.5) - 2024-03-26
++
++* [11.x] Use PHPUnit v11 by [@philbates35](https://github.com/philbates35) in https://github.com/laravel/laravel/pull/6385
+ 
+ ## [v11.0.4](https://github.com/laravel/laravel/compare/v11.0.3...v11.0.4) - 2024-03-15
+ 
+diff --git a/composer.json b/composer.json
+index 52c9f418..15cebc15 100644
+--- a/composer.json
++++ b/composer.json
+@@ -15,7 +15,7 @@
+         "laravel/sail": "^1.26",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.0",
+-        "phpunit/phpunit": "^11.0",
++        "phpunit/phpunit": "^11.0.1",
+         "spatie/laravel-ignition": "^2.4"
+     },
+     "autoload": {
+diff --git a/config/mail.php b/config/mail.php
+index a4a02fe4..86666599 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -82,6 +82,14 @@ return [
+             ],
+         ],
+ 
++        'roundrobin' => [
++            'transport' => 'roundrobin',
++            'mailers' => [
++                'ses',
++                'postmark',
++            ],
++        ],
++
+     ],
+ 
+     /*
+diff --git a/config/session.php b/config/session.php
+index 0e22ee41..f0b6541e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -125,7 +125,6 @@ return [
+     | the framework. Typically, you should not need to change this value
+     | since doing so does not grant a meaningful security improvement.
+     |
+-    |
+     */
+ 
+     'cookie' => env(
