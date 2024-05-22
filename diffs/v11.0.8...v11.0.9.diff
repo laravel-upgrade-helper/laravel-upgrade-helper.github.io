@@ -1,0 +1,29 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4baed491..f855d33f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.7...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.8...11.x)
++
++## [v11.0.8](https://github.com/laravel/laravel/compare/v11.0.7...v11.0.8) - 2024-05-13
++
++* Add .phpactor.json to .gitignore by [@princejohnsantillan](https://github.com/princejohnsantillan) in https://github.com/laravel/laravel/pull/6400
+ 
+ ## [v11.0.7](https://github.com/laravel/laravel/compare/v11.0.6...v11.0.7) - 2024-05-03
+ 
+diff --git a/config/mail.php b/config/mail.php
+index 07342fc4..df13d3df 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -46,7 +46,7 @@ return [
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+             'timeout' => null,
+-            'local_domain' => env('MAIL_EHLO_DOMAIN'),
++            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+         ],
+ 
+         'ses' => [
