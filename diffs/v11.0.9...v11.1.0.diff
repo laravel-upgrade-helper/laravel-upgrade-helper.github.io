@@ -1,0 +1,39 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f855d33f..38e574cd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.8...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.9...11.x)
++
++## [v11.0.9](https://github.com/laravel/laravel/compare/v11.0.8...v11.0.9) - 2024-05-16
++
++* Updated SMTP mail config to use a valid EHLO domain by [@rcerljenko](https://github.com/rcerljenko) in https://github.com/laravel/laravel/pull/6402
+ 
+ ## [v11.0.8](https://github.com/laravel/laravel/compare/v11.0.7...v11.0.8) - 2024-05-13
+ 
+diff --git a/composer.json b/composer.json
+index 15cebc15..4b7e1832 100644
+--- a/composer.json
++++ b/composer.json
+@@ -6,7 +6,7 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.2",
+-        "laravel/framework": "^11.0",
++        "laravel/framework": "^11.9",
+         "laravel/tinker": "^2.9"
+     },
+     "require-dev": {
+@@ -15,8 +15,7 @@
+         "laravel/sail": "^1.26",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.0",
+-        "phpunit/phpunit": "^11.0.1",
+-        "spatie/laravel-ignition": "^2.4"
++        "phpunit/phpunit": "^11.0.1"
+     },
+     "autoload": {
+         "psr-4": {

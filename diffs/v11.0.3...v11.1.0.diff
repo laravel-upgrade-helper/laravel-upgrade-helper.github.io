@@ -1,0 +1,227 @@
+diff --git a/.gitignore b/.gitignore
+index 7fe978f8..46340a60 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -8,6 +8,7 @@
+ .env
+ .env.backup
+ .env.production
++.phpactor.json
+ .phpunit.result.cache
+ Homestead.json
+ Homestead.yaml
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 78e0e75e..38e574cd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,38 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.2...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.9...11.x)
++
++## [v11.0.9](https://github.com/laravel/laravel/compare/v11.0.8...v11.0.9) - 2024-05-16
++
++* Updated SMTP mail config to use a valid EHLO domain by [@rcerljenko](https://github.com/rcerljenko) in https://github.com/laravel/laravel/pull/6402
++
++## [v11.0.8](https://github.com/laravel/laravel/compare/v11.0.7...v11.0.8) - 2024-05-13
++
++* Add .phpactor.json to .gitignore by [@princejohnsantillan](https://github.com/princejohnsantillan) in https://github.com/laravel/laravel/pull/6400
++
++## [v11.0.7](https://github.com/laravel/laravel/compare/v11.0.6...v11.0.7) - 2024-05-03
++
++* Remove obsolete driver option by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6395
++
++## [v11.0.6](https://github.com/laravel/laravel/compare/v11.0.5...v11.0.6) - 2024-04-09
++
++* Fix PHPUnit constraint by [@szepeviktor](https://github.com/szepeviktor) in https://github.com/laravel/laravel/pull/6389
++* [11.x] Add missing roundrobin transport driver config by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6392
++
++## [v11.0.5](https://github.com/laravel/laravel/compare/v11.0.4...v11.0.5) - 2024-03-26
++
++* [11.x] Use PHPUnit v11 by [@philbates35](https://github.com/philbates35) in https://github.com/laravel/laravel/pull/6385
++
++## [v11.0.4](https://github.com/laravel/laravel/compare/v11.0.3...v11.0.4) - 2024-03-15
++
++* [11.x] Removed useless null parameter for env helper (cache.php) by [@siarheipashkevich](https://github.com/siarheipashkevich) in https://github.com/laravel/laravel/pull/6374
++* [11.x] Removed useless null parameter for env helper (queue.php) by [@siarheipashkevich](https://github.com/siarheipashkevich) in https://github.com/laravel/laravel/pull/6373
++* [11.x] Fix retry_after to be an integer by [@driesvints](https://github.com/driesvints) in https://github.com/laravel/laravel/pull/6377
++* [11.x] Fix on hover animation and ring by [@michaelnabil230](https://github.com/michaelnabil230) in https://github.com/laravel/laravel/pull/6376
++
++## [v11.0.3](https://github.com/laravel/laravel/compare/v11.0.2...v11.0.3) - 2024-03-14
++
++* [11.x] Revert collation change by [@driesvints](https://github.com/driesvints) in https://github.com/laravel/laravel/pull/6372
+ 
+ ## [v11.0.2](https://github.com/laravel/laravel/compare/v11.0.1...v11.0.2) - 2024-03-13
+ 
+diff --git a/composer.json b/composer.json
+index 8728b94b..4b7e1832 100644
+--- a/composer.json
++++ b/composer.json
+@@ -6,7 +6,7 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.2",
+-        "laravel/framework": "^11.0",
++        "laravel/framework": "^11.9",
+         "laravel/tinker": "^2.9"
+     },
+     "require-dev": {
+@@ -15,8 +15,7 @@
+         "laravel/sail": "^1.26",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.0",
+-        "phpunit/phpunit": "^10.5",
+-        "spatie/laravel-ignition": "^2.4"
++        "phpunit/phpunit": "^11.0.1"
+     },
+     "autoload": {
+         "psr-4": {
+diff --git a/config/cache.php b/config/cache.php
+index 3eb95d10..6b57b183 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -26,7 +26,7 @@ return [
+     | well as their drivers. You may even define multiple stores for the
+     | same cache driver to group types of items stored in your caches.
+     |
+-    | Supported drivers: "apc", "array", "database", "file", "memcached",
++    | Supported drivers: "array", "database", "file", "memcached",
+     |                    "redis", "dynamodb", "octane", "null"
+     |
+     */
+@@ -41,8 +41,8 @@ return [
+         'database' => [
+             'driver' => 'database',
+             'table' => env('DB_CACHE_TABLE', 'cache'),
+-            'connection' => env('DB_CACHE_CONNECTION', null),
+-            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION', null),
++            'connection' => env('DB_CACHE_CONNECTION'),
++            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'),
+         ],
+ 
+         'file' => [
+diff --git a/config/mail.php b/config/mail.php
+index a4a02fe4..df13d3df 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -30,7 +30,8 @@ return [
+     | your mailers below. You may also add additional mailers if needed.
+     |
+     | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+-    |            "postmark", "log", "array", "failover", "roundrobin"
++    |            "postmark", "resend", "log", "array",
++    |            "failover", "roundrobin"
+     |
+     */
+ 
+@@ -45,7 +46,7 @@ return [
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+             'timeout' => null,
+-            'local_domain' => env('MAIL_EHLO_DOMAIN'),
++            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+         ],
+ 
+         'ses' => [
+@@ -60,6 +61,10 @@ return [
+             // ],
+         ],
+ 
++        'resend' => [
++            'transport' => 'resend',
++        ],
++
+         'sendmail' => [
+             'transport' => 'sendmail',
+             'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+@@ -82,6 +87,14 @@ return [
+             ],
+         ],
+ 
++        'roundrobin' => [
++            'transport' => 'roundrobin',
++            'mailers' => [
++                'ses',
++                'postmark',
++            ],
++        ],
++
+     ],
+ 
+     /*
+diff --git a/config/queue.php b/config/queue.php
+index 4f689e9c..116bd8d0 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -36,10 +36,10 @@ return [
+ 
+         'database' => [
+             'driver' => 'database',
+-            'connection' => env('DB_QUEUE_CONNECTION', null),
++            'connection' => env('DB_QUEUE_CONNECTION'),
+             'table' => env('DB_QUEUE_TABLE', 'jobs'),
+             'queue' => env('DB_QUEUE', 'default'),
+-            'retry_after' => env('DB_QUEUE_RETRY_AFTER', 90),
++            'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),
+             'after_commit' => false,
+         ],
+ 
+@@ -47,7 +47,7 @@ return [
+             'driver' => 'beanstalkd',
+             'host' => env('BEANSTALKD_QUEUE_HOST', 'localhost'),
+             'queue' => env('BEANSTALKD_QUEUE', 'default'),
+-            'retry_after' => env('BEANSTALKD_QUEUE_RETRY_AFTER', 90),
++            'retry_after' => (int) env('BEANSTALKD_QUEUE_RETRY_AFTER', 90),
+             'block_for' => 0,
+             'after_commit' => false,
+         ],
+@@ -67,7 +67,7 @@ return [
+             'driver' => 'redis',
+             'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
+             'queue' => env('REDIS_QUEUE', 'default'),
+-            'retry_after' => env('REDIS_QUEUE_RETRY_AFTER', 90),
++            'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
+             'block_for' => null,
+             'after_commit' => false,
+         ],
+diff --git a/config/services.php b/config/services.php
+index 6bb68f6a..27a36175 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -24,6 +24,10 @@ return [
+         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+     ],
+ 
++    'resend' => [
++        'key' => env('RESEND_KEY'),
++    ],
++
+     'slack' => [
+         'notifications' => [
+             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
+diff --git a/config/session.php b/config/session.php
+index 0e22ee41..f0b6541e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -125,7 +125,6 @@ return [
+     | the framework. Typically, you should not need to change this value
+     | since doing so does not grant a meaningful security improvement.
+     |
+-    |
+     */
+ 
+     'cookie' => env(
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index abe98dc3..a9898e33 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -140,7 +140,7 @@
+                                 <svg class="size-6 shrink-0 self-center stroke-[#FF2D20]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
+                             </a>
+ 
+-                            <div class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800">
++                            <div class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]">
+                                 <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
+                                     <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                         <g fill="#FF2D20">
