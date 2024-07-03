@@ -1,0 +1,89 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f855d33f..508f3acd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,18 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.8...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.1.1...11.x)
++
++## [v11.1.1](https://github.com/laravel/laravel/compare/v11.1.0...v11.1.1) - 2024-06-04
++
++* Format the first letter of `drivers`  to lowercase by [@maru0914](https://github.com/maru0914) in https://github.com/laravel/laravel/pull/6413
++
++## [v11.1.0](https://github.com/laravel/laravel/compare/v11.0.9...v11.1.0) - 2024-05-28
++
++* [11.x] Removes `--dev` dependencies by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6406
++
++## [v11.0.9](https://github.com/laravel/laravel/compare/v11.0.8...v11.0.9) - 2024-05-16
++
++* Updated SMTP mail config to use a valid EHLO domain by [@rcerljenko](https://github.com/rcerljenko) in https://github.com/laravel/laravel/pull/6402
+ 
+ ## [v11.0.8](https://github.com/laravel/laravel/compare/v11.0.7...v11.0.8) - 2024-05-13
+ 
+diff --git a/composer.json b/composer.json
+index 15cebc15..4b7e1832 100644
+--- a/composer.json
++++ b/composer.json
+@@ -6,7 +6,7 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.2",
+-        "laravel/framework": "^11.0",
++        "laravel/framework": "^11.9",
+         "laravel/tinker": "^2.9"
+     },
+     "require-dev": {
+@@ -15,8 +15,7 @@
+         "laravel/sail": "^1.26",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.0",
+-        "phpunit/phpunit": "^11.0.1",
+-        "spatie/laravel-ignition": "^2.4"
++        "phpunit/phpunit": "^11.0.1"
+     },
+     "autoload": {
+         "psr-4": {
+diff --git a/config/cache.php b/config/cache.php
+index 6b57b183..925f7d2e 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -40,9 +40,10 @@ return [
+ 
+         'database' => [
+             'driver' => 'database',
+-            'table' => env('DB_CACHE_TABLE', 'cache'),
+             'connection' => env('DB_CACHE_CONNECTION'),
++            'table' => env('DB_CACHE_TABLE', 'cache'),
+             'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'),
++            'lock_table' => env('DB_CACHE_LOCK_TABLE'),
+         ],
+ 
+         'file' => [
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 44fe9c82..c5f244d7 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -24,7 +24,7 @@ return [
+     | may even configure multiple disks for the same driver. Examples for
+     | most supported storage drivers are configured here for reference.
+     |
+-    | Supported Drivers: "local", "ftp", "sftp", "s3"
++    | Supported drivers: "local", "ftp", "sftp", "s3"
+     |
+     */
+ 
+diff --git a/config/logging.php b/config/logging.php
+index d526b64d..8d94292b 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -45,7 +45,7 @@ return [
+     | utilizes the Monolog PHP logging library, which includes a variety
+     | of powerful log handlers and formatters that you're free to use.
+     |
+-    | Available Drivers: "single", "daily", "slack", "syslog",
++    | Available drivers: "single", "daily", "slack", "syslog",
+     |                    "errorlog", "monolog", "custom", "stack"
+     |
+     */
