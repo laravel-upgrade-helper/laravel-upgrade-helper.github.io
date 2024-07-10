@@ -1,0 +1,189 @@
+diff --git a/.env.example b/.env.example
+index 7b49625a..2a4a8b78 100644
+--- a/.env.example
++++ b/.env.example
+@@ -10,7 +10,7 @@ APP_FALLBACK_LOCALE=en
+ APP_FAKER_LOCALE=en_US
+ 
+ APP_MAINTENANCE_DRIVER=file
+-APP_MAINTENANCE_STORE=database
++# APP_MAINTENANCE_STORE=database
+ 
+ BCRYPT_ROUNDS=12
+ 
+diff --git a/.gitignore b/.gitignore
+index 7fe978f8..46340a60 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -8,6 +8,7 @@
+ .env
+ .env.backup
+ .env.production
++.phpactor.json
+ .phpunit.result.cache
+ Homestead.json
+ Homestead.yaml
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 10640c37..1cbdbeac 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,35 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.0.5...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.1.2...11.x)
++
++## [v11.1.2](https://github.com/laravel/laravel/compare/v11.1.1...v11.1.2) - 2024-06-20
++
++* Expose lock table name by [@nhedger](https://github.com/nhedger) in https://github.com/laravel/laravel/pull/6423
++
++## [v11.1.1](https://github.com/laravel/laravel/compare/v11.1.0...v11.1.1) - 2024-06-04
++
++* Format the first letter of `drivers`  to lowercase by [@maru0914](https://github.com/maru0914) in https://github.com/laravel/laravel/pull/6413
++
++## [v11.1.0](https://github.com/laravel/laravel/compare/v11.0.9...v11.1.0) - 2024-05-28
++
++* [11.x] Removes `--dev` dependencies by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6406
++
++## [v11.0.9](https://github.com/laravel/laravel/compare/v11.0.8...v11.0.9) - 2024-05-16
++
++* Updated SMTP mail config to use a valid EHLO domain by [@rcerljenko](https://github.com/rcerljenko) in https://github.com/laravel/laravel/pull/6402
++
++## [v11.0.8](https://github.com/laravel/laravel/compare/v11.0.7...v11.0.8) - 2024-05-13
++
++* Add .phpactor.json to .gitignore by [@princejohnsantillan](https://github.com/princejohnsantillan) in https://github.com/laravel/laravel/pull/6400
++
++## [v11.0.7](https://github.com/laravel/laravel/compare/v11.0.6...v11.0.7) - 2024-05-03
++
++* Remove obsolete driver option by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6395
++
++## [v11.0.6](https://github.com/laravel/laravel/compare/v11.0.5...v11.0.6) - 2024-04-09
++
++* Fix PHPUnit constraint by [@szepeviktor](https://github.com/szepeviktor) in https://github.com/laravel/laravel/pull/6389
++* [11.x] Add missing roundrobin transport driver config by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6392
+ 
+ ## [v11.0.5](https://github.com/laravel/laravel/compare/v11.0.4...v11.0.5) - 2024-03-26
+ 
+diff --git a/composer.json b/composer.json
+index 15cebc15..4b7e1832 100644
+--- a/composer.json
++++ b/composer.json
+@@ -6,7 +6,7 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.2",
+-        "laravel/framework": "^11.0",
++        "laravel/framework": "^11.9",
+         "laravel/tinker": "^2.9"
+     },
+     "require-dev": {
+@@ -15,8 +15,7 @@
+         "laravel/sail": "^1.26",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.0",
+-        "phpunit/phpunit": "^11.0.1",
+-        "spatie/laravel-ignition": "^2.4"
++        "phpunit/phpunit": "^11.0.1"
+     },
+     "autoload": {
+         "psr-4": {
+diff --git a/config/cache.php b/config/cache.php
+index 38680919..925f7d2e 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -26,7 +26,7 @@ return [
+     | well as their drivers. You may even define multiple stores for the
+     | same cache driver to group types of items stored in your caches.
+     |
+-    | Supported drivers: "apc", "array", "database", "file", "memcached",
++    | Supported drivers: "array", "database", "file", "memcached",
+     |                    "redis", "dynamodb", "octane", "null"
+     |
+     */
+@@ -40,9 +40,10 @@ return [
+ 
+         'database' => [
+             'driver' => 'database',
+-            'table' => env('DB_CACHE_TABLE', 'cache'),
+             'connection' => env('DB_CACHE_CONNECTION'),
++            'table' => env('DB_CACHE_TABLE', 'cache'),
+             'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'),
++            'lock_table' => env('DB_CACHE_LOCK_TABLE'),
+         ],
+ 
+         'file' => [
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 44fe9c82..c5f244d7 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -24,7 +24,7 @@ return [
+     | may even configure multiple disks for the same driver. Examples for
+     | most supported storage drivers are configured here for reference.
+     |
+-    | Supported Drivers: "local", "ftp", "sftp", "s3"
++    | Supported drivers: "local", "ftp", "sftp", "s3"
+     |
+     */
+ 
+diff --git a/config/logging.php b/config/logging.php
+index d526b64d..8d94292b 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -45,7 +45,7 @@ return [
+     | utilizes the Monolog PHP logging library, which includes a variety
+     | of powerful log handlers and formatters that you're free to use.
+     |
+-    | Available Drivers: "single", "daily", "slack", "syslog",
++    | Available drivers: "single", "daily", "slack", "syslog",
+     |                    "errorlog", "monolog", "custom", "stack"
+     |
+     */
+diff --git a/config/mail.php b/config/mail.php
+index 86666599..df13d3df 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -30,7 +30,8 @@ return [
+     | your mailers below. You may also add additional mailers if needed.
+     |
+     | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+-    |            "postmark", "log", "array", "failover", "roundrobin"
++    |            "postmark", "resend", "log", "array",
++    |            "failover", "roundrobin"
+     |
+     */
+ 
+@@ -45,7 +46,7 @@ return [
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+             'timeout' => null,
+-            'local_domain' => env('MAIL_EHLO_DOMAIN'),
++            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+         ],
+ 
+         'ses' => [
+@@ -60,6 +61,10 @@ return [
+             // ],
+         ],
+ 
++        'resend' => [
++            'transport' => 'resend',
++        ],
++
+         'sendmail' => [
+             'transport' => 'sendmail',
+             'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+diff --git a/config/services.php b/config/services.php
+index 6bb68f6a..27a36175 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -24,6 +24,10 @@ return [
+         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+     ],
+ 
++    'resend' => [
++        'key' => env('RESEND_KEY'),
++    ],
++
+     'slack' => [
+         'notifications' => [
+             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
