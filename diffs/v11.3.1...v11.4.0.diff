@@ -1,0 +1,131 @@
+diff --git a/.github/workflows/issues.yml b/.github/workflows/issues.yml
+index 9634a0ed..230257c2 100644
+--- a/.github/workflows/issues.yml
++++ b/.github/workflows/issues.yml
+@@ -1,4 +1,4 @@
+-name: issues
++name: Issues
+ 
+ on:
+   issues:
+diff --git a/.github/workflows/pull-requests.yml b/.github/workflows/pull-requests.yml
+index 18b32b32..6f9f97ea 100644
+--- a/.github/workflows/pull-requests.yml
++++ b/.github/workflows/pull-requests.yml
+@@ -1,4 +1,4 @@
+-name: pull requests
++name: Pull Requests
+ 
+ on:
+   pull_request_target:
+diff --git a/.github/workflows/update-changelog.yml b/.github/workflows/update-changelog.yml
+index ebda6206..70352331 100644
+--- a/.github/workflows/update-changelog.yml
++++ b/.github/workflows/update-changelog.yml
+@@ -1,4 +1,4 @@
+-name: update changelog
++name: Update Changelog
+ 
+ on:
+   release:
+diff --git a/.gitignore b/.gitignore
+index c3ea31b2..bec2973a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -18,5 +18,6 @@ npm-debug.log
+ yarn-error.log
+ /.fleet
+ /.idea
++/.nova
+ /.vscode
+ /.zed
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 07fa74ce..9506da79 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,22 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.3.0...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.3.3...11.x)
++
++## [v11.3.3](https://github.com/laravel/laravel/compare/v11.3.2...v11.3.3) - 2024-11-18
++
++* Inconsistency in Github action names by [@amirbabaeii](https://github.com/amirbabaeii) in https://github.com/laravel/laravel/pull/6478
++* Add schema property to enhance autocompletion for composer.json by [@octoper](https://github.com/octoper) in https://github.com/laravel/laravel/pull/6484
++* Update .gitignore by [@EmranMR](https://github.com/EmranMR) in https://github.com/laravel/laravel/pull/6486
++* [11.x] Bump framework version by [@PerryvanderMeer](https://github.com/PerryvanderMeer) in https://github.com/laravel/laravel/pull/6490
++* [11.x] match `HidesAttributes` docblocks by [@browner12](https://github.com/browner12) in https://github.com/laravel/laravel/pull/6495
++
++## [v11.3.2](https://github.com/laravel/laravel/compare/v11.3.1...v11.3.2) - 2024-10-21
++
++* Fixes pail timing out after an hour by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6473
++
++## [v11.3.1](https://github.com/laravel/laravel/compare/v11.3.0...v11.3.1) - 2024-10-15
++
++**Full Changelog**: https://github.com/laravel/laravel/compare/v11.3.0...v11.3.1
+ 
+ ## [v11.3.0](https://github.com/laravel/laravel/compare/v11.2.1...v11.3.0) - 2024-10-14
+ 
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 3dfbd80e..749c7b77 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -15,7 +15,7 @@ class User extends Authenticatable
+     /**
+      * The attributes that are mass assignable.
+      *
+-     * @var array<int, string>
++     * @var list<string>
+      */
+     protected $fillable = [
+         'name',
+@@ -26,7 +26,7 @@ class User extends Authenticatable
+     /**
+      * The attributes that should be hidden for serialization.
+      *
+-     * @var array<int, string>
++     * @var list<string>
+      */
+     protected $hidden = [
+         'password',
+diff --git a/composer.json b/composer.json
+index 143084f5..60681e63 100644
+--- a/composer.json
++++ b/composer.json
+@@ -1,4 +1,5 @@
+ {
++    "$schema": "https://getcomposer.org/schema.json",
+     "name": "laravel/laravel",
+     "type": "project",
+     "description": "The skeleton application for the Laravel framework.",
+@@ -6,7 +7,7 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.2",
+-        "laravel/framework": "^11.9",
++        "laravel/framework": "^11.31",
+         "laravel/tinker": "^2.9"
+     },
+     "require-dev": {
+@@ -48,7 +49,7 @@
+         ],
+         "dev": [
+             "Composer\\Config::disableProcessTimeout",
+-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail\" \"npm run dev\" --names=server,queue,logs,vite"
++            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+         ]
+     },
+     "extra": {
+diff --git a/package.json b/package.json
+index c38623a9..0d104724 100644
+--- a/package.json
++++ b/package.json
+@@ -12,6 +12,6 @@
+         "laravel-vite-plugin": "^1.0",
+         "postcss": "^8.4.47",
+         "tailwindcss": "^3.4.13",
+-        "vite": "^5.0"
++        "vite": "^6.0"
+     }
+ }
