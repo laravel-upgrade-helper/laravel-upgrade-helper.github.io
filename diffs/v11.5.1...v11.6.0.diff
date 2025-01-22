@@ -1,0 +1,62 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 88e0c187..3b772b2c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,13 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.5.0...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.5.1...11.x)
++
++## [v11.5.1](https://github.com/laravel/laravel/compare/v11.5.0...v11.5.1) - 2025-01-10
++
++* Update .gitignore to not ignore auth.json in the lang directory. by [@Tjoosten](https://github.com/Tjoosten) in https://github.com/laravel/laravel/pull/6515
++* Adding PHP 8.4 to the tests matrix by [@mathiasgrimm](https://github.com/mathiasgrimm) in https://github.com/laravel/laravel/pull/6516
++* fix css whitespace invalid-calc by [@tvarwig](https://github.com/tvarwig) in https://github.com/laravel/laravel/pull/6517
++* [11.x] Fix invalid tailwindcss class by [@Jubeki](https://github.com/Jubeki) in https://github.com/laravel/laravel/pull/6518
+ 
+ ## [v11.5.0](https://github.com/laravel/laravel/compare/v11.4.0...v11.5.0) - 2024-12-13
+ 
+diff --git a/config/filesystems.php b/config/filesystems.php
+index b564035a..3d671bd9 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -35,6 +35,7 @@ return [
+             'root' => storage_path('app/private'),
+             'serve' => true,
+             'throw' => false,
++            'report' => false,
+         ],
+ 
+         'public' => [
+@@ -43,6 +44,7 @@ return [
+             'url' => env('APP_URL').'/storage',
+             'visibility' => 'public',
+             'throw' => false,
++            'report' => false,
+         ],
+ 
+         's3' => [
+@@ -55,6 +57,7 @@ return [
+             'endpoint' => env('AWS_ENDPOINT'),
+             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+             'throw' => false,
++            'report' => false,
+         ],
+ 
+     ],
+diff --git a/public/.htaccess b/public/.htaccess
+index 3aec5e27..b574a597 100644
+--- a/public/.htaccess
++++ b/public/.htaccess
+@@ -9,6 +9,10 @@
+     RewriteCond %{HTTP:Authorization} .
+     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+ 
++    # Handle X-XSRF-Token Header
++    RewriteCond %{HTTP:x-xsrf-token} .
++    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
++
+     # Redirect Trailing Slashes If Not A Folder...
+     RewriteCond %{REQUEST_FILENAME} !-d
+     RewriteCond %{REQUEST_URI} (.+)/$
