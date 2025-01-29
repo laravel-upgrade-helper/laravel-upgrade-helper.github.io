@@ -1,0 +1,55 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3b772b2c..040d4bd1 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v11.5.1...11.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v11.6.0...11.x)
++
++## [v11.6.0](https://github.com/laravel/laravel/compare/v11.5.1...v11.6.0) - 2025-01-21
++
++* Preserve X-Xsrf-Token header from .htaccess by [@thecodeholic](https://github.com/thecodeholic) in https://github.com/laravel/laravel/pull/6520
+ 
+ ## [v11.5.1](https://github.com/laravel/laravel/compare/v11.5.0...v11.5.1) - 2025-01-10
+ 
+diff --git a/config/session.php b/config/session.php
+index f0b6541e..ba0aa60b 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -32,7 +32,7 @@ return [
+     |
+     */
+ 
+-    'lifetime' => env('SESSION_LIFETIME', 120),
++    'lifetime' => (int) env('SESSION_LIFETIME', 120),
+ 
+     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
+ 
+diff --git a/package.json b/package.json
+index 0d104724..e32a8628 100644
+--- a/package.json
++++ b/package.json
+@@ -9,9 +9,9 @@
+         "autoprefixer": "^10.4.20",
+         "axios": "^1.7.4",
+         "concurrently": "^9.0.1",
+-        "laravel-vite-plugin": "^1.0",
++        "laravel-vite-plugin": "^1.2.0",
+         "postcss": "^8.4.47",
+         "tailwindcss": "^3.4.13",
+-        "vite": "^6.0"
++        "vite": "^6.0.11"
+     }
+ }
+diff --git a/routes/console.php b/routes/console.php
+index eff2ed24..3c9adf1a 100644
+--- a/routes/console.php
++++ b/routes/console.php
+@@ -5,4 +5,4 @@ use Illuminate\Support\Facades\Artisan;
+ 
+ Artisan::command('inspire', function () {
+     $this->comment(Inspiring::quote());
+-})->purpose('Display an inspiring quote')->hourly();
++})->purpose('Display an inspiring quote');
