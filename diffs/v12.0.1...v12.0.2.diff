@@ -1,0 +1,41 @@
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index 769390bf..e43d40dd 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -44,4 +44,4 @@ jobs:
+         run: php artisan key:generate
+ 
+       - name: Execute tests
+-        run: vendor/bin/phpunit
++        run: php artisan test
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 42dc426e..9a10609a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.0...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.1...12.x)
++
++## [v12.0.1](https://github.com/laravel/laravel/compare/v12.0.0...v12.0.1) - 2025-02-24
++
++* [12.x] prefer stable stability by [@pataar](https://github.com/pataar) in https://github.com/laravel/laravel/pull/6548
+ 
+ ## [v12.0.0 (2025-??-??)](https://github.com/laravel/laravel/compare/v11.0.2...v12.0.0)
+ 
+diff --git a/routes/console.php b/routes/console.php
+index 3c9adf1a..19cef702 100644
+--- a/routes/console.php
++++ b/routes/console.php
+@@ -1,8 +1,10 @@
+ <?php
+ 
++use Illuminate\Foundation\Console\ClosureCommand;
+ use Illuminate\Foundation\Inspiring;
+ use Illuminate\Support\Facades\Artisan;
+ 
+ Artisan::command('inspire', function () {
++    /** @var ClosureCommand $this */
+     $this->comment(Inspiring::quote());
+ })->purpose('Display an inspiring quote');
