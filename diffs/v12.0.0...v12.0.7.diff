@@ -1,0 +1,188 @@
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index 769390bf..e43d40dd 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -44,4 +44,4 @@ jobs:
+         run: php artisan key:generate
+ 
+       - name: Execute tests
+-        run: vendor/bin/phpunit
++        run: php artisan test
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 42dc426e..fc8a06c7 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,35 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.0...master)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.6...12.x)
++
++## [v12.0.6](https://github.com/laravel/laravel/compare/v12.0.5...v12.0.6) - 2025-04-08
++
++**Full Changelog**: https://github.com/laravel/laravel/compare/v12.0.5...v12.0.6
++
++## [v12.0.5](https://github.com/laravel/laravel/compare/v12.0.4...v12.0.5) - 2025-04-02
++
++* [12.x] Update `config/mail.php` to match the latest core configuration by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6594
++
++## [v12.0.4](https://github.com/laravel/laravel/compare/v12.0.3...v12.0.4) - 2025-03-31
++
++* Bump vite from 6.0.11 to 6.2.3 - Vulnerability patch by [@abdel-aouby](https://github.com/abdel-aouby) in https://github.com/laravel/laravel/pull/6586
++* Bump vite from 6.2.3 to 6.2.4 by [@thinkverse](https://github.com/thinkverse) in https://github.com/laravel/laravel/pull/6590
++
++## [v12.0.3](https://github.com/laravel/laravel/compare/v12.0.2...v12.0.3) - 2025-03-17
++
++* Remove reverted change from CHANGELOG.md by [@AJenbo](https://github.com/AJenbo) in https://github.com/laravel/laravel/pull/6565
++* Improves clarity in app.css file by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6569
++* [12.x] Refactor: Structural improvement for clarity by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6574
++* Bump axios from 1.7.9 to 1.8.2 - Vulnerability patch by [@abdel-aouby](https://github.com/abdel-aouby) in https://github.com/laravel/laravel/pull/6572
++* [12.x] Remove Unnecessarily [@source](https://github.com/source) by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6584
++
++## [v12.0.2](https://github.com/laravel/laravel/compare/v12.0.1...v12.0.2) - 2025-03-04
++
++* Make the github test action run out of the box independent of the choice of testing framework by [@ndeblauw](https://github.com/ndeblauw) in https://github.com/laravel/laravel/pull/6555
++
++## [v12.0.1](https://github.com/laravel/laravel/compare/v12.0.0...v12.0.1) - 2025-02-24
++
++* [12.x] prefer stable stability by [@pataar](https://github.com/pataar) in https://github.com/laravel/laravel/pull/6548
+ 
+ ## [v12.0.0 (2025-??-??)](https://github.com/laravel/laravel/compare/v11.0.2...v12.0.0)
+ 
+diff --git a/README.md b/README.md
+index 1a4c26ba..6851ea97 100644
+--- a/README.md
++++ b/README.md
+@@ -37,17 +37,12 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ 
+ - **[Vehikl](https://vehikl.com/)**
+ - **[Tighten Co.](https://tighten.co)**
+-- **[WebReinvent](https://webreinvent.com/)**
+ - **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+ - **[64 Robots](https://64robots.com)**
+ - **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+-- **[Cyber-Duck](https://cyber-duck.co.uk)**
+ - **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+-- **[Jump24](https://jump24.co.uk)**
+-- **[Redberry](https://redberry.international/laravel/)**
++- **[Redberry](https://redberry.international/laravel-development/)**
+ - **[Active Logic](https://activelogic.com)**
+-- **[byte5](https://byte5.de)**
+-- **[OP.GG](https://op.gg)**
+ 
+ ## Contributing
+ 
+diff --git a/composer.json b/composer.json
+index 792b9929..dfe9c82c 100644
+--- a/composer.json
++++ b/composer.json
+@@ -50,12 +50,13 @@
+         "dev": [
+             "Composer\\Config::disableProcessTimeout",
+             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
++        ],
++        "test": [
++            "@php artisan config:clear --ansi",
++            "@php artisan test"
+         ]
+     },
+     "extra": {
+-        "branch-alias": {
+-            "dev-master": "12.x-dev"
+-        },
+         "laravel": {
+             "dont-discover": []
+         }
+@@ -69,6 +70,6 @@
+             "php-http/discovery": true
+         }
+     },
+-    "minimum-stability": "dev",
++    "minimum-stability": "stable",
+     "prefer-stable": true
+ }
+diff --git a/config/logging.php b/config/logging.php
+index 8d94292b..1345f6f6 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -98,10 +98,10 @@ return [
+             'driver' => 'monolog',
+             'level' => env('LOG_LEVEL', 'debug'),
+             'handler' => StreamHandler::class,
+-            'formatter' => env('LOG_STDERR_FORMATTER'),
+-            'with' => [
++            'handler_with' => [
+                 'stream' => 'php://stderr',
+             ],
++            'formatter' => env('LOG_STDERR_FORMATTER'),
+             'processors' => [PsrLogMessageProcessor::class],
+         ],
+ 
+diff --git a/config/mail.php b/config/mail.php
+index 756305b3..00345321 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -85,6 +85,7 @@ return [
+                 'smtp',
+                 'log',
+             ],
++            'retry_after' => 60,
+         ],
+ 
+         'roundrobin' => [
+@@ -93,6 +94,7 @@ return [
+                 'ses',
+                 'postmark',
+             ],
++            'retry_after' => 60,
+         ],
+ 
+     ],
+diff --git a/package.json b/package.json
+index a047e268..4e4ab6fe 100644
+--- a/package.json
++++ b/package.json
+@@ -7,10 +7,10 @@
+     },
+     "devDependencies": {
+         "@tailwindcss/vite": "^4.0.0",
+-        "axios": "^1.7.4",
++        "axios": "^1.8.2",
+         "concurrently": "^9.0.1",
+         "laravel-vite-plugin": "^1.2.0",
+         "tailwindcss": "^4.0.0",
+-        "vite": "^6.0.11"
++        "vite": "^6.2.4"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index 506b9a38..61c031c4 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -22,8 +22,8 @@
+         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+         <env name="BCRYPT_ROUNDS" value="4"/>
+         <env name="CACHE_STORE" value="array"/>
+-        <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
+-        <!-- <env name="DB_DATABASE" value=":memory:"/> -->
++        <env name="DB_CONNECTION" value="sqlite"/>
++        <env name="DB_DATABASE" value=":memory:"/>
+         <env name="MAIL_MAILER" value="array"/>
+         <env name="PULSE_ENABLED" value="false"/>
+         <env name="QUEUE_CONNECTION" value="sync"/>
+diff --git a/resources/css/app.css b/resources/css/app.css
+index 2243c606..3e6abeab 100644
+--- a/resources/css/app.css
++++ b/resources/css/app.css
+@@ -2,9 +2,8 @@
+ 
+ @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+ @source '../../storage/framework/views/*.php';
+-@source "../**/*.blade.php";
+-@source "../**/*.js";
+-@source "../**/*.vue";
++@source '../**/*.blade.php';
++@source '../**/*.js';
+ 
+ @theme {
+     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
