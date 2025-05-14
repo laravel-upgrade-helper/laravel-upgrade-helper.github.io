@@ -1,0 +1,53 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index fc8a06c7..11cf15b2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,11 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.6...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.7...12.x)
++
++## [v12.0.7](https://github.com/laravel/laravel/compare/v12.0.6...v12.0.7) - 2025-04-15
++
++* Add `composer run test` command by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/laravel/pull/6598
++* Partner Directory Changes in ReadME by [@joshcirre](https://github.com/joshcirre) in https://github.com/laravel/laravel/pull/6599
+ 
+ ## [v12.0.6](https://github.com/laravel/laravel/compare/v12.0.5...v12.0.6) - 2025-04-08
+ 
+diff --git a/README.md b/README.md
+index 6851ea97..75c347a8 100644
+--- a/README.md
++++ b/README.md
+@@ -35,13 +35,13 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ 
+ ### Premium Partners
+ 
+-- **[Vehikl](https://vehikl.com/)**
++- **[Vehikl](https://vehikl.com)**
+ - **[Tighten Co.](https://tighten.co)**
+ - **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+ - **[64 Robots](https://64robots.com)**
+-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
++- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+ - **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+-- **[Redberry](https://redberry.international/laravel-development/)**
++- **[Redberry](https://redberry.international/laravel-development)**
+ - **[Active Logic](https://activelogic.com)**
+ 
+ ## Contributing
+diff --git a/config/session.php b/config/session.php
+index ba0aa60b..50a0dd84 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -13,8 +13,8 @@ return [
+     | incoming requests. Laravel supports a variety of storage options to
+     | persist session data. Database storage is a great default choice.
+     |
+-    | Supported: "file", "cookie", "database", "apc",
+-    |            "memcached", "redis", "dynamodb", "array"
++    | Supported: "file", "cookie", "database", "memcached",
++    |            "redis", "dynamodb", "array"
+     |
+     */
+ 
