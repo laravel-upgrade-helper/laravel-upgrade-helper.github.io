@@ -1,0 +1,148 @@
+diff --git a/.gitignore b/.gitignore
+index c7cf1fa6..b71b1ea3 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,23 +1,24 @@
+-/.phpunit.cache
+-/node_modules
+-/public/build
+-/public/hot
+-/public/storage
+-/storage/*.key
+-/storage/pail
+-/vendor
++*.log
++.DS_Store
+ .env
+ .env.backup
+ .env.production
+ .phpactor.json
+ .phpunit.result.cache
+-Homestead.json
+-Homestead.yaml
+-npm-debug.log
+-yarn-error.log
+-/auth.json
+ /.fleet
+ /.idea
+ /.nova
++/.phpunit.cache
+ /.vscode
+ /.zed
++/auth.json
++/node_modules
++/public/build
++/public/hot
++/public/storage
++/storage/*.key
++/storage/pail
++/vendor
++Homestead.json
++Homestead.yaml
++Thumbs.db
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 11cf15b2..2491c387 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,23 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.7...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.10...12.x)
++
++## [v12.0.10](https://github.com/laravel/laravel/compare/v12.0.9...v12.0.10) - 2025-06-09
++
++* fix alphabetical order by [@Khuthaily](https://github.com/Khuthaily) in https://github.com/laravel/laravel/pull/6627
++* [12.x] Reduce redundancy and keeps the .gitignore file cleaner by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6629
++* [12.x] Fix: Add void return type to satisfy Rector analysis by [@Aluisio-Pires](https://github.com/Aluisio-Pires) in https://github.com/laravel/laravel/pull/6628
++
++## [v12.0.9](https://github.com/laravel/laravel/compare/v12.0.8...v12.0.9) - 2025-05-26
++
++* [12.x] Remove apc by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6611
++* [12.x] Add JSON Schema to package.json by [@martinbean](https://github.com/martinbean) in https://github.com/laravel/laravel/pull/6613
++* Minor language update by [@woganmay](https://github.com/woganmay) in https://github.com/laravel/laravel/pull/6615
++* Enhance .gitignore to exclude common OS and log files by [@mohammadRezaei1380](https://github.com/mohammadRezaei1380) in https://github.com/laravel/laravel/pull/6619
++
++## [v12.0.8](https://github.com/laravel/laravel/compare/v12.0.7...v12.0.8) - 2025-05-12
++
++* [12.x] Clean up URL formatting in README by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6601
+ 
+ ## [v12.0.7](https://github.com/laravel/laravel/compare/v12.0.6...v12.0.7) - 2025-04-15
+ 
+diff --git a/bootstrap/app.php b/bootstrap/app.php
+index 7b162dac..c1832766 100644
+--- a/bootstrap/app.php
++++ b/bootstrap/app.php
+@@ -10,9 +10,9 @@ return Application::configure(basePath: dirname(__DIR__))
+         commands: __DIR__.'/../routes/console.php',
+         health: '/up',
+     )
+-    ->withMiddleware(function (Middleware $middleware) {
++    ->withMiddleware(function (Middleware $middleware): void {
+         //
+     })
+-    ->withExceptions(function (Exceptions $exceptions) {
++    ->withExceptions(function (Exceptions $exceptions): void {
+         //
+     })->create();
+diff --git a/config/auth.php b/config/auth.php
+index 0ba5d5d8..7d1eb0de 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -104,7 +104,7 @@ return [
+     | Password Confirmation Timeout
+     |--------------------------------------------------------------------------
+     |
+-    | Here you may define the amount of seconds before a password confirmation
++    | Here you may define the number of seconds before a password confirmation
+     | window expires and users are asked to re-enter their password via the
+     | confirmation screen. By default, the timeout lasts for three hours.
+     |
+diff --git a/config/services.php b/config/services.php
+index 27a36175..6182e4b9 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -18,16 +18,16 @@ return [
+         'token' => env('POSTMARK_TOKEN'),
+     ],
+ 
++    'resend' => [
++        'key' => env('RESEND_KEY'),
++    ],
++
+     'ses' => [
+         'key' => env('AWS_ACCESS_KEY_ID'),
+         'secret' => env('AWS_SECRET_ACCESS_KEY'),
+         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+     ],
+ 
+-    'resend' => [
+-        'key' => env('RESEND_KEY'),
+-    ],
+-
+     'slack' => [
+         'notifications' => [
+             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
+diff --git a/config/session.php b/config/session.php
+index 50a0dd84..b5fa5319 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -97,7 +97,7 @@ return [
+     | define the cache store which should be used to store the session data
+     | between requests. This must match one of your defined cache stores.
+     |
+-    | Affects: "apc", "dynamodb", "memcached", "redis"
++    | Affects: "dynamodb", "memcached", "redis"
+     |
+     */
+ 
+diff --git a/package.json b/package.json
+index 4e4ab6fe..ef47e425 100644
+--- a/package.json
++++ b/package.json
+@@ -1,4 +1,5 @@
+ {
++    "$schema": "https://json.schemastore.org/package.json",
+     "private": true,
+     "type": "module",
+     "scripts": {
