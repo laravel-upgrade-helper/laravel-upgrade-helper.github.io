@@ -1,0 +1,152 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2491c387..385d4e75 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,21 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.10...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.2.0...12.x)
++
++## [v12.2.0](https://github.com/laravel/laravel/compare/v12.1.0...v12.2.0) - 2025-07-11
++
++* Add Vite 7 support by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6639
++
++## [v12.1.0](https://github.com/laravel/laravel/compare/v12.0.11...v12.1.0) - 2025-07-03
++
++* [12.x] Disable nightwatch in testing by [@laserhybiz](https://github.com/laserhybiz) in https://github.com/laravel/laravel/pull/6632
++* [12.x] Reorder environment variables in phpunit.xml for logical grouping by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6634
++* Change to hyphenate prefixes and cookie names by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6636
++* [12.x] Fix type casting for environment variables in config files by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6637
++
++## [v12.0.11](https://github.com/laravel/laravel/compare/v12.0.10...v12.0.11) - 2025-06-10
++
++**Full Changelog**: https://github.com/laravel/laravel/compare/v12.0.10...v12.0.11
+ 
+ ## [v12.0.10](https://github.com/laravel/laravel/compare/v12.0.9...v12.0.10) - 2025-06-09
+ 
+diff --git a/composer.json b/composer.json
+index dfe9c82c..9013567e 100644
+--- a/composer.json
++++ b/composer.json
+@@ -33,7 +33,8 @@
+     },
+     "scripts": {
+         "post-autoload-dump": [
+-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
++            "@php artisan config:clear",
++            "@php artisan clear-compiled",
+             "@php artisan package:discover --ansi"
+         ],
+         "post-update-cmd": [
+diff --git a/config/app.php b/config/app.php
+index 324b513a..423eed59 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -101,7 +101,7 @@ return [
+ 
+     'previous_keys' => [
+         ...array_filter(
+-            explode(',', env('APP_PREVIOUS_KEYS', ''))
++            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
+         ),
+     ],
+ 
+diff --git a/config/cache.php b/config/cache.php
+index 925f7d2e..c2d927d7 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -103,6 +103,6 @@ return [
+     |
+     */
+ 
+-    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
++    'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-cache-'),
+ 
+ ];
+diff --git a/config/database.php b/config/database.php
+index 8910562d..5b318f58 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -147,7 +147,7 @@ return [
+ 
+         'options' => [
+             'cluster' => env('REDIS_CLUSTER', 'redis'),
+-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
++            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+             'persistent' => env('REDIS_PERSISTENT', false),
+         ],
+ 
+diff --git a/config/logging.php b/config/logging.php
+index 1345f6f6..9e998a49 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -54,7 +54,7 @@ return [
+ 
+         'stack' => [
+             'driver' => 'stack',
+-            'channels' => explode(',', env('LOG_STACK', 'single')),
++            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
+             'ignore_exceptions' => false,
+         ],
+ 
+diff --git a/config/mail.php b/config/mail.php
+index 00345321..522b284b 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -46,7 +46,7 @@ return [
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+             'timeout' => null,
+-            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
++            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+         ],
+ 
+         'ses' => [
+diff --git a/config/session.php b/config/session.php
+index b5fa5319..f715097f 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -129,7 +129,7 @@ return [
+ 
+     'cookie' => env(
+         'SESSION_COOKIE',
+-        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
++        Str::slug(env('APP_NAME', 'laravel')).'-session'
+     ),
+ 
+     /*
+diff --git a/package.json b/package.json
+index ef47e425..a5707d81 100644
+--- a/package.json
++++ b/package.json
+@@ -8,10 +8,10 @@
+     },
+     "devDependencies": {
+         "@tailwindcss/vite": "^4.0.0",
+-        "axios": "^1.8.2",
++        "axios": "^1.11.0",
+         "concurrently": "^9.0.1",
+-        "laravel-vite-plugin": "^1.2.0",
++        "laravel-vite-plugin": "^2.0.0",
+         "tailwindcss": "^4.0.0",
+-        "vite": "^6.2.4"
++        "vite": "^7.0.4"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index 61c031c4..5fd5bcf3 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -25,9 +25,10 @@
+         <env name="DB_CONNECTION" value="sqlite"/>
+         <env name="DB_DATABASE" value=":memory:"/>
+         <env name="MAIL_MAILER" value="array"/>
+-        <env name="PULSE_ENABLED" value="false"/>
+         <env name="QUEUE_CONNECTION" value="sync"/>
+         <env name="SESSION_DRIVER" value="array"/>
++        <env name="PULSE_ENABLED" value="false"/>
+         <env name="TELESCOPE_ENABLED" value="false"/>
++        <env name="NIGHTWATCH_ENABLED" value="false"/>
+     </php>
+ </phpunit>
