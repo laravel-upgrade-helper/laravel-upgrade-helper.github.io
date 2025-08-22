@@ -1,0 +1,63 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 385d4e75..489d6139 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.2.0...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.3.0...12.x)
++
++## [v12.3.0](https://github.com/laravel/laravel/compare/v12.2.0...v12.3.0) - 2025-08-03
++
++* Fix Critical Security Vulnerability in form-data Dependency by [@izzygld](https://github.com/izzygld) in https://github.com/laravel/laravel/pull/6645
++* Revert "fix" by [@RobertBoes](https://github.com/RobertBoes) in https://github.com/laravel/laravel/pull/6646
++* Change composer post-autoload-dump script to Artisan command by [@lmjhs](https://github.com/lmjhs) in https://github.com/laravel/laravel/pull/6647
+ 
+ ## [v12.2.0](https://github.com/laravel/laravel/compare/v12.1.0...v12.2.0) - 2025-07-11
+ 
+diff --git a/composer.json b/composer.json
+index 9013567e..e6d1ef97 100644
+--- a/composer.json
++++ b/composer.json
+@@ -13,7 +13,7 @@
+     "require-dev": {
+         "fakerphp/faker": "^1.23",
+         "laravel/pail": "^1.2.2",
+-        "laravel/pint": "^1.13",
++        "laravel/pint": "^1.24",
+         "laravel/sail": "^1.41",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.6",
+@@ -33,8 +33,7 @@
+     },
+     "scripts": {
+         "post-autoload-dump": [
+-            "@php artisan config:clear",
+-            "@php artisan clear-compiled",
++            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+             "@php artisan package:discover --ansi"
+         ],
+         "post-update-cmd": [
+@@ -50,7 +49,7 @@
+         ],
+         "dev": [
+             "Composer\\Config::disableProcessTimeout",
+-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
++            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+         ],
+         "test": [
+             "@php artisan config:clear --ansi",
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index c893b809..b7355d72 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -4,7 +4,7 @@
+         <meta charset="utf-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+-        <title>Laravel</title>
++        <title>{{ config('app.name', 'Laravel') }}</title>
+ 
+         <!-- Fonts -->
+         <link rel="preconnect" href="https://fonts.bunny.net">
