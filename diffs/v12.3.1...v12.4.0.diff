@@ -1,0 +1,53 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 489d6139..c76429d1 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,13 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.3.0...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.3.1...12.x)
++
++## [v12.3.1](https://github.com/laravel/laravel/compare/v12.3.0...v12.3.1) - 2025-08-21
++
++* [12.x] Bump Pint version by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6653
++* [12.x] Making sure all related processed are closed when terminating the currently command by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6654
++* [12.x] Use application name from configuration by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6655
++* Bring back postAutoloadDump script by [@jasonvarga](https://github.com/jasonvarga) in https://github.com/laravel/laravel/pull/6662
+ 
+ ## [v12.3.0](https://github.com/laravel/laravel/compare/v12.2.0...v12.3.0) - 2025-08-03
+ 
+diff --git a/config/database.php b/config/database.php
+index 5b318f58..53dcae02 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -40,6 +40,7 @@ return [
+             'busy_timeout' => null,
+             'journal_mode' => null,
+             'synchronous' => null,
++            'transaction_mode' => 'DEFERRED',
+         ],
+ 
+         'mysql' => [
+@@ -158,6 +159,10 @@ return [
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_DB', '0'),
++            'max_retries' => env('REDIS_MAX_RETRIES', 3),
++            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
++            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
++            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+         ],
+ 
+         'cache' => [
+@@ -167,6 +172,10 @@ return [
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_CACHE_DB', '1'),
++            'max_retries' => env('REDIS_MAX_RETRIES', 3),
++            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
++            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
++            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+         ],
+ 
+     ],

@@ -1,0 +1,104 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 385d4e75..c76429d1 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,19 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.2.0...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.3.1...12.x)
++
++## [v12.3.1](https://github.com/laravel/laravel/compare/v12.3.0...v12.3.1) - 2025-08-21
++
++* [12.x] Bump Pint version by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6653
++* [12.x] Making sure all related processed are closed when terminating the currently command by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6654
++* [12.x] Use application name from configuration by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6655
++* Bring back postAutoloadDump script by [@jasonvarga](https://github.com/jasonvarga) in https://github.com/laravel/laravel/pull/6662
++
++## [v12.3.0](https://github.com/laravel/laravel/compare/v12.2.0...v12.3.0) - 2025-08-03
++
++* Fix Critical Security Vulnerability in form-data Dependency by [@izzygld](https://github.com/izzygld) in https://github.com/laravel/laravel/pull/6645
++* Revert "fix" by [@RobertBoes](https://github.com/RobertBoes) in https://github.com/laravel/laravel/pull/6646
++* Change composer post-autoload-dump script to Artisan command by [@lmjhs](https://github.com/lmjhs) in https://github.com/laravel/laravel/pull/6647
+ 
+ ## [v12.2.0](https://github.com/laravel/laravel/compare/v12.1.0...v12.2.0) - 2025-07-11
+ 
+diff --git a/composer.json b/composer.json
+index 9013567e..e6d1ef97 100644
+--- a/composer.json
++++ b/composer.json
+@@ -13,7 +13,7 @@
+     "require-dev": {
+         "fakerphp/faker": "^1.23",
+         "laravel/pail": "^1.2.2",
+-        "laravel/pint": "^1.13",
++        "laravel/pint": "^1.24",
+         "laravel/sail": "^1.41",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.6",
+@@ -33,8 +33,7 @@
+     },
+     "scripts": {
+         "post-autoload-dump": [
+-            "@php artisan config:clear",
+-            "@php artisan clear-compiled",
++            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+             "@php artisan package:discover --ansi"
+         ],
+         "post-update-cmd": [
+@@ -50,7 +49,7 @@
+         ],
+         "dev": [
+             "Composer\\Config::disableProcessTimeout",
+-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
++            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+         ],
+         "test": [
+             "@php artisan config:clear --ansi",
+diff --git a/config/database.php b/config/database.php
+index 5b318f58..53dcae02 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -40,6 +40,7 @@ return [
+             'busy_timeout' => null,
+             'journal_mode' => null,
+             'synchronous' => null,
++            'transaction_mode' => 'DEFERRED',
+         ],
+ 
+         'mysql' => [
+@@ -158,6 +159,10 @@ return [
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_DB', '0'),
++            'max_retries' => env('REDIS_MAX_RETRIES', 3),
++            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
++            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
++            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+         ],
+ 
+         'cache' => [
+@@ -167,6 +172,10 @@ return [
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_CACHE_DB', '1'),
++            'max_retries' => env('REDIS_MAX_RETRIES', 3),
++            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
++            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
++            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+         ],
+ 
+     ],
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index c893b809..b7355d72 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -4,7 +4,7 @@
+         <meta charset="utf-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+-        <title>Laravel</title>
++        <title>{{ config('app.name', 'Laravel') }}</title>
+ 
+         <!-- Fonts -->
+         <link rel="preconnect" href="https://fonts.bunny.net">
