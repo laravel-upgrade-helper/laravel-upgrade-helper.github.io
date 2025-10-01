@@ -1,0 +1,107 @@
+diff --git a/.editorconfig b/.editorconfig
+index 8f0de65c..a186cd20 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -14,5 +14,5 @@ trim_trailing_whitespace = false
+ [*.{yml,yaml}]
+ indent_size = 2
+ 
+-[docker-compose.yml]
++[compose.yaml]
+ indent_size = 4
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 489d6139..75ecd465 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,17 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.3.0...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.4.0...12.x)
++
++## [v12.4.0](https://github.com/laravel/laravel/compare/v12.3.1...v12.4.0) - 2025-08-29
++
++* [12.x] Add default Redis retry configuration by [@mateusjatenee](https://github.com/mateusjatenee) in https://github.com/laravel/laravel/pull/6666
++
++## [v12.3.1](https://github.com/laravel/laravel/compare/v12.3.0...v12.3.1) - 2025-08-21
++
++* [12.x] Bump Pint version by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6653
++* [12.x] Making sure all related processed are closed when terminating the currently command by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6654
++* [12.x] Use application name from configuration by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6655
++* Bring back postAutoloadDump script by [@jasonvarga](https://github.com/jasonvarga) in https://github.com/laravel/laravel/pull/6662
+ 
+ ## [v12.3.0](https://github.com/laravel/laravel/compare/v12.2.0...v12.3.0) - 2025-08-03
+ 
+diff --git a/composer.json b/composer.json
+index e6d1ef97..4c57d2ae 100644
+--- a/composer.json
++++ b/composer.json
+@@ -47,6 +47,9 @@
+             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+             "@php artisan migrate --graceful --ansi"
+         ],
++        "pre-package-uninstall": [
++            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
++        ],
+         "dev": [
+             "Composer\\Config::disableProcessTimeout",
+             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+diff --git a/config/database.php b/config/database.php
+index 5b318f58..53dcae02 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -40,6 +40,7 @@ return [
+             'busy_timeout' => null,
+             'journal_mode' => null,
+             'synchronous' => null,
++            'transaction_mode' => 'DEFERRED',
+         ],
+ 
+         'mysql' => [
+@@ -158,6 +159,10 @@ return [
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_DB', '0'),
++            'max_retries' => env('REDIS_MAX_RETRIES', 3),
++            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
++            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
++            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+         ],
+ 
+         'cache' => [
+@@ -167,6 +172,10 @@ return [
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_CACHE_DB', '1'),
++            'max_retries' => env('REDIS_MAX_RETRIES', 3),
++            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
++            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
++            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+         ],
+ 
+     ],
+diff --git a/config/session.php b/config/session.php
+index f715097f..bc45901e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -129,7 +129,7 @@ return [
+ 
+     'cookie' => env(
+         'SESSION_COOKIE',
+-        Str::slug(env('APP_NAME', 'laravel')).'-session'
++        Str::slug((string) env('APP_NAME', 'laravel')).'-session'
+     ),
+ 
+     /*
+diff --git a/package.json b/package.json
+index a5707d81..af0db451 100644
+--- a/package.json
++++ b/package.json
+@@ -12,6 +12,6 @@
+         "concurrently": "^9.0.1",
+         "laravel-vite-plugin": "^2.0.0",
+         "tailwindcss": "^4.0.0",
+-        "vite": "^7.0.4"
++        "vite": "^7.0.7"
+     }
+ }
