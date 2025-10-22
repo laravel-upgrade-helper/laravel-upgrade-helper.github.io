@@ -1,0 +1,572 @@
+diff --git a/.editorconfig b/.editorconfig
+index 8f0de65c..a186cd20 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -14,5 +14,5 @@ trim_trailing_whitespace = false
+ [*.{yml,yaml}]
+ indent_size = 2
+ 
+-[docker-compose.yml]
++[compose.yaml]
+ indent_size = 4
+diff --git a/.gitignore b/.gitignore
+index c7cf1fa6..b71b1ea3 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,23 +1,24 @@
+-/.phpunit.cache
+-/node_modules
+-/public/build
+-/public/hot
+-/public/storage
+-/storage/*.key
+-/storage/pail
+-/vendor
++*.log
++.DS_Store
+ .env
+ .env.backup
+ .env.production
+ .phpactor.json
+ .phpunit.result.cache
+-Homestead.json
+-Homestead.yaml
+-npm-debug.log
+-yarn-error.log
+-/auth.json
+ /.fleet
+ /.idea
+ /.nova
++/.phpunit.cache
+ /.vscode
+ /.zed
++/auth.json
++/node_modules
++/public/build
++/public/hot
++/public/storage
++/storage/*.key
++/storage/pail
++/vendor
++Homestead.json
++Homestead.yaml
++Thumbs.db
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4f20ef07..8ffe4ad4 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,104 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.0.2...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.8.0...12.x)
++
++## [v12.8.0](https://github.com/laravel/laravel/compare/v12.7.1...v12.8.0) - 2025-10-20
++
++* [12.x] Makes test suite using broadcast's `null` driver by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6691
++
++## [v12.7.1](https://github.com/laravel/laravel/compare/v12.7.0...v12.7.1) - 2025-10-15
++
++* Added `failover` driver to the `queue` config comment.  by [@sajjadhossainshohag](https://github.com/sajjadhossainshohag) in https://github.com/laravel/laravel/pull/6688
++
++## [v12.7.0](https://github.com/laravel/laravel/compare/v12.6.0...v12.7.0) - 2025-10-14
++
++**Full Changelog**: https://github.com/laravel/laravel/compare/v12.6.0...v12.7.0
++
++## [v12.6.0](https://github.com/laravel/laravel/compare/v12.5.0...v12.6.0) - 2025-10-02
++
++* Fix setup script by [@goldmont](https://github.com/goldmont) in https://github.com/laravel/laravel/pull/6682
++
++## [v12.5.0](https://github.com/laravel/laravel/compare/v12.4.0...v12.5.0) - 2025-09-30
++
++* [12.x] Fix type casting for environment variables in config files by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6670
++* Fix CVEs affecting vite by [@faissaloux](https://github.com/faissaloux) in https://github.com/laravel/laravel/pull/6672
++* Update .editorconfig to target compose.yaml by [@fredikaputra](https://github.com/fredikaputra) in https://github.com/laravel/laravel/pull/6679
++* Add pre-package-uninstall script to composer.json by [@cosmastech](https://github.com/cosmastech) in https://github.com/laravel/laravel/pull/6681
++
++## [v12.4.0](https://github.com/laravel/laravel/compare/v12.3.1...v12.4.0) - 2025-08-29
++
++* [12.x] Add default Redis retry configuration by [@mateusjatenee](https://github.com/mateusjatenee) in https://github.com/laravel/laravel/pull/6666
++
++## [v12.3.1](https://github.com/laravel/laravel/compare/v12.3.0...v12.3.1) - 2025-08-21
++
++* [12.x] Bump Pint version by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6653
++* [12.x] Making sure all related processed are closed when terminating the currently command by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6654
++* [12.x] Use application name from configuration by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6655
++* Bring back postAutoloadDump script by [@jasonvarga](https://github.com/jasonvarga) in https://github.com/laravel/laravel/pull/6662
++
++## [v12.3.0](https://github.com/laravel/laravel/compare/v12.2.0...v12.3.0) - 2025-08-03
++
++* Fix Critical Security Vulnerability in form-data Dependency by [@izzygld](https://github.com/izzygld) in https://github.com/laravel/laravel/pull/6645
++* Revert "fix" by [@RobertBoes](https://github.com/RobertBoes) in https://github.com/laravel/laravel/pull/6646
++* Change composer post-autoload-dump script to Artisan command by [@lmjhs](https://github.com/lmjhs) in https://github.com/laravel/laravel/pull/6647
++
++## [v12.2.0](https://github.com/laravel/laravel/compare/v12.1.0...v12.2.0) - 2025-07-11
++
++* Add Vite 7 support by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6639
++
++## [v12.1.0](https://github.com/laravel/laravel/compare/v12.0.11...v12.1.0) - 2025-07-03
++
++* [12.x] Disable nightwatch in testing by [@laserhybiz](https://github.com/laserhybiz) in https://github.com/laravel/laravel/pull/6632
++* [12.x] Reorder environment variables in phpunit.xml for logical grouping by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6634
++* Change to hyphenate prefixes and cookie names by [@u01jmg3](https://github.com/u01jmg3) in https://github.com/laravel/laravel/pull/6636
++* [12.x] Fix type casting for environment variables in config files by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6637
++
++## [v12.0.11](https://github.com/laravel/laravel/compare/v12.0.10...v12.0.11) - 2025-06-10
++
++**Full Changelog**: https://github.com/laravel/laravel/compare/v12.0.10...v12.0.11
++
++## [v12.0.10](https://github.com/laravel/laravel/compare/v12.0.9...v12.0.10) - 2025-06-09
++
++* fix alphabetical order by [@Khuthaily](https://github.com/Khuthaily) in https://github.com/laravel/laravel/pull/6627
++* [12.x] Reduce redundancy and keeps the .gitignore file cleaner by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6629
++* [12.x] Fix: Add void return type to satisfy Rector analysis by [@Aluisio-Pires](https://github.com/Aluisio-Pires) in https://github.com/laravel/laravel/pull/6628
++
++## [v12.0.9](https://github.com/laravel/laravel/compare/v12.0.8...v12.0.9) - 2025-05-26
++
++* [12.x] Remove apc by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6611
++* [12.x] Add JSON Schema to package.json by [@martinbean](https://github.com/martinbean) in https://github.com/laravel/laravel/pull/6613
++* Minor language update by [@woganmay](https://github.com/woganmay) in https://github.com/laravel/laravel/pull/6615
++* Enhance .gitignore to exclude common OS and log files by [@mohammadRezaei1380](https://github.com/mohammadRezaei1380) in https://github.com/laravel/laravel/pull/6619
++
++## [v12.0.8](https://github.com/laravel/laravel/compare/v12.0.7...v12.0.8) - 2025-05-12
++
++* [12.x] Clean up URL formatting in README by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6601
++
++## [v12.0.7](https://github.com/laravel/laravel/compare/v12.0.6...v12.0.7) - 2025-04-15
++
++* Add `composer run test` command by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/laravel/pull/6598
++* Partner Directory Changes in ReadME by [@joshcirre](https://github.com/joshcirre) in https://github.com/laravel/laravel/pull/6599
++
++## [v12.0.6](https://github.com/laravel/laravel/compare/v12.0.5...v12.0.6) - 2025-04-08
++
++**Full Changelog**: https://github.com/laravel/laravel/compare/v12.0.5...v12.0.6
++
++## [v12.0.5](https://github.com/laravel/laravel/compare/v12.0.4...v12.0.5) - 2025-04-02
++
++* [12.x] Update `config/mail.php` to match the latest core configuration by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6594
++
++## [v12.0.4](https://github.com/laravel/laravel/compare/v12.0.3...v12.0.4) - 2025-03-31
++
++* Bump vite from 6.0.11 to 6.2.3 - Vulnerability patch by [@abdel-aouby](https://github.com/abdel-aouby) in https://github.com/laravel/laravel/pull/6586
++* Bump vite from 6.2.3 to 6.2.4 by [@thinkverse](https://github.com/thinkverse) in https://github.com/laravel/laravel/pull/6590
++
++## [v12.0.3](https://github.com/laravel/laravel/compare/v12.0.2...v12.0.3) - 2025-03-17
++
++* Remove reverted change from CHANGELOG.md by [@AJenbo](https://github.com/AJenbo) in https://github.com/laravel/laravel/pull/6565
++* Improves clarity in app.css file by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6569
++* [12.x] Refactor: Structural improvement for clarity by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6574
++* Bump axios from 1.7.9 to 1.8.2 - Vulnerability patch by [@abdel-aouby](https://github.com/abdel-aouby) in https://github.com/laravel/laravel/pull/6572
++* [12.x] Remove Unnecessarily [@source](https://github.com/source) by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6584
+ 
+ ## [v12.0.2](https://github.com/laravel/laravel/compare/v12.0.1...v12.0.2) - 2025-03-04
+ 
+diff --git a/README.md b/README.md
+index 1a4c26ba..75c347a8 100644
+--- a/README.md
++++ b/README.md
+@@ -35,19 +35,14 @@ We would like to extend our thanks to the following sponsors for funding Laravel
+ 
+ ### Premium Partners
+ 
+-- **[Vehikl](https://vehikl.com/)**
++- **[Vehikl](https://vehikl.com)**
+ - **[Tighten Co.](https://tighten.co)**
+-- **[WebReinvent](https://webreinvent.com/)**
+ - **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+ - **[64 Robots](https://64robots.com)**
+-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+-- **[Cyber-Duck](https://cyber-duck.co.uk)**
++- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+ - **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+-- **[Jump24](https://jump24.co.uk)**
+-- **[Redberry](https://redberry.international/laravel/)**
++- **[Redberry](https://redberry.international/laravel-development)**
+ - **[Active Logic](https://activelogic.com)**
+-- **[byte5](https://byte5.de)**
+-- **[OP.GG](https://op.gg)**
+ 
+ ## Contributing
+ 
+diff --git a/bootstrap/app.php b/bootstrap/app.php
+index 7b162dac..c1832766 100644
+--- a/bootstrap/app.php
++++ b/bootstrap/app.php
+@@ -10,9 +10,9 @@ return Application::configure(basePath: dirname(__DIR__))
+         commands: __DIR__.'/../routes/console.php',
+         health: '/up',
+     )
+-    ->withMiddleware(function (Middleware $middleware) {
++    ->withMiddleware(function (Middleware $middleware): void {
+         //
+     })
+-    ->withExceptions(function (Exceptions $exceptions) {
++    ->withExceptions(function (Exceptions $exceptions): void {
+         //
+     })->create();
+diff --git a/composer.json b/composer.json
+index 9c446ae8..44c60542 100644
+--- a/composer.json
++++ b/composer.json
+@@ -13,7 +13,7 @@
+     "require-dev": {
+         "fakerphp/faker": "^1.23",
+         "laravel/pail": "^1.2.2",
+-        "laravel/pint": "^1.13",
++        "laravel/pint": "^1.24",
+         "laravel/sail": "^1.41",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.6",
+@@ -32,6 +32,22 @@
+         }
+     },
+     "scripts": {
++        "setup": [
++            "composer install",
++            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
++            "@php artisan key:generate",
++            "@php artisan migrate --force",
++            "npm install",
++            "npm run build"
++        ],
++        "dev": [
++            "Composer\\Config::disableProcessTimeout",
++            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
++        ],
++        "test": [
++            "@php artisan config:clear --ansi",
++            "@php artisan test"
++        ],
+         "post-autoload-dump": [
+             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+             "@php artisan package:discover --ansi"
+@@ -47,9 +63,8 @@
+             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+             "@php artisan migrate --graceful --ansi"
+         ],
+-        "dev": [
+-            "Composer\\Config::disableProcessTimeout",
+-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
++        "pre-package-uninstall": [
++            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+         ]
+     },
+     "extra": {
+diff --git a/config/app.php b/config/app.php
+index 324b513a..423eed59 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -101,7 +101,7 @@ return [
+ 
+     'previous_keys' => [
+         ...array_filter(
+-            explode(',', env('APP_PREVIOUS_KEYS', ''))
++            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
+         ),
+     ],
+ 
+diff --git a/config/auth.php b/config/auth.php
+index 0ba5d5d8..7d1eb0de 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -104,7 +104,7 @@ return [
+     | Password Confirmation Timeout
+     |--------------------------------------------------------------------------
+     |
+-    | Here you may define the amount of seconds before a password confirmation
++    | Here you may define the number of seconds before a password confirmation
+     | window expires and users are asked to re-enter their password via the
+     | confirmation screen. By default, the timeout lasts for three hours.
+     |
+diff --git a/config/cache.php b/config/cache.php
+index 925f7d2e..b32aead2 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -27,7 +27,8 @@ return [
+     | same cache driver to group types of items stored in your caches.
+     |
+     | Supported drivers: "array", "database", "file", "memcached",
+-    |                    "redis", "dynamodb", "octane", "null"
++    |                    "redis", "dynamodb", "octane",
++    |                    "failover", "null"
+     |
+     */
+ 
+@@ -90,6 +91,14 @@ return [
+             'driver' => 'octane',
+         ],
+ 
++        'failover' => [
++            'driver' => 'failover',
++            'stores' => [
++                'database',
++                'array',
++            ],
++        ],
++
+     ],
+ 
+     /*
+@@ -103,6 +112,6 @@ return [
+     |
+     */
+ 
+-    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
++    'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-cache-'),
+ 
+ ];
+diff --git a/config/database.php b/config/database.php
+index 8910562d..53dcae02 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -40,6 +40,7 @@ return [
+             'busy_timeout' => null,
+             'journal_mode' => null,
+             'synchronous' => null,
++            'transaction_mode' => 'DEFERRED',
+         ],
+ 
+         'mysql' => [
+@@ -147,7 +148,7 @@ return [
+ 
+         'options' => [
+             'cluster' => env('REDIS_CLUSTER', 'redis'),
+-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
++            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+             'persistent' => env('REDIS_PERSISTENT', false),
+         ],
+ 
+@@ -158,6 +159,10 @@ return [
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_DB', '0'),
++            'max_retries' => env('REDIS_MAX_RETRIES', 3),
++            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
++            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
++            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+         ],
+ 
+         'cache' => [
+@@ -167,6 +172,10 @@ return [
+             'password' => env('REDIS_PASSWORD'),
+             'port' => env('REDIS_PORT', '6379'),
+             'database' => env('REDIS_CACHE_DB', '1'),
++            'max_retries' => env('REDIS_MAX_RETRIES', 3),
++            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
++            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
++            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+         ],
+ 
+     ],
+diff --git a/config/logging.php b/config/logging.php
+index 1345f6f6..9e998a49 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -54,7 +54,7 @@ return [
+ 
+         'stack' => [
+             'driver' => 'stack',
+-            'channels' => explode(',', env('LOG_STACK', 'single')),
++            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
+             'ignore_exceptions' => false,
+         ],
+ 
+diff --git a/config/mail.php b/config/mail.php
+index 756305b3..522b284b 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -46,7 +46,7 @@ return [
+             'username' => env('MAIL_USERNAME'),
+             'password' => env('MAIL_PASSWORD'),
+             'timeout' => null,
+-            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
++            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+         ],
+ 
+         'ses' => [
+@@ -85,6 +85,7 @@ return [
+                 'smtp',
+                 'log',
+             ],
++            'retry_after' => 60,
+         ],
+ 
+         'roundrobin' => [
+@@ -93,6 +94,7 @@ return [
+                 'ses',
+                 'postmark',
+             ],
++            'retry_after' => 60,
+         ],
+ 
+     ],
+diff --git a/config/queue.php b/config/queue.php
+index 116bd8d0..9d5e5895 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -24,7 +24,8 @@ return [
+     | used by your application. An example configuration is provided for
+     | each backend supported by Laravel. You're also free to add more.
+     |
+-    | Drivers: "sync", "database", "beanstalkd", "sqs", "redis", "null"
++    | Drivers: "sync", "database", "beanstalkd", "sqs", "redis",
++    |          "deferred", "failover", "null"
+     |
+     */
+ 
+@@ -72,6 +73,18 @@ return [
+             'after_commit' => false,
+         ],
+ 
++        'deferred' => [
++            'driver' => 'deferred',
++        ],
++
++        'failover' => [
++            'driver' => 'failover',
++            'connections' => [
++                'database',
++                'deferred',
++            ],
++        ],
++
+     ],
+ 
+     /*
+diff --git a/config/services.php b/config/services.php
+index 27a36175..6182e4b9 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -18,16 +18,16 @@ return [
+         'token' => env('POSTMARK_TOKEN'),
+     ],
+ 
++    'resend' => [
++        'key' => env('RESEND_KEY'),
++    ],
++
+     'ses' => [
+         'key' => env('AWS_ACCESS_KEY_ID'),
+         'secret' => env('AWS_SECRET_ACCESS_KEY'),
+         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+     ],
+ 
+-    'resend' => [
+-        'key' => env('RESEND_KEY'),
+-    ],
+-
+     'slack' => [
+         'notifications' => [
+             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
+diff --git a/config/session.php b/config/session.php
+index ba0aa60b..bc45901e 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -13,8 +13,8 @@ return [
+     | incoming requests. Laravel supports a variety of storage options to
+     | persist session data. Database storage is a great default choice.
+     |
+-    | Supported: "file", "cookie", "database", "apc",
+-    |            "memcached", "redis", "dynamodb", "array"
++    | Supported: "file", "cookie", "database", "memcached",
++    |            "redis", "dynamodb", "array"
+     |
+     */
+ 
+@@ -97,7 +97,7 @@ return [
+     | define the cache store which should be used to store the session data
+     | between requests. This must match one of your defined cache stores.
+     |
+-    | Affects: "apc", "dynamodb", "memcached", "redis"
++    | Affects: "dynamodb", "memcached", "redis"
+     |
+     */
+ 
+@@ -129,7 +129,7 @@ return [
+ 
+     'cookie' => env(
+         'SESSION_COOKIE',
+-        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
++        Str::slug((string) env('APP_NAME', 'laravel')).'-session'
+     ),
+ 
+     /*
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index d01a0ef2..6b901f8b 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -3,11 +3,13 @@
+ namespace Database\Seeders;
+ 
+ use App\Models\User;
+-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
++use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+ use Illuminate\Database\Seeder;
+ 
+ class DatabaseSeeder extends Seeder
+ {
++    use WithoutModelEvents;
++
+     /**
+      * Seed the application's database.
+      */
+diff --git a/package.json b/package.json
+index 739172bf..af0db451 100644
+--- a/package.json
++++ b/package.json
+@@ -1,4 +1,5 @@
+ {
++    "$schema": "https://json.schemastore.org/package.json",
+     "private": true,
+     "type": "module",
+     "scripts": {
+@@ -7,10 +8,10 @@
+     },
+     "devDependencies": {
+         "@tailwindcss/vite": "^4.0.0",
+-        "axios": "^1.8.2",
++        "axios": "^1.11.0",
+         "concurrently": "^9.0.1",
+-        "laravel-vite-plugin": "^1.2.0",
++        "laravel-vite-plugin": "^2.0.0",
+         "tailwindcss": "^4.0.0",
+-        "vite": "^6.0.11"
++        "vite": "^7.0.7"
+     }
+ }
+diff --git a/phpunit.xml b/phpunit.xml
+index 506b9a38..d7032415 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -21,13 +21,15 @@
+         <env name="APP_ENV" value="testing"/>
+         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+         <env name="BCRYPT_ROUNDS" value="4"/>
++        <env name="BROADCAST_CONNECTION" value="null"/>
+         <env name="CACHE_STORE" value="array"/>
+-        <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
+-        <!-- <env name="DB_DATABASE" value=":memory:"/> -->
++        <env name="DB_CONNECTION" value="sqlite"/>
++        <env name="DB_DATABASE" value=":memory:"/>
+         <env name="MAIL_MAILER" value="array"/>
+-        <env name="PULSE_ENABLED" value="false"/>
+         <env name="QUEUE_CONNECTION" value="sync"/>
+         <env name="SESSION_DRIVER" value="array"/>
++        <env name="PULSE_ENABLED" value="false"/>
+         <env name="TELESCOPE_ENABLED" value="false"/>
++        <env name="NIGHTWATCH_ENABLED" value="false"/>
+     </php>
+ </phpunit>
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index c893b809..b7355d72 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -4,7 +4,7 @@
+         <meta charset="utf-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+-        <title>Laravel</title>
++        <title>{{ config('app.name', 'Laravel') }}</title>
+ 
+         <!-- Fonts -->
+         <link rel="preconnect" href="https://fonts.bunny.net">
