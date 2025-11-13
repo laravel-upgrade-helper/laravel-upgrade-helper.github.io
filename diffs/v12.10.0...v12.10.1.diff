@@ -1,0 +1,27 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 434907d5..d396213c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.9.1...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.10.0...12.x)
++
++## [v12.10.0](https://github.com/laravel/laravel/compare/v12.9.1...v12.10.0) - 2025-11-04
++
++* Add background driver by [@barryvdh](https://github.com/barryvdh) in https://github.com/laravel/laravel/pull/6699
+ 
+ ## [v12.9.1](https://github.com/laravel/laravel/compare/v12.9.0...v12.9.1) - 2025-10-23
+ 
+diff --git a/package.json b/package.json
+index af0db451..7686b295 100644
+--- a/package.json
++++ b/package.json
+@@ -1,5 +1,5 @@
+ {
+-    "$schema": "https://json.schemastore.org/package.json",
++    "$schema": "https://www.schemastore.org/package.json",
+     "private": true,
+     "type": "module",
+     "scripts": {

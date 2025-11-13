@@ -1,0 +1,74 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ad6b268b..d396213c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,15 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.9.0...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.10.0...12.x)
++
++## [v12.10.0](https://github.com/laravel/laravel/compare/v12.9.1...v12.10.0) - 2025-11-04
++
++* Add background driver by [@barryvdh](https://github.com/barryvdh) in https://github.com/laravel/laravel/pull/6699
++
++## [v12.9.1](https://github.com/laravel/laravel/compare/v12.9.0...v12.9.1) - 2025-10-23
++
++* [12.x] Replace Bootcamp with Laravel Learn by [@AhmedAlaa4611](https://github.com/AhmedAlaa4611) in https://github.com/laravel/laravel/pull/6692
++* [12.x] Comment out CLI workers for fresh applications by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/laravel/pull/6693
+ 
+ ## [v12.9.0](https://github.com/laravel/laravel/compare/v12.8.0...v12.9.0) - 2025-10-21
+ 
+diff --git a/config/queue.php b/config/queue.php
+index 9d5e5895..79c2c0a2 100644
+--- a/config/queue.php
++++ b/config/queue.php
+@@ -25,7 +25,7 @@ return [
+     | each backend supported by Laravel. You're also free to add more.
+     |
+     | Drivers: "sync", "database", "beanstalkd", "sqs", "redis",
+-    |          "deferred", "failover", "null"
++    |          "deferred", "background", "failover", "null"
+     |
+     */
+ 
+@@ -77,6 +77,10 @@ return [
+             'driver' => 'deferred',
+         ],
+ 
++        'background' => [
++            'driver' => 'background',
++        ],
++
+         'failover' => [
+             'driver' => 'failover',
+             'connections' => [
+diff --git a/config/services.php b/config/services.php
+index 6182e4b9..6a90eb83 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -15,11 +15,11 @@ return [
+     */
+ 
+     'postmark' => [
+-        'token' => env('POSTMARK_TOKEN'),
++        'key' => env('POSTMARK_API_KEY'),
+     ],
+ 
+     'resend' => [
+-        'key' => env('RESEND_KEY'),
++        'key' => env('RESEND_API_KEY'),
+     ],
+ 
+     'ses' => [
+diff --git a/package.json b/package.json
+index af0db451..7686b295 100644
+--- a/package.json
++++ b/package.json
+@@ -1,5 +1,5 @@
+ {
+-    "$schema": "https://json.schemastore.org/package.json",
++    "$schema": "https://www.schemastore.org/package.json",
+     "private": true,
+     "type": "module",
+     "scripts": {
