@@ -1,0 +1,44 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b4f1996e..454bbc2e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.10.1...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.11.0...12.x)
++
++## [v12.11.0](https://github.com/laravel/laravel/compare/v12.10.1...v12.11.0) - 2025-11-25
++
++* fix: cookies are not available for subdomains by default by [@joostdebruijn](https://github.com/joostdebruijn) in https://github.com/laravel/laravel/pull/6705
++* Fix PHP 8.5 PDO Driver Specific Constant Deprecation by [@RyanSchaefer](https://github.com/RyanSchaefer) in https://github.com/laravel/laravel/pull/6710
++* Ignore Laravel compiled views for Vite  by [@QistiAmal1212](https://github.com/QistiAmal1212) in https://github.com/laravel/laravel/pull/6714
+ 
+ ## [v12.10.1](https://github.com/laravel/laravel/compare/v12.10.0...v12.10.1) - 2025-11-06
+ 
+diff --git a/config/database.php b/config/database.php
+index c57fa638..df933e7f 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -95,7 +95,7 @@ return [
+             'prefix' => '',
+             'prefix_indexes' => true,
+             'search_path' => 'public',
+-            'sslmode' => 'prefer',
++            'sslmode' => env('DB_SSLMODE', 'prefer'),
+         ],
+ 
+         'sqlsrv' => [
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 3d671bd9..82ea8a89 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -41,7 +41,7 @@ return [
+         'public' => [
+             'driver' => 'local',
+             'root' => storage_path('app/public'),
+-            'url' => env('APP_URL').'/storage',
++            'url' => rtrim(env('APP_URL'), '/').'/storage',
+             'visibility' => 'public',
+             'throw' => false,
+             'report' => false,
