@@ -1,0 +1,76 @@
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index e43d40dd..4b505a03 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -25,7 +25,7 @@ jobs:
+ 
+     steps:
+       - name: Checkout code
+-        uses: actions/checkout@v4
++        uses: actions/checkout@v6
+ 
+       - name: Setup PHP
+         uses: shivammathur/setup-php@v2
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 454bbc2e..6d75de09 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,11 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.11.0...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.11.1...12.x)
++
++## [v12.11.1](https://github.com/laravel/laravel/compare/v12.11.0...v12.11.1) - 2025-12-23
++
++* Use environment variable for `DB_SSLMODE` - Postgres by [@robsontenorio](https://github.com/robsontenorio) in https://github.com/laravel/laravel/pull/6727
++* fix: ensure APP_URL does not have trailing slash in filesystem by [@msamgan](https://github.com/msamgan) in https://github.com/laravel/laravel/pull/6728
+ 
+ ## [v12.11.0](https://github.com/laravel/laravel/compare/v12.10.1...v12.11.0) - 2025-11-25
+ 
+diff --git a/composer.json b/composer.json
+index 44c60542..52a3a8af 100644
+--- a/composer.json
++++ b/composer.json
+@@ -42,7 +42,7 @@
+         ],
+         "dev": [
+             "Composer\\Config::disableProcessTimeout",
+-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
++            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+         ],
+         "test": [
+             "@php artisan config:clear --ansi",
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 82ea8a89..37d8fca4 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -41,7 +41,7 @@ return [
+         'public' => [
+             'driver' => 'local',
+             'root' => storage_path('app/public'),
+-            'url' => rtrim(env('APP_URL'), '/').'/storage',
++            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+             'visibility' => 'public',
+             'throw' => false,
+             'report' => false,
+diff --git a/database/migrations/0001_01_01_000001_create_cache_table.php b/database/migrations/0001_01_01_000001_create_cache_table.php
+index b9c106be..ed758bdf 100644
+--- a/database/migrations/0001_01_01_000001_create_cache_table.php
++++ b/database/migrations/0001_01_01_000001_create_cache_table.php
+@@ -14,13 +14,13 @@ return new class extends Migration
+         Schema::create('cache', function (Blueprint $table) {
+             $table->string('key')->primary();
+             $table->mediumText('value');
+-            $table->integer('expiration');
++            $table->integer('expiration')->index();
+         });
+ 
+         Schema::create('cache_locks', function (Blueprint $table) {
+             $table->string('key')->primary();
+             $table->string('owner');
+-            $table->integer('expiration');
++            $table->integer('expiration')->index();
+         });
+     }
+ 
