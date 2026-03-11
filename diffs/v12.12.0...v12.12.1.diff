@@ -1,0 +1,121 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 17fc0ed7..41432396 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.11.2...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.0...12.x)
++
++## [v12.12.0](https://github.com/laravel/laravel/compare/v12.11.2...v12.12.0) - 2026-03-09
++
++* Update phpunit version to ^11.5.50 to address CVE by [@PerryvanderMeer](https://github.com/PerryvanderMeer) in https://github.com/laravel/laravel/pull/6746
++* [12.x] Add `APP_NAME` fallback in mail config by [@apoorvdarshan](https://github.com/apoorvdarshan) in https://github.com/laravel/laravel/pull/6755
++* [12.x] Neutralize DB_URL in default phpunit.xml by [@Husseinadq](https://github.com/Husseinadq) in https://github.com/laravel/laravel/pull/6761
+ 
+ ## [v12.11.2](https://github.com/laravel/laravel/compare/v12.11.1...v12.11.2) - 2026-01-19
+ 
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 749c7b77..68f3a669 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -3,13 +3,14 @@
+ namespace App\Models;
+ 
+ // use Illuminate\Contracts\Auth\MustVerifyEmail;
++use Database\Factories\UserFactory;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
+ use Illuminate\Notifications\Notifiable;
+ 
+ class User extends Authenticatable
+ {
+-    /** @use HasFactory<\Database\Factories\UserFactory> */
++    /** @use HasFactory<UserFactory> */
+     use HasFactory, Notifiable;
+ 
+     /**
+diff --git a/bootstrap/providers.php b/bootstrap/providers.php
+index 38b258d1..fc94ae60 100644
+--- a/bootstrap/providers.php
++++ b/bootstrap/providers.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use App\Providers\AppServiceProvider;
++
+ return [
+-    App\Providers\AppServiceProvider::class,
++    AppServiceProvider::class,
+ ];
+diff --git a/config/auth.php b/config/auth.php
+index 7d1eb0de..d7568ff1 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use App\Models\User;
++
+ return [
+ 
+     /*
+@@ -62,7 +64,7 @@ return [
+     'providers' => [
+         'users' => [
+             'driver' => 'eloquent',
+-            'model' => env('AUTH_MODEL', App\Models\User::class),
++            'model' => env('AUTH_MODEL', User::class),
+         ],
+ 
+         // 'users' => [
+diff --git a/config/database.php b/config/database.php
+index df933e7f..64709ce5 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -1,6 +1,7 @@
+ <?php
+ 
+ use Illuminate\Support\Str;
++use Pdo\Mysql;
+ 
+ return [
+ 
+@@ -59,7 +60,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
++                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+@@ -79,7 +80,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
++                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 584104c9..c4ceb074 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -2,12 +2,13 @@
+ 
+ namespace Database\Factories;
+ 
++use App\Models\User;
+ use Illuminate\Database\Eloquent\Factories\Factory;
+ use Illuminate\Support\Facades\Hash;
+ use Illuminate\Support\Str;
+ 
+ /**
+- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
++ * @extends Factory<User>
+  */
+ class UserFactory extends Factory
+ {
