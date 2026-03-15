@@ -1,0 +1,305 @@
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index e43d40dd..4b505a03 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -25,7 +25,7 @@ jobs:
+ 
+     steps:
+       - name: Checkout code
+-        uses: actions/checkout@v4
++        uses: actions/checkout@v6
+ 
+       - name: Setup PHP
+         uses: shivammathur/setup-php@v2
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 434907d5..6c4f28ca 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,43 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.9.1...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
++
++## [v12.12.1](https://github.com/laravel/laravel/compare/v12.12.0...v12.12.1) - 2026-03-10
++
++* [12.x] Makes imports consistent by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6760
++
++## [v12.12.0](https://github.com/laravel/laravel/compare/v12.11.2...v12.12.0) - 2026-03-09
++
++* Update phpunit version to ^11.5.50 to address CVE by [@PerryvanderMeer](https://github.com/PerryvanderMeer) in https://github.com/laravel/laravel/pull/6746
++* [12.x] Add `APP_NAME` fallback in mail config by [@apoorvdarshan](https://github.com/apoorvdarshan) in https://github.com/laravel/laravel/pull/6755
++* [12.x] Neutralize DB_URL in default phpunit.xml by [@Husseinadq](https://github.com/Husseinadq) in https://github.com/laravel/laravel/pull/6761
++
++## [v12.11.2](https://github.com/laravel/laravel/compare/v12.11.1...v12.11.2) - 2026-01-19
++
++* [12.x] Update composer dev script to ensure no timeout by [@jackbayliss](https://github.com/jackbayliss) in https://github.com/laravel/laravel/pull/6735
++* [12.x] Update jobs/cache migrations by [@jackbayliss](https://github.com/jackbayliss) in https://github.com/laravel/laravel/pull/6736
++* [12.x] Remove failed jobs indexes by [@jackbayliss](https://github.com/jackbayliss) in https://github.com/laravel/laravel/pull/6739
++* [12.x] Add `APP_URL` fallback in filesystems config by [@KentarouTakeda](https://github.com/KentarouTakeda) in https://github.com/laravel/laravel/pull/6742
++* chore: Update outdated GitHub Actions version by [@pgoslatara](https://github.com/pgoslatara) in https://github.com/laravel/laravel/pull/6743
++
++## [v12.11.1](https://github.com/laravel/laravel/compare/v12.11.0...v12.11.1) - 2025-12-23
++
++* Use environment variable for `DB_SSLMODE` - Postgres by [@robsontenorio](https://github.com/robsontenorio) in https://github.com/laravel/laravel/pull/6727
++* fix: ensure APP_URL does not have trailing slash in filesystem by [@msamgan](https://github.com/msamgan) in https://github.com/laravel/laravel/pull/6728
++
++## [v12.11.0](https://github.com/laravel/laravel/compare/v12.10.1...v12.11.0) - 2025-11-25
++
++* fix: cookies are not available for subdomains by default by [@joostdebruijn](https://github.com/joostdebruijn) in https://github.com/laravel/laravel/pull/6705
++* Fix PHP 8.5 PDO Driver Specific Constant Deprecation by [@RyanSchaefer](https://github.com/RyanSchaefer) in https://github.com/laravel/laravel/pull/6710
++* Ignore Laravel compiled views for Vite  by [@QistiAmal1212](https://github.com/QistiAmal1212) in https://github.com/laravel/laravel/pull/6714
++
++## [v12.10.1](https://github.com/laravel/laravel/compare/v12.10.0...v12.10.1) - 2025-11-06
++
++* Update schema URL in package.json by [@robinmiau](https://github.com/robinmiau) in https://github.com/laravel/laravel/pull/6701
++
++## [v12.10.0](https://github.com/laravel/laravel/compare/v12.9.1...v12.10.0) - 2025-11-04
++
++* Add background driver by [@barryvdh](https://github.com/barryvdh) in https://github.com/laravel/laravel/pull/6699
+ 
+ ## [v12.9.1](https://github.com/laravel/laravel/compare/v12.9.0...v12.9.1) - 2025-10-23
+ 
+diff --git a/app/Models/User.php b/app/Models/User.php
+index 749c7b77..68f3a669 100644
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -3,13 +3,14 @@
+ namespace App\Models;
+ 
+ // use Illuminate\Contracts\Auth\MustVerifyEmail;
++use Database\Factories\UserFactory;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Foundation\Auth\User as Authenticatable;
+ use Illuminate\Notifications\Notifiable;
+ 
+ class User extends Authenticatable
+ {
+-    /** @use HasFactory<\Database\Factories\UserFactory> */
++    /** @use HasFactory<UserFactory> */
+     use HasFactory, Notifiable;
+ 
+     /**
+diff --git a/bootstrap/providers.php b/bootstrap/providers.php
+index 38b258d1..fc94ae60 100644
+--- a/bootstrap/providers.php
++++ b/bootstrap/providers.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use App\Providers\AppServiceProvider;
++
+ return [
+-    App\Providers\AppServiceProvider::class,
++    AppServiceProvider::class,
+ ];
+diff --git a/composer.json b/composer.json
+index 44c60542..b17af3ef 100644
+--- a/composer.json
++++ b/composer.json
+@@ -17,7 +17,7 @@
+         "laravel/sail": "^1.41",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.6",
+-        "phpunit/phpunit": "^11.5.3"
++        "phpunit/phpunit": "^11.5.50"
+     },
+     "autoload": {
+         "psr-4": {
+@@ -42,7 +42,7 @@
+         ],
+         "dev": [
+             "Composer\\Config::disableProcessTimeout",
+-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
++            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+         ],
+         "test": [
+             "@php artisan config:clear --ansi",
+diff --git a/config/auth.php b/config/auth.php
+index 7d1eb0de..d7568ff1 100644
+--- a/config/auth.php
++++ b/config/auth.php
+@@ -1,5 +1,7 @@
+ <?php
+ 
++use App\Models\User;
++
+ return [
+ 
+     /*
+@@ -62,7 +64,7 @@ return [
+     'providers' => [
+         'users' => [
+             'driver' => 'eloquent',
+-            'model' => env('AUTH_MODEL', App\Models\User::class),
++            'model' => env('AUTH_MODEL', User::class),
+         ],
+ 
+         // 'users' => [
+diff --git a/config/database.php b/config/database.php
+index 53dcae02..64709ce5 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -1,6 +1,7 @@
+ <?php
+ 
+ use Illuminate\Support\Str;
++use Pdo\Mysql;
+ 
+ return [
+ 
+@@ -59,7 +60,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
++                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+@@ -79,7 +80,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
++                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+@@ -95,7 +96,7 @@ return [
+             'prefix' => '',
+             'prefix_indexes' => true,
+             'search_path' => 'public',
+-            'sslmode' => 'prefer',
++            'sslmode' => env('DB_SSLMODE', 'prefer'),
+         ],
+ 
+         'sqlsrv' => [
+diff --git a/config/filesystems.php b/config/filesystems.php
+index 3d671bd9..37d8fca4 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -41,7 +41,7 @@ return [
+         'public' => [
+             'driver' => 'local',
+             'root' => storage_path('app/public'),
+-            'url' => env('APP_URL').'/storage',
++            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+             'visibility' => 'public',
+             'throw' => false,
+             'report' => false,
+diff --git a/config/logging.php b/config/logging.php
+index 9e998a49..b09cb25d 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -76,7 +76,7 @@ return [
+         'slack' => [
+             'driver' => 'slack',
+             'url' => env('LOG_SLACK_WEBHOOK_URL'),
+-            'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
++            'username' => env('LOG_SLACK_USERNAME', env('APP_NAME', 'Laravel')),
+             'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
+             'level' => env('LOG_LEVEL', 'critical'),
+             'replace_placeholders' => true,
+diff --git a/config/mail.php b/config/mail.php
+index 522b284b..e32e88da 100644
+--- a/config/mail.php
++++ b/config/mail.php
+@@ -112,7 +112,7 @@ return [
+ 
+     'from' => [
+         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+-        'name' => env('MAIL_FROM_NAME', 'Example'),
++        'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
+     ],
+ 
+ ];
+diff --git a/config/session.php b/config/session.php
+index bc45901e..5b541b75 100644
+--- a/config/session.php
++++ b/config/session.php
+@@ -152,7 +152,7 @@ return [
+     |
+     | This value determines the domain and subdomains the session cookie is
+     | available to. By default, the cookie will be available to the root
+-    | domain and all subdomains. Typically, this shouldn't be changed.
++    | domain without subdomains. Typically, this shouldn't be changed.
+     |
+     */
+ 
+diff --git a/database/factories/UserFactory.php b/database/factories/UserFactory.php
+index 584104c9..c4ceb074 100644
+--- a/database/factories/UserFactory.php
++++ b/database/factories/UserFactory.php
+@@ -2,12 +2,13 @@
+ 
+ namespace Database\Factories;
+ 
++use App\Models\User;
+ use Illuminate\Database\Eloquent\Factories\Factory;
+ use Illuminate\Support\Facades\Hash;
+ use Illuminate\Support\Str;
+ 
+ /**
+- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
++ * @extends Factory<User>
+  */
+ class UserFactory extends Factory
+ {
+diff --git a/database/migrations/0001_01_01_000001_create_cache_table.php b/database/migrations/0001_01_01_000001_create_cache_table.php
+index b9c106be..ed758bdf 100644
+--- a/database/migrations/0001_01_01_000001_create_cache_table.php
++++ b/database/migrations/0001_01_01_000001_create_cache_table.php
+@@ -14,13 +14,13 @@ return new class extends Migration
+         Schema::create('cache', function (Blueprint $table) {
+             $table->string('key')->primary();
+             $table->mediumText('value');
+-            $table->integer('expiration');
++            $table->integer('expiration')->index();
+         });
+ 
+         Schema::create('cache_locks', function (Blueprint $table) {
+             $table->string('key')->primary();
+             $table->string('owner');
+-            $table->integer('expiration');
++            $table->integer('expiration')->index();
+         });
+     }
+ 
+diff --git a/package.json b/package.json
+index af0db451..7686b295 100644
+--- a/package.json
++++ b/package.json
+@@ -1,5 +1,5 @@
+ {
+-    "$schema": "https://json.schemastore.org/package.json",
++    "$schema": "https://www.schemastore.org/package.json",
+     "private": true,
+     "type": "module",
+     "scripts": {
+diff --git a/phpunit.xml b/phpunit.xml
+index d7032415..e7f0a48d 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -25,6 +25,7 @@
+         <env name="CACHE_STORE" value="array"/>
+         <env name="DB_CONNECTION" value="sqlite"/>
+         <env name="DB_DATABASE" value=":memory:"/>
++        <env name="DB_URL" value=""/>
+         <env name="MAIL_MAILER" value="array"/>
+         <env name="QUEUE_CONNECTION" value="sync"/>
+         <env name="SESSION_DRIVER" value="array"/>
+diff --git a/vite.config.js b/vite.config.js
+index 29fbfe9a..f35b4e79 100644
+--- a/vite.config.js
++++ b/vite.config.js
+@@ -10,4 +10,9 @@ export default defineConfig({
+         }),
+         tailwindcss(),
+     ],
++    server: {
++        watch: {
++            ignored: ['**/storage/framework/views/**'],
++        },
++    },
+ });
