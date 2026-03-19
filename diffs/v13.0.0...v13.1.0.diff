@@ -1,0 +1,27 @@
+diff --git a/composer.json b/composer.json
+index 20f6f854..0422a1e2 100644
+--- a/composer.json
++++ b/composer.json
+@@ -80,6 +80,6 @@
+             "php-http/discovery": true
+         }
+     },
+-    "minimum-stability": "dev",
++    "minimum-stability": "stable",
+     "prefer-stable": true
+ }
+diff --git a/package.json b/package.json
+index 7686b295..0a76fd0f 100644
+--- a/package.json
++++ b/package.json
+@@ -10,8 +10,8 @@
+         "@tailwindcss/vite": "^4.0.0",
+         "axios": "^1.11.0",
+         "concurrently": "^9.0.1",
+-        "laravel-vite-plugin": "^2.0.0",
++        "laravel-vite-plugin": "^3.0.0",
+         "tailwindcss": "^4.0.0",
+-        "vite": "^7.0.7"
++        "vite": "^8.0.0"
+     }
+ }
