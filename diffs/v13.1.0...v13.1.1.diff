@@ -1,0 +1,42 @@
+diff --git a/.gitignore b/.gitignore
+index b71b1ea3..0eeb578e 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -19,6 +19,7 @@
+ /storage/*.key
+ /storage/pail
+ /vendor
++_ide_helper.php
+ Homestead.json
+ Homestead.yaml
+ Thumbs.db
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a4a4f982..fbf513d9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,11 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.2...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v13.1.0...13.x)
++
++## [v13.1.0](https://github.com/laravel/laravel/compare/v12.12.2...v13.1.0) - 2026-03-18
++
++* Change back minimum-stability to stable by [@jnoordsij](https://github.com/jnoordsij) in https://github.com/laravel/laravel/pull/6766
++* Vite 8 support
+ 
+ ## [v12.12.2](https://github.com/laravel/laravel/compare/v12.12.1...v12.12.2) - 2026-03-14
+ 
+diff --git a/package.json b/package.json
+index 0a76fd0f..3aa557cf 100644
+--- a/package.json
++++ b/package.json
+@@ -8,7 +8,7 @@
+     },
+     "devDependencies": {
+         "@tailwindcss/vite": "^4.0.0",
+-        "axios": "^1.11.0",
++        "axios": ">=1.11.0 <=1.14.0"
+         "concurrently": "^9.0.1",
+         "laravel-vite-plugin": "^3.0.0",
+         "tailwindcss": "^4.0.0",
