@@ -1,0 +1,121 @@
+diff --git a/.editorconfig b/.editorconfig
+index a186cd20..6df84280 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -14,5 +14,5 @@ trim_trailing_whitespace = false
+ [*.{yml,yaml}]
+ indent_size = 2
+ 
+-[compose.yaml]
++[{compose,docker-compose}.{yml,yaml}]
+ indent_size = 4
+diff --git a/.gitignore b/.gitignore
+index b71b1ea3..f6f8018f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -5,7 +5,7 @@
+ .env.production
+ .phpactor.json
+ .phpunit.result.cache
+-/.fleet
++/.cursor/
+ /.idea
+ /.nova
+ /.phpunit.cache
+@@ -19,6 +19,7 @@
+ /storage/*.key
+ /storage/pail
+ /vendor
++_ide_helper.php
+ Homestead.json
+ Homestead.yaml
+ Thumbs.db
+diff --git a/.npmrc b/.npmrc
+new file mode 100644
+index 00000000..97b895e2
+--- /dev/null
++++ b/.npmrc
+@@ -0,0 +1 @@
++ignore-scripts=true
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a4a4f982..6aeb896f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,21 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.2...12.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v13.1.2...13.x)
++
++## [v13.1.2](https://github.com/laravel/laravel/compare/v13.1.1...v13.1.2) - 2026-03-31
++
++* Prevents installed package from executing malicious code via `postinstall` by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/laravel/pull/6777
++* Add missing comma in axios by [@aziyan99](https://github.com/aziyan99) in https://github.com/laravel/laravel/pull/6779
++
++## [v13.1.1](https://github.com/laravel/laravel/compare/v13.1.0...v13.1.1) - 2026-03-31
++
++* Update .gitignore by [@Cegem-360](https://github.com/Cegem-360) in https://github.com/laravel/laravel/pull/6774
++* [security] pin axios version by [@NickSdot](https://github.com/NickSdot) in https://github.com/laravel/laravel/pull/6776
++
++## [v13.1.0](https://github.com/laravel/laravel/compare/v12.12.2...v13.1.0) - 2026-03-18
++
++* Change back minimum-stability to stable by [@jnoordsij](https://github.com/jnoordsij) in https://github.com/laravel/laravel/pull/6766
++* Vite 8 support
+ 
+ ## [v12.12.2](https://github.com/laravel/laravel/compare/v12.12.1...v12.12.2) - 2026-03-14
+ 
+diff --git a/composer.json b/composer.json
+index 20f6f854..41f874d3 100644
+--- a/composer.json
++++ b/composer.json
+@@ -36,7 +36,7 @@
+             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+             "@php artisan key:generate",
+             "@php artisan migrate --force",
+-            "npm install",
++            "npm install --ignore-scripts",
+             "npm run build"
+         ],
+         "dev": [
+@@ -80,6 +80,6 @@
+             "php-http/discovery": true
+         }
+     },
+-    "minimum-stability": "dev",
++    "minimum-stability": "stable",
+     "prefer-stable": true
+ }
+diff --git a/package.json b/package.json
+index 7686b295..296ac3f0 100644
+--- a/package.json
++++ b/package.json
+@@ -8,10 +8,9 @@
+     },
+     "devDependencies": {
+         "@tailwindcss/vite": "^4.0.0",
+-        "axios": "^1.11.0",
+         "concurrently": "^9.0.1",
+-        "laravel-vite-plugin": "^2.0.0",
++        "laravel-vite-plugin": "^3.0.0",
+         "tailwindcss": "^4.0.0",
+-        "vite": "^7.0.7"
++        "vite": "^8.0.0"
+     }
+ }
+diff --git a/resources/js/app.js b/resources/js/app.js
+index e59d6a0a..8337712e 100644
+--- a/resources/js/app.js
++++ b/resources/js/app.js
+@@ -1 +1 @@
+-import './bootstrap';
++//
+diff --git a/resources/js/bootstrap.js b/resources/js/bootstrap.js
+deleted file mode 100644
+index 5f1390b0..00000000
+--- a/resources/js/bootstrap.js
++++ /dev/null
+@@ -1,4 +0,0 @@
+-import axios from 'axios';
+-window.axios = axios;
+-
+-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
