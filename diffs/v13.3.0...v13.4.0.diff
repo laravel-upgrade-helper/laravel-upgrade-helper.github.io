@@ -1,0 +1,39 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 531bde7b..e071bbcb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v13.2.0...13.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v13.3.0...13.x)
++
++## [v13.3.0](https://github.com/laravel/laravel/compare/v13.2.0...v13.3.0) - 2026-04-16
++
++* [13.x] enable npm audit by default by [@leo95batista](https://github.com/leo95batista) in https://github.com/laravel/laravel/pull/6788
++* Update changelog link to Laravel framework repo by [@Rattone](https://github.com/Rattone) in https://github.com/laravel/laravel/pull/6790
++* [13x] Add .codex to .gitignore by [@amdad121](https://github.com/amdad121) in https://github.com/laravel/laravel/pull/6793
+ 
+ ## [v13.2.0](https://github.com/laravel/laravel/compare/v13.1.2...v13.2.0) - 2026-04-09
+ 
+diff --git a/composer.json b/composer.json
+index 41f874d3..daa04c6a 100644
+--- a/composer.json
++++ b/composer.json
+@@ -13,6 +13,7 @@
+     "require-dev": {
+         "fakerphp/faker": "^1.23",
+         "laravel/pail": "^1.2.5",
++        "laravel/pao": "^1.0.6",
+         "laravel/pint": "^1.27",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.6",
+@@ -44,7 +45,7 @@
+             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+         ],
+         "test": [
+-            "@php artisan config:clear --ansi",
++            "@php artisan config:clear --ansi @no_additional_args",
+             "@php artisan test"
+         ],
+         "post-autoload-dump": [
