@@ -1,0 +1,200 @@
+diff --git a/.gitignore b/.gitignore
+index f6f8018f..7be55e2e 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -5,6 +5,7 @@
+ .env.production
+ .phpactor.json
+ .phpunit.result.cache
++/.codex
+ /.cursor/
+ /.idea
+ /.nova
+@@ -14,6 +15,7 @@
+ /auth.json
+ /node_modules
+ /public/build
++/public/fonts-manifest.dev.json
+ /public/hot
+ /public/storage
+ /storage/*.key
+diff --git a/.npmrc b/.npmrc
+index 97b895e2..495a6af9 100644
+--- a/.npmrc
++++ b/.npmrc
+@@ -1 +1,2 @@
+ ignore-scripts=true
++audit=true
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6aeb896f..0071cbfb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,28 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v13.1.2...13.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v13.5.0...13.x)
++
++## [v13.5.0](https://github.com/laravel/laravel/compare/v13.4.0...v13.5.0) - 2026-04-30
++
++* Use the Vite font plugin for application fonts by [@WendellAdriel](https://github.com/WendellAdriel) in https://github.com/laravel/laravel/pull/6806
++
++## [v13.4.0](https://github.com/laravel/laravel/compare/v13.3.0...v13.4.0) - 2026-04-28
++
++* Add @no_additional_args to composer test script config clear by [@jnoordsij](https://github.com/jnoordsij) in https://github.com/laravel/laravel/pull/6799
++* [13.x] Adds pao by default by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6802
++
++## [v13.3.0](https://github.com/laravel/laravel/compare/v13.2.0...v13.3.0) - 2026-04-16
++
++* [13.x] enable npm audit by default by [@leo95batista](https://github.com/leo95batista) in https://github.com/laravel/laravel/pull/6788
++* Update changelog link to Laravel framework repo by [@Rattone](https://github.com/Rattone) in https://github.com/laravel/laravel/pull/6790
++* [13x] Add .codex to .gitignore by [@amdad121](https://github.com/amdad121) in https://github.com/laravel/laravel/pull/6793
++
++## [v13.2.0](https://github.com/laravel/laravel/compare/v13.1.2...v13.2.0) - 2026-04-09
++
++* Remove axios and enable ignore-scripts by [@WendellAdriel](https://github.com/WendellAdriel) in https://github.com/laravel/laravel/pull/6778
++* Add /.cursor/ to .gitignore by [@workwithbinu](https://github.com/workwithbinu) in https://github.com/laravel/laravel/pull/6782
++* Remove '.fleet' from .gitignore by [@dominiq007](https://github.com/dominiq007) in https://github.com/laravel/laravel/pull/6783
++* Support all compose file naming conventions in editorconfig by [@mmachatschek](https://github.com/mmachatschek) in https://github.com/laravel/laravel/pull/6786
+ 
+ ## [v13.1.2](https://github.com/laravel/laravel/compare/v13.1.1...v13.1.2) - 2026-03-31
+ 
+diff --git a/composer.json b/composer.json
+index 41f874d3..a4370918 100644
+--- a/composer.json
++++ b/composer.json
+@@ -7,12 +7,13 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.3",
+-        "laravel/framework": "^13.0",
++        "laravel/framework": "^13.8",
+         "laravel/tinker": "^3.0"
+     },
+     "require-dev": {
+         "fakerphp/faker": "^1.23",
+         "laravel/pail": "^1.2.5",
++        "laravel/pao": "^1.0.6",
+         "laravel/pint": "^1.27",
+         "mockery/mockery": "^1.6",
+         "nunomaduro/collision": "^8.6",
+@@ -44,7 +45,7 @@
+             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+         ],
+         "test": [
+-            "@php artisan config:clear --ansi",
++            "@php artisan config:clear --ansi @no_additional_args",
+             "@php artisan test"
+         ],
+         "post-autoload-dump": [
+diff --git a/config/database.php b/config/database.php
+index 64709ce5..abbb88e3 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -60,7 +60,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
++                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+@@ -80,7 +80,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
++                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+diff --git a/database/migrations/0001_01_01_000002_create_jobs_table.php b/database/migrations/0001_01_01_000002_create_jobs_table.php
+index 425e7058..edac6fee 100644
+--- a/database/migrations/0001_01_01_000002_create_jobs_table.php
++++ b/database/migrations/0001_01_01_000002_create_jobs_table.php
+@@ -15,7 +15,7 @@ return new class extends Migration
+             $table->id();
+             $table->string('queue')->index();
+             $table->longText('payload');
+-            $table->unsignedTinyInteger('attempts');
++            $table->unsignedSmallInteger('attempts');
+             $table->unsignedInteger('reserved_at')->nullable();
+             $table->unsignedInteger('available_at');
+             $table->unsignedInteger('created_at');
+@@ -37,11 +37,13 @@ return new class extends Migration
+         Schema::create('failed_jobs', function (Blueprint $table) {
+             $table->id();
+             $table->string('uuid')->unique();
+-            $table->text('connection');
+-            $table->text('queue');
++            $table->string('connection');
++            $table->string('queue');
+             $table->longText('payload');
+             $table->longText('exception');
+             $table->timestamp('failed_at')->useCurrent();
++
++            $table->index(['connection', 'queue', 'failed_at']);
+         });
+     }
+ 
+diff --git a/package.json b/package.json
+index 296ac3f0..49c869e3 100644
+--- a/package.json
++++ b/package.json
+@@ -9,7 +9,7 @@
+     "devDependencies": {
+         "@tailwindcss/vite": "^4.0.0",
+         "concurrently": "^9.0.1",
+-        "laravel-vite-plugin": "^3.0.0",
++        "laravel-vite-plugin": "^3.1",
+         "tailwindcss": "^4.0.0",
+         "vite": "^8.0.0"
+     }
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 5f83753b..26e294ab 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -6,9 +6,7 @@
+ 
+         <title>{{ config('app.name', 'Laravel') }}</title>
+ 
+-        <!-- Fonts -->
+-        <link rel="preconnect" href="https://fonts.bunny.net">
+-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
++        @fonts
+ 
+         <!-- Styles / Scripts -->
+         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+@@ -120,7 +118,7 @@
+ 
+                     <p class="mt-6 lg:mt-10 text-[#706f6c] dark:text-[#A1A09A]">
+                         v{{ app()->version() }}
+-                        <a href="https://github.com/laravel/laravel/blob/13.x/CHANGELOG.md" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
++                        <a href="https://github.com/laravel/framework/blob/13.x/CHANGELOG.md" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
+                             <span>View changelog</span>
+                             <svg
+                                 width="10"
+diff --git a/vite.config.js b/vite.config.js
+index f35b4e79..1fd66d53 100644
+--- a/vite.config.js
++++ b/vite.config.js
+@@ -1,5 +1,6 @@
+ import { defineConfig } from 'vite';
+ import laravel from 'laravel-vite-plugin';
++import { bunny } from 'laravel-vite-plugin/fonts';
+ import tailwindcss from '@tailwindcss/vite';
+ 
+ export default defineConfig({
+@@ -7,6 +8,11 @@ export default defineConfig({
+         laravel({
+             input: ['resources/css/app.css', 'resources/js/app.js'],
+             refresh: true,
++            fonts: [
++                bunny('Instrument Sans', {
++                    weights: [400, 500, 600],
++                }),
++            ],
+         }),
+         tailwindcss(),
+     ],

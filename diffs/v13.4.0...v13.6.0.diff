@@ -1,0 +1,139 @@
+diff --git a/.gitignore b/.gitignore
+index 83d894f7..7be55e2e 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -15,6 +15,7 @@
+ /auth.json
+ /node_modules
+ /public/build
++/public/fonts-manifest.dev.json
+ /public/hot
+ /public/storage
+ /storage/*.key
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e071bbcb..0071cbfb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,15 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v13.3.0...13.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v13.5.0...13.x)
++
++## [v13.5.0](https://github.com/laravel/laravel/compare/v13.4.0...v13.5.0) - 2026-04-30
++
++* Use the Vite font plugin for application fonts by [@WendellAdriel](https://github.com/WendellAdriel) in https://github.com/laravel/laravel/pull/6806
++
++## [v13.4.0](https://github.com/laravel/laravel/compare/v13.3.0...v13.4.0) - 2026-04-28
++
++* Add @no_additional_args to composer test script config clear by [@jnoordsij](https://github.com/jnoordsij) in https://github.com/laravel/laravel/pull/6799
++* [13.x] Adds pao by default by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/laravel/pull/6802
+ 
+ ## [v13.3.0](https://github.com/laravel/laravel/compare/v13.2.0...v13.3.0) - 2026-04-16
+ 
+diff --git a/composer.json b/composer.json
+index daa04c6a..a4370918 100644
+--- a/composer.json
++++ b/composer.json
+@@ -7,7 +7,7 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.3",
+-        "laravel/framework": "^13.0",
++        "laravel/framework": "^13.8",
+         "laravel/tinker": "^3.0"
+     },
+     "require-dev": {
+diff --git a/config/database.php b/config/database.php
+index 64709ce5..abbb88e3 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -60,7 +60,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
++                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+@@ -80,7 +80,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
++                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+diff --git a/database/migrations/0001_01_01_000002_create_jobs_table.php b/database/migrations/0001_01_01_000002_create_jobs_table.php
+index 87d3ed78..edac6fee 100644
+--- a/database/migrations/0001_01_01_000002_create_jobs_table.php
++++ b/database/migrations/0001_01_01_000002_create_jobs_table.php
+@@ -37,11 +37,13 @@ return new class extends Migration
+         Schema::create('failed_jobs', function (Blueprint $table) {
+             $table->id();
+             $table->string('uuid')->unique();
+-            $table->text('connection');
+-            $table->text('queue');
++            $table->string('connection');
++            $table->string('queue');
+             $table->longText('payload');
+             $table->longText('exception');
+             $table->timestamp('failed_at')->useCurrent();
++
++            $table->index(['connection', 'queue', 'failed_at']);
+         });
+     }
+ 
+diff --git a/package.json b/package.json
+index 296ac3f0..49c869e3 100644
+--- a/package.json
++++ b/package.json
+@@ -9,7 +9,7 @@
+     "devDependencies": {
+         "@tailwindcss/vite": "^4.0.0",
+         "concurrently": "^9.0.1",
+-        "laravel-vite-plugin": "^3.0.0",
++        "laravel-vite-plugin": "^3.1",
+         "tailwindcss": "^4.0.0",
+         "vite": "^8.0.0"
+     }
+diff --git a/resources/views/welcome.blade.php b/resources/views/welcome.blade.php
+index 2c2e7c27..26e294ab 100644
+--- a/resources/views/welcome.blade.php
++++ b/resources/views/welcome.blade.php
+@@ -6,9 +6,7 @@
+ 
+         <title>{{ config('app.name', 'Laravel') }}</title>
+ 
+-        <!-- Fonts -->
+-        <link rel="preconnect" href="https://fonts.bunny.net">
+-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
++        @fonts
+ 
+         <!-- Styles / Scripts -->
+         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+diff --git a/vite.config.js b/vite.config.js
+index f35b4e79..1fd66d53 100644
+--- a/vite.config.js
++++ b/vite.config.js
+@@ -1,5 +1,6 @@
+ import { defineConfig } from 'vite';
+ import laravel from 'laravel-vite-plugin';
++import { bunny } from 'laravel-vite-plugin/fonts';
+ import tailwindcss from '@tailwindcss/vite';
+ 
+ export default defineConfig({
+@@ -7,6 +8,11 @@ export default defineConfig({
+         laravel({
+             input: ['resources/css/app.css', 'resources/js/app.js'],
+             refresh: true,
++            fonts: [
++                bunny('Instrument Sans', {
++                    weights: [400, 500, 600],
++                }),
++            ],
+         }),
+         tailwindcss(),
+     ],
