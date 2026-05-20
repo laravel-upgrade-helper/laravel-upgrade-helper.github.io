@@ -1,0 +1,44 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0071cbfb..ecc693fd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v13.5.0...13.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v13.6.0...13.x)
++
++## [v13.6.0](https://github.com/laravel/laravel/compare/v13.5.0...v13.6.0) - 2026-05-11
++
++* Remove Pdo/Mysql const workaround by [@jnoordsij](https://github.com/jnoordsij) in https://github.com/laravel/laravel/pull/6810
+ 
+ ## [v13.5.0](https://github.com/laravel/laravel/compare/v13.4.0...v13.5.0) - 2026-04-30
+ 
+diff --git a/config/cache.php b/config/cache.php
+index c68acdfc..d7eec61a 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -27,8 +27,8 @@ return [
+     | same cache driver to group types of items stored in your caches.
+     |
+     | Supported drivers: "array", "database", "file", "memcached",
+-    |                    "redis", "dynamodb", "octane",
+-    |                    "failover", "null"
++    |                    "redis", "dynamodb", "storage", "octane",
++    |                    "session", "failover", "null"
+     |
+     */
+ 
+@@ -53,6 +53,12 @@ return [
+             'lock_path' => storage_path('framework/cache/data'),
+         ],
+ 
++        'storage' => [
++            'driver' => 'storage',
++            'disk' => env('CACHE_STORAGE_DISK'),
++            'path' => env('CACHE_STORAGE_PATH', 'framework/cache/data'),
++        ],
++
+         'memcached' => [
+             'driver' => 'memcached',
+             'persistent_id' => env('MEMCACHED_PERSISTENT_ID'),
