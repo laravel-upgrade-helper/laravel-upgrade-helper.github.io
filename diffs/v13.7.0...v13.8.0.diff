@@ -1,0 +1,50 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ecc693fd..c1f6b898 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,10 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v13.6.0...13.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v13.7.0...13.x)
++
++## [v13.7.0](https://github.com/laravel/laravel/compare/v13.6.0...v13.7.0) - 2026-05-14
++
++**Full Changelog**: https://github.com/laravel/laravel/compare/v13.6.0...v13.7.0
+ 
+ ## [v13.6.0](https://github.com/laravel/laravel/compare/v13.5.0...v13.6.0) - 2026-05-11
+ 
+diff --git a/bootstrap/app.php b/bootstrap/app.php
+index c1832766..7a2848fb 100644
+--- a/bootstrap/app.php
++++ b/bootstrap/app.php
+@@ -3,6 +3,7 @@
+ use Illuminate\Foundation\Application;
+ use Illuminate\Foundation\Configuration\Exceptions;
+ use Illuminate\Foundation\Configuration\Middleware;
++use Illuminate\Http\Request;
+ 
+ return Application::configure(basePath: dirname(__DIR__))
+     ->withRouting(
+@@ -14,5 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
+         //
+     })
+     ->withExceptions(function (Exceptions $exceptions): void {
+-        //
++        $exceptions->shouldRenderJsonWhen(
++            fn (Request $request) => $request->is('api/*'),
++        );
+     })->create();
+diff --git a/resources/css/app.css b/resources/css/app.css
+index 3e6abeab..54b247e2 100644
+--- a/resources/css/app.css
++++ b/resources/css/app.css
+@@ -2,8 +2,6 @@
+ 
+ @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+ @source '../../storage/framework/views/*.php';
+-@source '../**/*.blade.php';
+-@source '../**/*.js';
+ 
+ @theme {
+     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',

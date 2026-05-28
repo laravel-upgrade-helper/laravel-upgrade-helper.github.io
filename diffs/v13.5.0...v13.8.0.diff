@@ -1,0 +1,141 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 01bb5311..c1f6b898 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,18 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v13.4.0...13.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v13.7.0...13.x)
++
++## [v13.7.0](https://github.com/laravel/laravel/compare/v13.6.0...v13.7.0) - 2026-05-14
++
++**Full Changelog**: https://github.com/laravel/laravel/compare/v13.6.0...v13.7.0
++
++## [v13.6.0](https://github.com/laravel/laravel/compare/v13.5.0...v13.6.0) - 2026-05-11
++
++* Remove Pdo/Mysql const workaround by [@jnoordsij](https://github.com/jnoordsij) in https://github.com/laravel/laravel/pull/6810
++
++## [v13.5.0](https://github.com/laravel/laravel/compare/v13.4.0...v13.5.0) - 2026-04-30
++
++* Use the Vite font plugin for application fonts by [@WendellAdriel](https://github.com/WendellAdriel) in https://github.com/laravel/laravel/pull/6806
+ 
+ ## [v13.4.0](https://github.com/laravel/laravel/compare/v13.3.0...v13.4.0) - 2026-04-28
+ 
+diff --git a/bootstrap/app.php b/bootstrap/app.php
+index c1832766..7a2848fb 100644
+--- a/bootstrap/app.php
++++ b/bootstrap/app.php
+@@ -3,6 +3,7 @@
+ use Illuminate\Foundation\Application;
+ use Illuminate\Foundation\Configuration\Exceptions;
+ use Illuminate\Foundation\Configuration\Middleware;
++use Illuminate\Http\Request;
+ 
+ return Application::configure(basePath: dirname(__DIR__))
+     ->withRouting(
+@@ -14,5 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
+         //
+     })
+     ->withExceptions(function (Exceptions $exceptions): void {
+-        //
++        $exceptions->shouldRenderJsonWhen(
++            fn (Request $request) => $request->is('api/*'),
++        );
+     })->create();
+diff --git a/composer.json b/composer.json
+index 45ca29fb..a4370918 100644
+--- a/composer.json
++++ b/composer.json
+@@ -7,7 +7,7 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.3",
+-        "laravel/framework": "^13.7",
++        "laravel/framework": "^13.8",
+         "laravel/tinker": "^3.0"
+     },
+     "require-dev": {
+diff --git a/config/cache.php b/config/cache.php
+index c68acdfc..d7eec61a 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -27,8 +27,8 @@ return [
+     | same cache driver to group types of items stored in your caches.
+     |
+     | Supported drivers: "array", "database", "file", "memcached",
+-    |                    "redis", "dynamodb", "octane",
+-    |                    "failover", "null"
++    |                    "redis", "dynamodb", "storage", "octane",
++    |                    "session", "failover", "null"
+     |
+     */
+ 
+@@ -53,6 +53,12 @@ return [
+             'lock_path' => storage_path('framework/cache/data'),
+         ],
+ 
++        'storage' => [
++            'driver' => 'storage',
++            'disk' => env('CACHE_STORAGE_DISK'),
++            'path' => env('CACHE_STORAGE_PATH', 'framework/cache/data'),
++        ],
++
+         'memcached' => [
+             'driver' => 'memcached',
+             'persistent_id' => env('MEMCACHED_PERSISTENT_ID'),
+diff --git a/config/database.php b/config/database.php
+index 64709ce5..abbb88e3 100644
+--- a/config/database.php
++++ b/config/database.php
+@@ -60,7 +60,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
++                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+@@ -80,7 +80,7 @@ return [
+             'strict' => true,
+             'engine' => null,
+             'options' => extension_loaded('pdo_mysql') ? array_filter([
+-                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
++                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+             ]) : [],
+         ],
+ 
+diff --git a/database/migrations/0001_01_01_000002_create_jobs_table.php b/database/migrations/0001_01_01_000002_create_jobs_table.php
+index 87d3ed78..edac6fee 100644
+--- a/database/migrations/0001_01_01_000002_create_jobs_table.php
++++ b/database/migrations/0001_01_01_000002_create_jobs_table.php
+@@ -37,11 +37,13 @@ return new class extends Migration
+         Schema::create('failed_jobs', function (Blueprint $table) {
+             $table->id();
+             $table->string('uuid')->unique();
+-            $table->text('connection');
+-            $table->text('queue');
++            $table->string('connection');
++            $table->string('queue');
+             $table->longText('payload');
+             $table->longText('exception');
+             $table->timestamp('failed_at')->useCurrent();
++
++            $table->index(['connection', 'queue', 'failed_at']);
+         });
+     }
+ 
+diff --git a/resources/css/app.css b/resources/css/app.css
+index 3e6abeab..54b247e2 100644
+--- a/resources/css/app.css
++++ b/resources/css/app.css
+@@ -2,8 +2,6 @@
+ 
+ @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+ @source '../../storage/framework/views/*.php';
+-@source '../**/*.blade.php';
+-@source '../**/*.js';
+ 
+ @theme {
+     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
