@@ -1,0 +1,272 @@
+diff --git a/.env.example b/.env.example
+index c0660ea1..40bb13b3 100644
+--- a/.env.example
++++ b/.env.example
+@@ -2,7 +2,7 @@ APP_NAME=Laravel
+ APP_ENV=local
+ APP_KEY=
+ APP_DEBUG=true
+-APP_URL=http://localhost
++APP_URL=http://localhost:8000
+ 
+ APP_LOCALE=en
+ APP_FALLBACK_LOCALE=en
+diff --git a/.github/dependabot.yml b/.github/dependabot.yml
+new file mode 100644
+index 00000000..ae67c4dd
+--- /dev/null
++++ b/.github/dependabot.yml
+@@ -0,0 +1,12 @@
++version: 2
++updates:
++  - package-ecosystem: "github-actions"
++    directory: "/"
++    schedule:
++      interval: "weekly"
++    cooldown:
++      default-days: 5
++    groups:
++      github-actions:
++        patterns:
++          - "*"
+diff --git a/.github/workflows/dependabot-auto-merge.yml b/.github/workflows/dependabot-auto-merge.yml
+new file mode 100644
+index 00000000..0871d485
+--- /dev/null
++++ b/.github/workflows/dependabot-auto-merge.yml
+@@ -0,0 +1,12 @@
++name: dependabot-auto-merge
++
++on: pull_request
++
++permissions:
++  contents: write
++  pull-requests: write
++
++jobs:
++  dependabot:
++    if: ${{ github.actor == 'dependabot[bot]' }}
++    uses: laravel/.github/.github/workflows/dependabot-auto-merge.yml@c265c45c41ccb723befb7a2b807dffff4595bd39
+diff --git a/.github/workflows/issues.yml b/.github/workflows/issues.yml
+index 230257c2..74ac1143 100644
+--- a/.github/workflows/issues.yml
++++ b/.github/workflows/issues.yml
+@@ -9,4 +9,4 @@ permissions:
+ 
+ jobs:
+   help-wanted:
+-    uses: laravel/.github/.github/workflows/issues.yml@main
++    uses: laravel/.github/.github/workflows/issues.yml@b019b7649633cd7149a2d2a4a6e3bba5d7e5ba01 # main
+diff --git a/.github/workflows/pull-requests.yml b/.github/workflows/pull-requests.yml
+index 6f9f97ea..c8ea73c1 100644
+--- a/.github/workflows/pull-requests.yml
++++ b/.github/workflows/pull-requests.yml
+@@ -9,4 +9,4 @@ permissions:
+ 
+ jobs:
+   uneditable:
+-    uses: laravel/.github/.github/workflows/pull-requests.yml@main
++    uses: laravel/.github/.github/workflows/pull-requests.yml@b019b7649633cd7149a2d2a4a6e3bba5d7e5ba01 # main
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index 52fa62c6..136bd35f 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -25,10 +25,12 @@ jobs:
+ 
+     steps:
+       - name: Checkout code
+-        uses: actions/checkout@v6
++        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
+ 
+       - name: Setup PHP
+-        uses: shivammathur/setup-php@v2
++        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+         with:
+           php-version: ${{ matrix.php }}
+           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+diff --git a/.github/workflows/update-changelog.yml b/.github/workflows/update-changelog.yml
+index 70352331..af650f58 100644
+--- a/.github/workflows/update-changelog.yml
++++ b/.github/workflows/update-changelog.yml
+@@ -10,4 +10,4 @@ jobs:
+   update:
+     permissions:
+       contents: write
+-    uses: laravel/.github/.github/workflows/update-changelog.yml@main
++    uses: laravel/.github/.github/workflows/update-changelog.yml@dd86ce0a18475504e42fa809d7454c1cb1a88028 # main
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0071cbfb..c3e5bef9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,19 @@
+ # Release Notes
+ 
+-## [Unreleased](https://github.com/laravel/laravel/compare/v13.5.0...13.x)
++## [Unreleased](https://github.com/laravel/laravel/compare/v13.8.0...13.x)
++
++## [v13.8.0](https://github.com/laravel/laravel/compare/v13.7.0...v13.8.0) - 2026-05-25
++
++* [13.x] remove Tailwind `@source` calls that are already covered by default by [@browner12](https://github.com/browner12) in https://github.com/laravel/laravel/pull/6823
++* [13.x] Render JSON exceptions for API routes by default by [@LucasCavalheri](https://github.com/LucasCavalheri) in https://github.com/laravel/laravel/pull/6824
++
++## [v13.7.0](https://github.com/laravel/laravel/compare/v13.6.0...v13.7.0) - 2026-05-14
++
++**Full Changelog**: https://github.com/laravel/laravel/compare/v13.6.0...v13.7.0
++
++## [v13.6.0](https://github.com/laravel/laravel/compare/v13.5.0...v13.6.0) - 2026-05-11
++
++* Remove Pdo/Mysql const workaround by [@jnoordsij](https://github.com/jnoordsij) in https://github.com/laravel/laravel/pull/6810
+ 
+ ## [v13.5.0](https://github.com/laravel/laravel/compare/v13.4.0...v13.5.0) - 2026-04-30
+ 
+diff --git a/bootstrap/app.php b/bootstrap/app.php
+index c1832766..1085719c 100644
+--- a/bootstrap/app.php
++++ b/bootstrap/app.php
+@@ -3,6 +3,7 @@
+ use Illuminate\Foundation\Application;
+ use Illuminate\Foundation\Configuration\Exceptions;
+ use Illuminate\Foundation\Configuration\Middleware;
++use Illuminate\Http\Request;
+ 
+ return Application::configure(basePath: dirname(__DIR__))
+     ->withRouting(
+@@ -14,5 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
+         //
+     })
+     ->withExceptions(function (Exceptions $exceptions): void {
+-        //
++        $exceptions->shouldRenderJsonWhen(
++            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
++        );
+     })->create();
+diff --git a/composer.json b/composer.json
+index a4370918..9b8fbd5d 100644
+--- a/composer.json
++++ b/composer.json
+@@ -7,7 +7,7 @@
+     "license": "MIT",
+     "require": {
+         "php": "^8.3",
+-        "laravel/framework": "^13.8",
++        "laravel/framework": "^13.17",
+         "laravel/tinker": "^3.0"
+     },
+     "require-dev": {
+@@ -42,7 +42,7 @@
+         ],
+         "dev": [
+             "Composer\\Config::disableProcessTimeout",
+-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
++            "@php artisan dev"
+         ],
+         "test": [
+             "@php artisan config:clear --ansi @no_additional_args",
+diff --git a/config/app.php b/config/app.php
+index 423eed59..dfa47ba0 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -114,7 +114,7 @@ return [
+     | manage Laravel's "maintenance mode" status. The "cache" driver will
+     | allow maintenance mode to be controlled across multiple machines.
+     |
+-    | Supported drivers: "file", "cache"
++    | Supported drivers: "file", "cache", "array"
+     |
+     */
+ 
+diff --git a/config/cache.php b/config/cache.php
+index c68acdfc..d7eec61a 100644
+--- a/config/cache.php
++++ b/config/cache.php
+@@ -27,8 +27,8 @@ return [
+     | same cache driver to group types of items stored in your caches.
+     |
+     | Supported drivers: "array", "database", "file", "memcached",
+-    |                    "redis", "dynamodb", "octane",
+-    |                    "failover", "null"
++    |                    "redis", "dynamodb", "storage", "octane",
++    |                    "session", "failover", "null"
+     |
+     */
+ 
+@@ -53,6 +53,12 @@ return [
+             'lock_path' => storage_path('framework/cache/data'),
+         ],
+ 
++        'storage' => [
++            'driver' => 'storage',
++            'disk' => env('CACHE_STORAGE_DISK'),
++            'path' => env('CACHE_STORAGE_PATH', 'framework/cache/data'),
++        ],
++
+         'memcached' => [
+             'driver' => 'memcached',
+             'persistent_id' => env('MEMCACHED_PERSISTENT_ID'),
+diff --git a/config/logging.php b/config/logging.php
+index b09cb25d..bf49fcca 100644
+--- a/config/logging.php
++++ b/config/logging.php
+@@ -69,7 +69,15 @@ return [
+             'driver' => 'daily',
+             'path' => storage_path('logs/laravel.log'),
+             'level' => env('LOG_LEVEL', 'debug'),
+-            'days' => env('LOG_DAILY_DAYS', 14),
++            'max_files' => env('LOG_DAILY_DAYS', 14),
++            'replace_placeholders' => true,
++        ],
++
++        'monthly' => [
++            'driver' => 'monthly',
++            'path' => storage_path('logs/laravel.log'),
++            'level' => env('LOG_LEVEL', 'debug'),
++            'max_files' => 3,
+             'replace_placeholders' => true,
+         ],
+ 
+diff --git a/config/services.php b/config/services.php
+index 6a90eb83..ec226a40 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -8,7 +8,7 @@ return [
+     |--------------------------------------------------------------------------
+     |
+     | This file is for storing the credentials for third party services such
+-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
++    | as Resend, Postmark, AWS, and more. This file provides the de facto
+     | location for this type of information, allowing packages to have
+     | a conventional file to locate the various service credentials.
+     |
+diff --git a/package.json b/package.json
+index 49c869e3..13ec8854 100644
+--- a/package.json
++++ b/package.json
+@@ -8,9 +8,12 @@
+     },
+     "devDependencies": {
+         "@tailwindcss/vite": "^4.0.0",
+-        "concurrently": "^9.0.1",
++        "concurrently": "^10.0.3",
+         "laravel-vite-plugin": "^3.1",
+         "tailwindcss": "^4.0.0",
+         "vite": "^8.0.0"
++    },
++    "optionalDependencies": {
++        "@laravel/multiplex": "^0.4.1"
+     }
+ }
+diff --git a/resources/css/app.css b/resources/css/app.css
+index 3e6abeab..54b247e2 100644
+--- a/resources/css/app.css
++++ b/resources/css/app.css
+@@ -2,8 +2,6 @@
+ 
+ @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+ @source '../../storage/framework/views/*.php';
+-@source '../**/*.blade.php';
+-@source '../**/*.js';
+ 
+ @theme {
+     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
